@@ -13,11 +13,17 @@ interface BrandRow {
   scrape_strategy: ScrapeStrategy | null;
   consecutive_failures: number;
   dormant: number;
+  dormant_at: number | null;
 }
 
-const PER_HOST_DELAY_MS = 2000;
-const MAX_PARALLEL = 4;
-const STALE_DORMANT_AFTER = 5;
+const PER_HOST_DELAY_MS = Number(process.env.PILLARPEARL_PER_HOST_DELAY_MS ?? 2000);
+const MAX_PARALLEL = Number(process.env.PILLARPEARL_MAX_PARALLEL ?? 4);
+const STALE_DORMANT_AFTER = Number(process.env.PILLARPEARL_DORMANT_AFTER ?? 5);
+const DORMANT_RETRY_AFTER_MS = Number(
+  process.env.PILLARPEARL_DORMANT_RETRY_MS ?? 6 * 60 * 60 * 1000,
+);
+
+let _running = false;
 
 export async function runScraper(): Promise<{
   runId: number;
@@ -26,64 +32,95 @@ export async function runScraper(): Promise<{
   added: number;
   updated: number;
   disappeared: number;
+  skipped: boolean;
 }> {
+  if (_running) {
+    return { runId: 0, ok: 0, failed: 0, added: 0, updated: 0, disappeared: 0, skipped: true };
+  }
+  _running = true;
   const db = getDb();
+  ensureSchemaExtras(db);
   const startedAt = Date.now();
   const runRow = db
     .prepare("INSERT INTO scrape_runs (started_at) VALUES (?)")
     .run(startedAt);
   const runId = Number(runRow.lastInsertRowid);
 
-  const brands = db
-    .prepare(
-      "SELECT slug, name, url, scrape_strategy, consecutive_failures, dormant FROM brands ORDER BY slug",
-    )
-    .all() as BrandRow[];
-
   let ok = 0;
   let failed = 0;
   let added = 0;
   let updated = 0;
   let disappeared = 0;
+  const sessionImageBudget = { remaining: 500 * 1024 * 1024 };
 
-  const targets = brands.filter((b) => b.dormant === 0);
+  try {
+    const brands = db
+      .prepare(
+        `SELECT slug, name, url, scrape_strategy, consecutive_failures, dormant, dormant_at
+         FROM brands ORDER BY slug`,
+      )
+      .all() as BrandRow[];
 
-  for (let i = 0; i < targets.length; i += MAX_PARALLEL) {
-    const batch = targets.slice(i, i + MAX_PARALLEL);
-    const results = await Promise.allSettled(
-      batch.map((b) => scrapeOneBrand(b, runId)),
+    const now = Date.now();
+    const targets = brands.filter(
+      (b) =>
+        b.dormant === 0 ||
+        (b.dormant_at != null && now - b.dormant_at >= DORMANT_RETRY_AFTER_MS),
     );
-    for (const r of results) {
-      if (r.status === "fulfilled") {
-        ok++;
-        added += r.value.added;
-        updated += r.value.updated;
-        disappeared += r.value.disappeared;
-      } else {
-        failed++;
+
+    for (let i = 0; i < targets.length; i += MAX_PARALLEL) {
+      const batch = targets.slice(i, i + MAX_PARALLEL);
+      const results = await Promise.allSettled(
+        batch.map((b) => scrapeOneBrand(b, runId, sessionImageBudget)),
+      );
+      for (const r of results) {
+        if (r.status === "fulfilled") {
+          ok++;
+          added += r.value.added;
+          updated += r.value.updated;
+          disappeared += r.value.disappeared;
+        } else {
+          failed++;
+        }
       }
     }
+
+    db.prepare(
+      `UPDATE scrape_runs SET finished_at = ?, brands_total = ?, brands_ok = ?, brands_failed = ?, products_added = ?, products_updated = ?, products_disappeared = ? WHERE id = ?`,
+    ).run(
+      Date.now(),
+      targets.length,
+      ok,
+      failed,
+      added,
+      updated,
+      disappeared,
+      runId,
+    );
+  } catch (e) {
+    db.prepare(
+      `UPDATE scrape_runs SET finished_at = ?, notes = ? WHERE id = ?`,
+    ).run(Date.now(), `run aborted: ${String(e)}`, runId);
+    throw e;
+  } finally {
+    _running = false;
   }
 
-  db.prepare(
-    `UPDATE scrape_runs SET finished_at = ?, brands_total = ?, brands_ok = ?, brands_failed = ?, products_added = ?, products_updated = ?, products_disappeared = ? WHERE id = ?`,
-  ).run(
-    Date.now(),
-    targets.length,
-    ok,
-    failed,
-    added,
-    updated,
-    disappeared,
-    runId,
-  );
+  return { runId, ok, failed, added, updated, disappeared, skipped: false };
+}
 
-  return { runId, ok, failed, added, updated, disappeared };
+function ensureSchemaExtras(db: ReturnType<typeof getDb>): void {
+  const cols = db.prepare("PRAGMA table_info(brands)").all() as { name: string }[];
+  const has = (n: string) => cols.some((c) => c.name === n);
+  if (!has("dormant_at")) {
+    db.exec("ALTER TABLE brands ADD COLUMN dormant_at INTEGER");
+  }
 }
 
 async function scrapeOneBrand(
   brand: BrandRow,
   runId: number,
+  imageBudget: { remaining: number },
 ): Promise<{ added: number; updated: number; disappeared: number }> {
   const db = getDb();
   const safeUrl = safeExternalUrl(brand.url);
@@ -97,6 +134,7 @@ async function scrapeOneBrand(
   if (!strategy) strategy = await detectStrategy(safeUrl);
 
   let scraped: ScrapedProduct[] = [];
+  let fetchFailed = false;
   try {
     if (strategy === "shopify") {
       scraped = (await scrapeShopify(safeUrl)).products;
@@ -108,6 +146,7 @@ async function scrapeOneBrand(
       strategy = "manual";
     }
   } catch (e) {
+    fetchFailed = true;
     recordFailure(runId, brand.slug, strategy, "fetch", String(e));
     bumpFailure(brand.slug);
     db.prepare(
@@ -116,7 +155,7 @@ async function scrapeOneBrand(
     throw e;
   }
 
-  if (strategy !== "manual" && scraped.length === 0) {
+  if (!fetchFailed && strategy !== "manual" && scraped.length === 0) {
     recordFailure(runId, brand.slug, strategy, "extract", "0 products extracted");
   }
 
@@ -129,7 +168,16 @@ async function scrapeOneBrand(
     if (!p.category) continue;
     const id = `${brand.slug}--${p.handle}`;
     seenIds.add(id);
-    const imageHash = await cacheImage(p.imageUrl);
+    let imageHash: string | null = null;
+    if (imageBudget.remaining > 0) {
+      imageHash = await cacheImage(p.imageUrl);
+      if (imageHash) {
+        const sz = db
+          .prepare("SELECT bytes FROM images WHERE hash = ?")
+          .get(imageHash) as { bytes: number } | undefined;
+        imageBudget.remaining -= sz?.bytes ?? 0;
+      }
+    }
     const existing = db
       .prepare("SELECT id FROM products WHERE id = ?")
       .get(id) as { id: string } | undefined;
@@ -137,7 +185,7 @@ async function scrapeOneBrand(
       db.prepare(
         `UPDATE products SET name = ?, price = ?, original_price = ?, sold_out = ?,
          link = ?, image_hash = COALESCE(?, image_hash), external_id = ?, handle = ?,
-         category = ?, last_seen_at = ?, updated_at = ? WHERE id = ?`,
+         category = ?, available = 1, last_seen_at = ?, updated_at = ? WHERE id = ?`,
       ).run(
         p.name,
         p.price,
@@ -178,15 +226,24 @@ async function scrapeOneBrand(
   }
 
   let disappeared = 0;
+  // Sweep only when we have a credible inventory fetch (>0 scraped products).
+  // 0-product successes are already recorded as failures and skip the sweep.
   if (strategy !== "manual" && scraped.length > 0) {
-    const placeholders = seenIds.size
-      ? Array.from(seenIds).map(() => "?").join(",")
-      : "''";
+    // Purge legacy seeded rows (id ends with '--{category}') once a brand has
+    // a real scrape — they were placeholders and would otherwise hang around
+    // marked unavailable.
+    db.prepare(
+      `DELETE FROM products
+       WHERE brand_slug = ?
+       AND (id = brand_slug || '--control_tower'
+            OR id = brand_slug || '--terp_slurper'
+            OR id = brand_slug || '--dunking_station')`,
+    ).run(brand.slug);
+
+    const placeholders = Array.from(seenIds).map(() => "?").join(",");
     const oldRows = db
       .prepare(
-        `SELECT id FROM products WHERE brand_slug = ? AND available = 1${
-          seenIds.size ? ` AND id NOT IN (${placeholders})` : ""
-        }`,
+        `SELECT id FROM products WHERE brand_slug = ? AND available = 1 AND id NOT IN (${placeholders})`,
       )
       .all(brand.slug, ...Array.from(seenIds)) as { id: string }[];
     for (const r of oldRows) {
@@ -198,7 +255,7 @@ async function scrapeOneBrand(
   }
 
   db.prepare(
-    `UPDATE brands SET scrape_strategy = ?, last_fetched_ok_at = ?, consecutive_failures = 0, dormant = 0, updated_at = ? WHERE slug = ?`,
+    `UPDATE brands SET scrape_strategy = ?, last_fetched_ok_at = ?, consecutive_failures = 0, dormant = 0, dormant_at = NULL, updated_at = ? WHERE slug = ?`,
   ).run(strategy, now, now, brand.slug);
 
   await sleep(PER_HOST_DELAY_MS);
@@ -206,8 +263,12 @@ async function scrapeOneBrand(
 }
 
 async function detectStrategy(url: string): Promise<ScrapeStrategy> {
-  if (await probeShopify(url)) return "shopify";
-  if (await probeWoocommerce(url)) return "woocommerce";
+  const [shopify, woo] = await Promise.all([
+    probeShopify(url).catch(() => false),
+    probeWoocommerce(url).catch(() => false),
+  ]);
+  if (shopify) return "shopify";
+  if (woo) return "woocommerce";
   return "jsonld";
 }
 
@@ -218,11 +279,13 @@ function recordFailure(
   stage: string,
   error: string,
 ): void {
+  // Cap stored error to avoid bloating the table with stack traces or huge bodies.
+  const trimmed = error.length > 500 ? `${error.slice(0, 500)}…` : error;
   getDb()
     .prepare(
       "INSERT INTO scrape_failures (run_id, brand_slug, strategy, stage, error) VALUES (?, ?, ?, ?, ?)",
     )
-    .run(runId, brandSlug, strategy, stage, error);
+    .run(runId, brandSlug, strategy, stage, trimmed);
 }
 
 function bumpFailure(brandSlug: string): void {
@@ -233,7 +296,9 @@ function bumpFailure(brandSlug: string): void {
     )
     .get(brandSlug) as { consecutive_failures: number } | undefined;
   if (row && row.consecutive_failures >= STALE_DORMANT_AFTER) {
-    db.prepare("UPDATE brands SET dormant = 1 WHERE slug = ?").run(brandSlug);
+    db.prepare(
+      "UPDATE brands SET dormant = 1, dormant_at = ? WHERE slug = ? AND dormant = 0",
+    ).run(Date.now(), brandSlug);
     console.warn(
       `[scraper] brand ${brandSlug} marked dormant after ${row.consecutive_failures} consecutive failures`,
     );

@@ -1,4 +1,7 @@
 # Coolify-friendly compose — web + scraper worker share an SQLite volume.
+# Container names + the external `coolify` network are pinned so the existing
+# Traefik dynamic file (/data/coolify/proxy/dynamic/pillarpearl.com.yml) can
+# keep routing to `pillarpearl-web:3000` without changes.
 services:
   web:
     build:
@@ -6,7 +9,10 @@ services:
       args:
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://pillarpearl.com}
     image: pillar-and-pearl:latest
+    container_name: pillarpearl-web
     restart: unless-stopped
+    networks:
+      - coolify
     environment:
       ROLE: web
       NODE_ENV: production
@@ -15,6 +21,7 @@ services:
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://pillarpearl.com}
       PILLARPEARL_DB: /data/pillarpearl.db
       PILLARPEARL_IMAGE_DIR: /data/images
+      PILLARPEARL_ADMIN_TOKEN: ${PILLARPEARL_ADMIN_TOKEN:-}
     volumes:
       - pillarpearl_data:/data
     expose:
@@ -30,9 +37,12 @@ services:
 
   worker:
     image: pillar-and-pearl:latest
+    container_name: pillarpearl-worker
     restart: unless-stopped
     depends_on:
       - web
+    networks:
+      - coolify
     environment:
       ROLE: worker
       NODE_ENV: production
@@ -43,6 +53,11 @@ services:
       - pillarpearl_data:/data
     labels:
       - org.pillarpearl.service=worker
+
+networks:
+  coolify:
+    external: true
+    name: coolify
 
 volumes:
   pillarpearl_data:

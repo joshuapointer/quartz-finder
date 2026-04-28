@@ -28,8 +28,12 @@ if (process.env.PILLARPEARL_RUN_ON_BOOT !== "false") {
 
 process.stdin.resume();
 
-const stop = (signal: string) => () => {
+const stop = (signal: string) => async () => {
   console.log(`[worker] received ${signal}, shutting down`);
+  try {
+    const { closeDb } = await import("./src/lib/db");
+    closeDb();
+  } catch {}
   process.exit(0);
 };
 process.on("SIGTERM", stop("SIGTERM"));

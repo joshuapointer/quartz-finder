@@ -21,6 +21,15 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: "standalone",
+  serverExternalPackages: ["better-sqlite3"],
+  outputFileTracingIncludes: {
+    "/**": [
+      "./node_modules/better-sqlite3/build/Release/*.node",
+      "./node_modules/better-sqlite3/lib/**",
+      "./node_modules/bindings/**",
+      "./node_modules/file-uri-to-path/**",
+    ],
+  },
   async headers() {
     return [
       {
