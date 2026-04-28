@@ -47,27 +47,30 @@ export default async function ProductPage({ params }: Props) {
   const brand = getBrandBySlug(product.brandSlug);
 
   return (
-    <article className="mx-auto max-w-6xl px-6 py-14">
+    <article className="container-base section-y">
       <nav
         aria-label="Breadcrumb"
-        className="mb-6 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]"
+        className="font-mono ink-mute mb-6 text-2xs uppercase tracking-[0.04em]"
       >
-        <Link href="/shop" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
+        <Link
+          href="/shop"
+          className="focus-ring rounded-[2px] hover:text-[var(--color-amber)]"
+        >
           Shop
         </Link>{" "}
         <span aria-hidden>/</span>{" "}
         <Link
           href={`/brands/${product.brandSlug}`}
-          className="focus-ring rounded-md hover:text-[var(--color-amber)]"
+          className="focus-ring rounded-[2px] hover:text-[var(--color-amber)]"
         >
           {product.brandName}
         </Link>{" "}
         <span aria-hidden>/</span>{" "}
-        <span className="text-[var(--color-ink-soft)]">{product.categoryLabel}</span>
+        <span className="ink-soft">{product.categoryLabel}</span>
       </nav>
 
-      <div className="grid gap-10 md:grid-cols-2">
-        <div className="surface relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl">
+      <div className="grid gap-12 md:grid-cols-2">
+        <div className="relative aspect-square overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-transparent">
           <div className="absolute right-5 top-5 z-10">
             <WishlistButton productId={product.id} size="md" />
           </div>
@@ -82,7 +85,7 @@ export default async function ProductPage({ params }: Props) {
             />
           ) : (
             <div
-              className="font-display text-[12rem] leading-none text-[var(--color-amber-soft)]/70"
+              className="font-display ink-faint flex h-full items-center justify-center text-[9rem] leading-none"
               aria-hidden="true"
             >
               {CATEGORY_GLYPH[product.category]}
@@ -99,40 +102,44 @@ export default async function ProductPage({ params }: Props) {
               label={brand?.status_label ?? null}
             />
           </div>
-          <h1 className="font-display mt-4 text-4xl leading-tight md:text-5xl">
+          <h1 className="font-display mt-6 text-4xl leading-tight tracking-[-0.015em] md:text-5xl">
             {product.name}
           </h1>
-          <p className="mt-2 text-[var(--color-ink-soft)]">
+          <p className="ink-soft mt-2 text-sm">
             By{" "}
             <Link
               href={`/brands/${product.brandSlug}`}
-              className="focus-ring rounded-md text-[var(--color-amber)] hover:underline"
+              className="ink focus-ring rounded-[2px] hover:text-[var(--color-amber)]"
             >
               {product.brandName}
             </Link>
           </p>
 
-          <div className="mt-7 flex items-baseline gap-3">
-            <span className="font-display text-4xl text-[var(--color-amber-soft)]">
-              {product.price}
-            </span>
-            {product.originalPrice ? (
-              <span className="text-lg text-[var(--color-ink-mute)] line-through">
-                {product.originalPrice}
+          <div className="mt-8">
+            <p className="eyebrow eyebrow-mute">MSRP · via brand</p>
+            <div className="mt-2 flex items-baseline gap-4">
+              <span className="font-display ink tabular-nums text-5xl">
+                {product.price}
               </span>
-            ) : null}
+              {product.originalPrice ? (
+                <span className="font-mono ink-faint text-base line-through">
+                  {product.originalPrice}
+                </span>
+              ) : null}
+            </div>
           </div>
-          <p className="mt-1 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
-            {product.categoryLabel} · MSRP via brand
-          </p>
+
+          <div className="rule mt-8" />
 
           {product.statusNote ? (
-            <p className="mt-5 rounded-lg border border-[var(--color-line)] bg-[var(--color-bg-elev)] p-3 text-xs text-[var(--color-ink-soft)]">
+            <p className="surface-flat ink-soft mt-6 rounded-[var(--radius-sm)] px-4 py-3 text-sm">
               {product.statusNote}
             </p>
           ) : null}
           {product.note ? (
-            <p className="mt-3 text-sm text-[var(--color-ink-soft)]">{product.note}</p>
+            <p className="ink-soft prose-measure mt-4 text-base">
+              {product.note}
+            </p>
           ) : null}
 
           <div className="mt-8">
@@ -143,26 +150,34 @@ export default async function ProductPage({ params }: Props) {
             />
           </div>
 
-          <div className="mt-6 grid gap-2 text-xs text-[var(--color-ink-mute)]">
+          <div className="ink-mute mt-8 grid gap-3 text-xs">
             <p>
-              ✦{" "}
+              <span className="mr-2 text-[var(--color-amber)]">▍</span>
               {product.brandLastFetchedOkAt
                 ? `Last verified ${new Date(product.brandLastFetchedOkAt).toUTCString()}.`
                 : "Pricing scraped editorially. Final price + availability live on the brand's site."}
             </p>
             <p>
-              ✦ Pillar &amp; Pearl earns nothing on the click unless explicitly
+              <span className="mr-2 text-[var(--color-amber)]">▍</span>
+              Pillar &amp; Pearl earns nothing on the click unless explicitly
               disclosed on a brand&apos;s page.
             </p>
-            <p>✦ For 21+ legal-jurisdiction use only.</p>
+            <p>
+              <span className="mr-2 text-[var(--color-amber)]">▍</span>
+              For 21+ legal-jurisdiction use only.
+            </p>
           </div>
         </div>
       </div>
 
       {related.length > 0 ? (
-        <section className="mt-20">
-          <h2 className="font-display text-3xl">More {product.categoryLabel}s</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="section-y">
+          <p className="eyebrow">More {product.categoryLabel}</p>
+          <div className="rule mt-2" />
+          <h2 className="font-display mt-6 text-3xl">
+            More {product.categoryLabel}s
+          </h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

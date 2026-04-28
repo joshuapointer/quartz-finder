@@ -1,25 +1,123 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0b0a0f;
-  --color-bg-soft: #14121a;
-  --color-bg-elev: #1c1924;
-  --color-line: #2a2532;
-  --color-ink: #f5f1e8;
-  --color-ink-soft: #b9b1a3;
-  --color-ink-mute: #7a7264;
-  --color-amber: #d39a3e;
-  --color-amber-soft: #f0c270;
-  --color-quartz: #c9b8d1;
-  --color-rose: #b86a7d;
-  --color-jade: #4a8c6a;
+  /* ==== Color: ground ==== */
+  --color-bg:        #0a0908;   /* deeper warm black */
+  --color-bg-soft:   #121110;   /* card body */
+  --color-bg-elev:   #1a1816;   /* modals, popovers, single hero panel */
+  --color-bg-sunk:   #060504;   /* footer, chrome inversion */
 
-  --font-display:
-    var(--font-display-loaded), "Cormorant Garamond", "Iowan Old Style", Georgia,
-    serif;
-  --font-sans:
-    var(--font-sans-loaded), "Inter", "Helvetica Neue", system-ui, -apple-system,
-    sans-serif;
+  /* ==== Color: line / hairlines ==== */
+  --color-line:        #2a2622;   /* default 1px hairline */
+  --color-line-soft:   #1f1c19;   /* whisper-thin divisions inside cards */
+  --color-line-strong: #3a342d;   /* on-hover / active borders */
+
+  /* ==== Color: ink (warm ivory family) ==== */
+  --color-ink:       #f3ece0;   /* primary copy */
+  --color-ink-soft:  #b6ad9d;   /* secondary copy */
+  --color-ink-mute:  #76705f;   /* metadata, eyebrows on muted */
+  --color-ink-faint: #4a4439;   /* deep mute, dividers, strikethrough */
+
+  /* ==== Color: chromatics (restrained) ==== */
+  --color-amber:       #c8923a;   /* desaturated primary accent */
+  --color-amber-soft:  #e6b878;   /* hover/light variant */
+  --color-amber-deep:  #8a6224;   /* pressed / borders on amber tints */
+  --color-quartz:      #b8aac4;   /* lavender secondary */
+  --color-quartz-soft: #d6cce0;
+  --color-sage:        #7a9785;   /* replaces jade — in-stock signal */
+  --color-sage-soft:   #a4bfae;
+  --color-rose:        #a96374;   /* desat sold-out / destructive accent */
+
+  /* ==== Type: families ==== */
+  --font-display: var(--font-display-loaded), "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-sans:    var(--font-sans-loaded),    "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  /* No --font-mono-loaded this cycle; system mono stack used directly */
+  --font-mono:    ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* ==== Type scale (1.250 modular, 16px base) ==== */
+  --text-2xs:  0.6875rem;   /* 11px — eyebrow, micro-meta */
+  --text-xs:   0.75rem;     /* 12px — meta, footer */
+  --text-sm:   0.875rem;    /* 14px — UI labels, captions */
+  --text-base: 1rem;        /* 16px — body */
+  --text-lg:   1.125rem;    /* 18px — lead paragraph */
+  --text-xl:   1.4375rem;   /* 23px — small heading */
+  --text-2xl:  1.75rem;     /* 28px — h3 */
+  --text-3xl:  2.1875rem;   /* 35px — h2 */
+  --text-4xl:  2.75rem;     /* 44px — page h1 */
+  --text-5xl:  3.4375rem;   /* 55px — section feature */
+  --text-6xl:  4.3125rem;   /* 69px — hero (md) */
+  --text-7xl:  5.375rem;    /* 86px — hero (lg) */
+
+  /* Tracking */
+  --tracking-tight:   -0.02em;
+  --tracking-snug:    -0.01em;
+  --tracking-normal:   0em;
+  --tracking-wide:     0.04em;
+  --tracking-eyebrow:  0.22em;   /* small caps eyebrow */
+  --tracking-rule:     0.34em;   /* tiny rule labels */
+
+  /* Leading */
+  --leading-display: 1.02;
+  --leading-tight:   1.18;
+  --leading-snug:    1.35;
+  --leading-body:    1.6;
+  --leading-loose:   1.85;
+
+  /* ==== Radii ==== */
+  --radius-hairline: 2px;    /* buttons, chips */
+  --radius-sm:       4px;    /* inputs, selects */
+  --radius-md:       8px;    /* cards default */
+  --radius-lg:       16px;   /* hero panels, modals */
+  --radius-xl:       24px;   /* marquee panels */
+  --radius-pill:     999px;  /* RESERVED: badges, count chips, skip-link only */
+
+  /* ==== Shadows ==== */
+  --shadow-hairline:        inset 0 0 0 1px var(--color-line);
+  --shadow-hairline-strong: inset 0 0 0 1px var(--color-line-strong);
+  --shadow-soft:
+    0 1px 0 0 rgba(255, 240, 220, 0.02),
+    0 12px 32px -20px rgba(0, 0, 0, 0.7);
+  --shadow-modal:
+    0 1px 0 0 rgba(255, 240, 220, 0.04),
+    0 24px 64px -24px rgba(0, 0, 0, 0.85);
+
+  /* ==== Motion ==== */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+
+  --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --ease-expressive: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* consumed via var() only — not Tailwind-generated */
+/* --space-N, --section-y, --section-y-lg, --container-*, --gutter* */
+:root {
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   24px;
+  --space-6:   32px;
+  --space-7:   48px;
+  --space-8:   64px;
+  --space-9:   96px;
+  --space-10:  128px;
+  --space-11:  176px;
+
+  --section-y:    96px;
+  --section-y-lg: 144px;
+
+  --container-narrow: 720px;
+  --container-prose:  62ch;
+  --container-base:   1200px;
+  --container-wide:   1360px;
+
+  --gutter:    24px;
+  --gutter-md: 40px;
+  --gutter-lg: 64px;
 }
 
 html,
@@ -27,62 +125,254 @@ body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 body {
+  /* Single warm vignette — subtler than previous dual radial */
   background-image:
-    radial-gradient(at 12% 8%, rgba(211, 154, 62, 0.08) 0, transparent 42%),
-    radial-gradient(at 85% 110%, rgba(184, 106, 125, 0.07) 0, transparent 38%);
+    radial-gradient(ellipse at 50% -10%, rgba(200, 146, 58, 0.05) 0, transparent 55%),
+    radial-gradient(ellipse at 50% 120%, rgba(184, 170, 196, 0.025) 0, transparent 60%);
   background-attachment: fixed;
 }
 
+/* Noise overlay omitted entirely — no broken asset risk */
+
 ::selection {
-  background: rgba(211, 154, 62, 0.35);
+  background: rgba(200, 146, 58, 0.28);
   color: var(--color-ink);
 }
 
 @layer utilities {
+  /* ---- Type families ---- */
   .font-display {
     font-family: var(--font-display);
-    font-feature-settings: "liga", "dlig";
-    letter-spacing: -0.01em;
+    font-feature-settings: "liga", "dlig", "calt";
+    letter-spacing: var(--tracking-snug);
   }
+  .font-mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum";
+  }
+
+  /* ---- Surfaces ---- */
   .surface {
     background-color: var(--color-bg-soft);
-    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-hairline);
+    border-radius: var(--radius-md);
   }
   .surface-elev {
     background-color: var(--color-bg-elev);
-    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-hairline);
+    border-radius: var(--radius-md);
   }
-  .ink-mute {
+  .surface-flat {
+    /* No fill, only a hairline. For editorial panels on the page bg. */
+    background: transparent;
+    box-shadow: var(--shadow-hairline);
+  }
+
+  /* ---- Ink helpers ---- */
+  .ink       { color: var(--color-ink); }
+  .ink-soft  { color: var(--color-ink-soft); }
+  .ink-mute  { color: var(--color-ink-mute); }
+  .ink-faint { color: var(--color-ink-faint); }
+
+  /* ---- Editorial primitives ---- */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-2xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-amber);
+  }
+  .eyebrow-mute {
     color: var(--color-ink-mute);
   }
-  .ink-soft {
-    color: var(--color-ink-soft);
+
+  .rule-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: var(--tracking-rule);
+    text-transform: uppercase;
+    color: var(--color-ink-mute);
   }
-  .glow-amber {
-    box-shadow:
-      0 0 0 1px rgba(211, 154, 62, 0.25),
-      0 12px 40px -16px rgba(211, 154, 62, 0.35);
+
+  .rule {
+    height: 1px;
+    width: 100%;
+    background: var(--color-line);
   }
-  .hairline-grad {
+  .rule-amber {
+    height: 1px;
+    width: 100%;
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(211, 154, 62, 0.4) 50%,
+      var(--color-amber) 14%,
+      var(--color-amber) 86%,
       transparent 100%
     );
+    opacity: 0.45;
   }
+  .hairline-vertical {
+    width: 1px;
+    align-self: stretch;
+    background: var(--color-line);
+  }
+
+  /* ---- Display italic luxury inline accent ---- */
+  .swash {
+    font-style: italic;
+    font-family: var(--font-display);
+    font-feature-settings: "liga", "dlig", "swsh", "calt";
+    color: var(--color-amber-soft);
+  }
+
+  /* ---- Lift — card hover (replaces ad-hoc translates) ---- */
+  .lift {
+    transition:
+      transform var(--duration-base) var(--ease-expressive),
+      box-shadow var(--duration-base) var(--ease-expressive),
+      border-color var(--duration-base) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard);
+    will-change: transform;
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft), var(--shadow-hairline-strong);
+  }
+  .lift:active {
+    transform: translateY(-1px);
+    transition-duration: var(--duration-fast);
+  }
+
+  /* ---- Reveal on scroll (paired with IntersectionObserver in layout.tsx) ---- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--duration-slow) var(--ease-decelerate),
+      transform var(--duration-slow) var(--ease-decelerate);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 14px 24px;
+    border-radius: var(--radius-hairline);
+    transition:
+      background-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      transform var(--duration-base) var(--ease-expressive);
+  }
+  .btn-primary {
+    background: var(--color-amber);
+    color: var(--color-bg);
+    box-shadow: inset 0 0 0 1px var(--color-amber-deep);
+  }
+  .btn-primary:hover {
+    background: var(--color-amber-soft);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink-soft);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+  .btn-ghost:hover {
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  }
+
+  /* ---- Focus ring ---- */
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)];
+    @apply focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-[var(--color-amber)]
+           focus-visible:ring-offset-2
+           focus-visible:ring-offset-[var(--color-bg)];
   }
+
+  /* ---- Containers ---- */
+  .container-narrow {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .container-base {
+    max-width: var(--container-base);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .container-wide {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  @media (min-width: 768px) {
+    .container-narrow,
+    .container-base,
+    .container-wide {
+      padding-inline: var(--gutter-md);
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-narrow,
+    .container-base,
+    .container-wide {
+      padding-inline: var(--gutter-lg);
+    }
+  }
+
+  /* ---- Section rhythm ---- */
+  .section-y    { padding-block: var(--section-y); }
+  .section-y-lg { padding-block: var(--section-y-lg); }
+
+  /* ---- Body measure ---- */
+  .prose-measure { max-width: var(--container-prose); }
+
+  /* ---- Tabular numerals ---- */
+  .tabular { font-feature-settings: "tnum"; }
+
+  /* DEPRECATED: .glow-amber removed (no glows in new system) */
+  /* RENAMED: .hairline-grad → .rule-amber */
 }
 
 *:focus-visible {
   outline: none;
+}
+
+/* ---- AgeGate entrance animation ---- */
+@keyframes age-gate-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.age-gate-enter {
+  animation: age-gate-enter 400ms var(--ease-expressive);
+}
+
+/* ---- data-scrolled header blur ramp ---- */
+header {
+  transition: backdrop-filter var(--duration-base) var(--ease-standard);
+}
+[data-scrolled="true"] header {
+  backdrop-filter: blur(16px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -93,5 +383,13 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Force reveal elements visible when motion is reduced */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .age-gate-enter {
+    animation: none;
   }
 }

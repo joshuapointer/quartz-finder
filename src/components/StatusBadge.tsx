@@ -9,20 +9,33 @@ interface Props {
 export default function StatusBadge({ status, label, soldOut }: Props) {
   if (soldOut) {
     return (
-      <span className="inline-flex items-center rounded-full border border-[var(--color-rose)]/50 bg-[var(--color-rose)]/10 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.18em] text-[var(--color-rose)]">
+      <span
+        className="inline-flex items-center gap-1.5 rounded-[2px] border border-[var(--color-rose)]/60 bg-transparent px-2 py-[3px] text-[10px] uppercase tracking-[0.22em] font-medium text-[var(--color-rose)]"
+        aria-label="Sold out"
+      >
+        {/* 6px square dot — non-color affordance */}
+        <span role="img" aria-label="Out of stock" className="block h-1.5 w-1.5 bg-[var(--color-rose)]" />
         Sold Out
       </span>
     );
   }
   if (status === "dead") {
     return (
-      <span className="inline-flex items-center rounded-full border border-[var(--color-line)] bg-[var(--color-bg-elev)] px-2.5 py-0.5 text-[11px] uppercase tracking-[0.18em] text-[var(--color-ink-mute)]">
+      <span
+        className="inline-flex items-center gap-1.5 rounded-[2px] border border-[var(--color-line-strong)] bg-transparent px-2 py-[3px] text-[10px] uppercase tracking-[0.22em] font-medium text-[var(--color-ink-mute)]"
+        aria-label={label ?? "Inactive"}
+      >
         {label ?? "Inactive"}
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center rounded-full border border-[var(--color-jade)]/40 bg-[var(--color-jade)]/10 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.18em] text-[var(--color-jade)]">
+    <span
+      className="inline-flex items-center gap-1.5 rounded-[2px] border border-[var(--color-sage)] bg-transparent px-2 py-[3px] text-[10px] uppercase tracking-[0.22em] font-medium text-[var(--color-sage-soft)]"
+      aria-label="Brand active"
+    >
+      {/* 6px square dot — non-color affordance */}
+      <span role="img" aria-label="In stock" className="block h-1.5 w-1.5 bg-[var(--color-sage-soft)]" />
       Active
     </span>
   );

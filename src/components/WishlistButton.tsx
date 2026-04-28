@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useWishlist } from "@/store/wishlist";
 
 interface Props {
@@ -11,28 +12,51 @@ export default function WishlistButton({ productId, size = "sm" }: Props) {
   const has = useWishlist((s) => s.ids.includes(productId));
   const hydrated = useWishlist((s) => s.hydrated);
   const toggle = useWishlist((s) => s.toggle);
+  const [bumping, setBumping] = useState(false);
+
+  const reducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    [],
+  );
 
   const dim = size === "md" ? "h-10 w-10" : "h-8 w-8";
+
+  const activeState = hydrated && has;
+
+  function handleClick(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const willBeActive = !has;
+    toggle(productId);
+    if (willBeActive && !reducedMotion) {
+      setBumping(true);
+      setTimeout(() => setBumping(false), 250);
+    }
+  }
 
   return (
     <button
       type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggle(productId);
-      }}
-      aria-pressed={hydrated && has}
+      onClick={handleClick}
+      aria-pressed={hydrated ? has : false}
       aria-label={has ? "Remove from wishlist" : "Add to wishlist"}
-      className={`${dim} focus-ring inline-flex items-center justify-center rounded-full border border-[var(--color-line)] bg-[var(--color-bg-elev)]/80 text-[var(--color-ink-soft)] backdrop-blur transition-all hover:border-[var(--color-amber)] hover:text-[var(--color-amber)] ${
-        hydrated && has ? "border-[var(--color-amber)] text-[var(--color-amber)]" : ""
-      }`}
+      className={`${dim} focus-ring inline-flex items-center justify-center rounded-full border backdrop-blur-md transition-all
+        ${bumping ? "scale-[1.05]" : ""}
+        ${
+          activeState
+            ? "border-[var(--color-amber)]/60 text-[var(--color-amber)]"
+            : "border-[var(--color-line-strong)] text-[var(--color-ink-mute)] hover:border-[var(--color-amber)] hover:text-[var(--color-amber-soft)]"
+        }
+      `}
+      style={{ backgroundColor: "rgba(10,9,8,0.65)" }}
     >
       <svg
         width="16"
         height="16"
         viewBox="0 0 24 24"
-        fill={hydrated && has ? "currentColor" : "none"}
+        fill={activeState ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth="1.6"
         strokeLinecap="round"

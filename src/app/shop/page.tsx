@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getAllProducts } from "@/lib/catalog";
+import { getAllProducts, getMetadata } from "@/lib/catalog";
 import type { ProductCategory } from "@/types";
 import Filters from "@/components/Filters";
 
@@ -27,6 +27,7 @@ export default async function ShopPage({
   searchParams: Promise<SearchParams>;
 }) {
   const products = getAllProducts();
+  const meta = getMetadata();
   const sp = await searchParams;
   const initialCategory =
     sp.category && (VALID_CATEGORIES as string[]).includes(sp.category)
@@ -34,16 +35,21 @@ export default async function ShopPage({
       : undefined;
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-14">
-      <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-amber)]">
-        Catalog
+    <div className="container-wide section-y-lg">
+      <p className="eyebrow">Catalog · Issue 01</p>
+      <div className="rule mt-2" />
+      <h1 className="font-display mt-6 text-4xl md:text-5xl">
+        Shop the atlas
+      </h1>
+      <p className="prose-measure ink-soft mt-6 text-lg">
+        Search by brand, filter by tier, or dial in a category. Every link
+        routes to the artist or authorized retailer — we never resell.
       </p>
-      <h1 className="font-display mt-3 text-5xl">Shop the atlas</h1>
-      <p className="mt-3 max-w-2xl text-[var(--color-ink-soft)]">
-        Search by brand, filter by tier, or dial in a category. Every link routes
-        to the artist or authorized retailer — we never resell.
+      <p className="font-mono ink-mute mt-4 text-xs">
+        {meta.summary.total_brands} brands · {products.length} pieces ·
+        refreshed April 2026
       </p>
-      <div className="mt-10">
+      <div className="mt-14">
         <Filters products={products} initialCategory={initialCategory} />
       </div>
     </div>

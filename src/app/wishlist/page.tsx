@@ -10,16 +10,15 @@ export const metadata: Metadata = {
 export default function WishlistPage() {
   const products = getAllProducts();
   return (
-    <div className="mx-auto max-w-7xl px-6 py-14">
-      <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-amber)]">
-        Saved
+    <div className="container-base section-y-lg">
+      <p className="eyebrow">Saved</p>
+      <div className="rule mt-2" />
+      <h1 className="font-display mt-6 text-4xl md:text-5xl">Your wishlist</h1>
+      <p className="font-mono ink-mute mt-4 text-xs">
+        Stored locally on this device. Clear cache and it&apos;s gone — no
+        account, no tracking.
       </p>
-      <h1 className="font-display mt-3 text-5xl">Your wishlist</h1>
-      <p className="mt-3 text-[var(--color-ink-soft)]">
-        Stored locally on this device. Clear cache and it&apos;s gone — no account,
-        no tracking.
-      </p>
-      <div className="mt-10">
+      <div className="mt-12">
         <WishlistView products={products} />
       </div>
     </div>

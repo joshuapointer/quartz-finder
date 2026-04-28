@@ -42,63 +42,89 @@ export default async function BrandPage({ params }: Props) {
 
   const homepage = safeExternalUrl(brand.url);
 
+  const stats: { label: string; value: string | number }[] = [
+    { label: "Products", value: summary.productCount },
+    { label: "Accessories", value: summary.accessoryCount },
+    { label: "Tier", value: brand.tier === "usmade" ? "US-Made" : "Import" },
+    {
+      label: "Status",
+      value:
+        brand.status === "active"
+          ? "Active"
+          : brand.status_label ?? "Inactive",
+    },
+  ];
+
   return (
-    <article className="mx-auto max-w-7xl px-6 py-14">
+    <article className="container-wide section-y">
       <nav
         aria-label="Breadcrumb"
-        className="mb-6 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]"
+        className="font-mono ink-mute mb-6 text-2xs uppercase tracking-[0.04em]"
       >
-        <Link href="/brands" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
+        <Link
+          href="/brands"
+          className="focus-ring rounded-[2px] hover:text-[var(--color-amber)]"
+        >
           Brands
         </Link>{" "}
         <span aria-hidden>/</span>{" "}
-        <span className="text-[var(--color-ink-soft)]">{brand.name}</span>
+        <span className="ink-soft">{brand.name}</span>
       </nav>
 
-      <header className="surface rounded-3xl p-10">
-        <div className="flex flex-wrap items-center gap-3">
-          <TierBadge tier={brand.tier} />
-          <StatusBadge status={brand.status} label={brand.status_label} />
-        </div>
-        <h1 className="font-display mt-4 text-5xl">{brand.name}</h1>
-        <p className="mt-2 text-sm text-[var(--color-ink-soft)]">
-          {homepage ? (
-            <a
-              href={homepage}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="focus-ring rounded-md hover:text-[var(--color-amber)]"
-            >
-              {brand.url} ↗
-            </a>
-          ) : (
-            <span className="text-[var(--color-ink-mute)]">{brand.url}</span>
-          )}
-        </p>
-        {brand.url_note ? (
-          <p className="mt-3 text-xs text-[var(--color-ink-mute)]">
-            Note: {brand.url_note}
+      <header className="grid gap-8 border-y border-[var(--color-line)] py-12 md:grid-cols-12">
+        <div className="md:col-span-7">
+          <div className="flex flex-wrap gap-3">
+            <TierBadge tier={brand.tier} />
+            <StatusBadge status={brand.status} label={brand.status_label} />
+          </div>
+          <h1 className="font-display mt-6 text-4xl leading-tight md:text-5xl">
+            {brand.name}
+          </h1>
+          <p className="mt-3 text-sm">
+            {homepage ? (
+              <a
+                href={homepage}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="font-mono ink-mute focus-ring rounded-[2px] hover:text-[var(--color-amber)]"
+              >
+                {brand.url} ↗
+              </a>
+            ) : (
+              <span className="font-mono ink-mute">{brand.url}</span>
+            )}
           </p>
-        ) : null}
-        <dl className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat label="Products" value={summary.productCount} />
-          <Stat label="Accessories" value={summary.accessoryCount} />
-          <Stat label="Tier" value={brand.tier === "usmade" ? "US-Made" : "Import"} />
-          <Stat
-            label="Status"
-            value={brand.status === "active" ? "Active" : brand.status_label ?? "Inactive"}
-          />
-        </dl>
+          {brand.url_note ? (
+            <p className="ink-mute mt-3 text-sm">Note: {brand.url_note}</p>
+          ) : null}
+        </div>
+        <div className="md:col-span-5">
+          <dl className="space-y-3">
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                className="flex items-baseline justify-between border-b border-[var(--color-line-soft)] pb-3"
+              >
+                <dt className="ink-soft text-sm">{s.label}</dt>
+                <dd className="font-display ink tabular-nums text-xl">
+                  {s.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </header>
 
-      <section className="mt-14">
-        <h2 className="font-display text-3xl">Lineup</h2>
+      <section className="section-y">
+        <p className="eyebrow">Lineup · {products.length} pieces</p>
+        <div className="rule mt-2" />
+        <h2 className="font-display mt-6 text-3xl">Lineup</h2>
         {products.length === 0 ? (
-          <p className="mt-4 text-[var(--color-ink-soft)]">
+          <p className="ink-soft mt-6">
             No quartz pieces are currently catalogued for this brand.
           </p>
         ) : (
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -107,36 +133,25 @@ export default async function BrandPage({ params }: Props) {
       </section>
 
       {brand.accessories && brand.accessories.length > 0 ? (
-        <section className="mt-14">
-          <h2 className="font-display text-3xl">Accessories on file</h2>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+        <section className="section-y">
+          <p className="eyebrow">Accessories</p>
+          <div className="rule mt-2" />
+          <h2 className="font-display mt-6 text-3xl">Accessories on file</h2>
+          <dl className="mt-8 grid grid-cols-1 gap-x-12 gap-y-0 md:grid-cols-2">
             {brand.accessories.map((a) => (
-              <li
+              <div
                 key={a.name}
-                className="surface flex items-start justify-between gap-4 rounded-xl p-5"
+                className="flex items-baseline justify-between gap-6 border-b border-[var(--color-line-soft)] py-3"
               >
-                <span className="text-sm text-[var(--color-ink)]">{a.name}</span>
-                <span className="font-display whitespace-nowrap text-lg text-[var(--color-amber-soft)]">
+                <dt className="ink text-sm">{a.name}</dt>
+                <dd className="font-mono ink-soft tabular-nums text-sm">
                   {a.price}
-                </span>
-              </li>
+                </dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </section>
       ) : null}
     </article>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div>
-      <dt className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
-        {label}
-      </dt>
-      <dd className="font-display mt-1.5 text-2xl text-[var(--color-amber-soft)]">
-        {value}
-      </dd>
-    </div>
   );
 }

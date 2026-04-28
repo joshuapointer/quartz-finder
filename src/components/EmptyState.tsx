@@ -6,15 +6,27 @@ interface Props {
 
 export default function EmptyState({ title, body, action }: Props) {
   return (
-    <div className="surface flex flex-col items-center rounded-2xl px-6 py-16 text-center">
-      <div className="font-display text-5xl text-[var(--color-amber-soft)]/60" aria-hidden="true">
-        ⌬
-      </div>
-      <h3 className="font-display mt-5 text-2xl">{title}</h3>
+    <div className="border-y border-[var(--color-line)] py-24 text-center">
+      {/* 1px-stroke SVG diamond — replaces ⌬ glyph */}
+      <svg
+        width="40"
+        height="40"
+        viewBox="0 0 40 40"
+        aria-hidden="true"
+        className="mx-auto ink-faint"
+      >
+        <path
+          d="M20 4 36 20 20 36 4 20 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+      </svg>
+      <h3 className="font-display text-3xl ink mt-6">{title}</h3>
       {body ? (
-        <p className="mt-3 max-w-sm text-sm text-[var(--color-ink-soft)]">{body}</p>
+        <p className="prose-measure mx-auto text-sm ink-soft mt-4">{body}</p>
       ) : null}
-      {action ? <div className="mt-6">{action}</div> : null}
+      {action ? <div className="mt-8">{action}</div> : null}
     </div>
   );
 }

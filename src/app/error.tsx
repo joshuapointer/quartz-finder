@@ -16,32 +16,29 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-6 text-center">
-      <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-rose)]">
-        Cracked quartz
-      </p>
-      <h1 className="font-display mt-4 text-5xl">Something fractured.</h1>
-      <p className="mt-4 max-w-md text-[var(--color-ink-soft)]">
+    <div className="container-narrow section-y-lg flex min-h-[60vh] flex-col items-center justify-center text-center">
+      <p className="eyebrow eyebrow-mute">Cracked quartz</p>
+      <h1 className="font-display mt-4 text-4xl md:text-5xl">
+        Something fractured.
+      </h1>
+      <p className="prose-measure ink-soft mx-auto mt-4 max-w-md text-base">
         An unexpected error tripped this page. We&apos;ve been notified — try
         again, or head back to the catalog.
       </p>
-      <div className="mt-8 flex gap-3">
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
         <button
           type="button"
           onClick={reset}
-          className="focus-ring rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
+          className="btn btn-primary focus-ring"
         >
           Try again
         </button>
-        <a
-          href="/shop"
-          className="focus-ring rounded-full border border-[var(--color-line)] px-6 py-3 text-sm text-[var(--color-ink-soft)] hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
-        >
+        <a href="/shop" className="btn btn-ghost focus-ring">
           Back to catalog
         </a>
       </div>
       {error.digest ? (
-        <p className="mt-6 text-[11px] uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
+        <p className="ink-mute font-mono mt-6 text-2xs uppercase tracking-[0.04em]">
           ref · {error.digest}
         </p>
       ) : null}

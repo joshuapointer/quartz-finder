@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useAgeGate } from "@/store/age-gate";
+import Logo from "./Logo";
 
 export default function AgeGate() {
   const verified = useAgeGate((s) => s.verified);
@@ -10,6 +11,7 @@ export default function AgeGate() {
   const confirmRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  // Body scroll lock
   useEffect(() => {
     if (!hydrated) return;
     document.body.style.overflow = !verified ? "hidden" : "";
@@ -18,17 +20,26 @@ export default function AgeGate() {
     };
   }, [verified, hydrated]);
 
+  // Auto-focus confirm button
   useEffect(() => {
     if (!hydrated || verified) return;
     confirmRef.current?.focus();
   }, [hydrated, verified]);
 
+  // Focus trap + Esc handler
   useEffect(() => {
     if (!hydrated || verified) return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (typeof window !== "undefined") {
+          if (window.history.length > 1) window.history.back();
+          else window.location.replace("about:blank");
+        }
+        return;
+      }
       if (e.key !== "Tab" || !dialogRef.current) return;
       const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, [tabindex]:not([tabindex="-1"])',
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
       if (focusables.length === 0) return;
       const first = focusables[0];
@@ -53,49 +64,69 @@ export default function AgeGate() {
       aria-modal="true"
       aria-labelledby="age-gate-title"
       aria-describedby="age-gate-desc"
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(11,10,15,0.92)] backdrop-blur"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(6,5,4,0.92)] backdrop-blur-[20px]"
     >
       <div
         ref={dialogRef}
-        className="surface-elev glow-amber mx-6 w-full max-w-md rounded-2xl p-8"
+        className="age-gate-enter surface-elev shadow-[var(--shadow-modal)] rounded-[var(--radius-lg)] p-10 max-w-[460px] w-full mx-6"
       >
-        <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-amber)]">
-          Age Verification
-        </p>
-        <h2 id="age-gate-title" className="font-display mt-3 text-3xl">
-          Are you 21 or older?
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <Logo size="md" />
+        </div>
+
+        {/* 21+ rule label between two short hairlines */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <span className="rule w-12 shrink-0" />
+          <span className="rule-label">21+</span>
+          <span className="rule w-12 shrink-0" />
+        </div>
+
+        {/* Headline — "twenty-one" spelled out per spec */}
+        <h2
+          id="age-gate-title"
+          className="font-display text-3xl leading-tight text-center"
+        >
+          Are you twenty-one or older?
         </h2>
+
+        {/* Body copy — editorial refresh */}
         <p
           id="age-gate-desc"
-          className="mt-4 text-sm leading-relaxed text-[var(--color-ink-soft)]"
+          className="prose-measure mx-auto text-sm text-center mt-4 ink-soft"
         >
-          Pillar &amp; Pearl catalogs cannabis-concentrate hardware. Entry is restricted
-          to adults of legal age in their jurisdiction. We do not sell, ship, or
-          handle product — every link routes to an independent retailer.
+          Pillar &amp; Pearl is an editorial atlas of cannabis-concentrate
+          hardware. We catalog; we don&rsquo;t sell. Every link routes to an
+          independent retailer, and entry is restricted to adults of legal age
+          in their jurisdiction.
         </p>
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <button
-            ref={confirmRef}
-            type="button"
-            onClick={() => verify()}
-            className="focus-ring flex-1 rounded-full bg-[var(--color-amber)] px-5 py-3 text-sm font-semibold text-[var(--color-bg)] transition-transform hover:-translate-y-0.5"
-          >
-            I am 21 or older
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (typeof window !== "undefined") {
-                if (window.history.length > 1) window.history.back();
-                else window.location.replace("about:blank");
-              }
-            }}
-            className="flex-1 rounded-full border border-[var(--color-line)] px-5 py-3 text-center text-sm text-[var(--color-ink-soft)] transition-colors hover:border-[var(--color-rose)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-rose)]"
-          >
-            Take me back
-          </button>
-        </div>
-        <p className="mt-6 text-[11px] uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
+
+        {/* Confirm — primary button */}
+        <button
+          ref={confirmRef}
+          type="button"
+          onClick={() => verify()}
+          className="btn btn-primary focus-ring w-full mt-8"
+        >
+          I am 21 or older
+        </button>
+
+        {/* Decline — text-only, asymmetric weight intentional */}
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              if (window.history.length > 1) window.history.back();
+              else window.location.replace("about:blank");
+            }
+          }}
+          className="block mx-auto mt-4 text-2xs uppercase tracking-[0.22em] ink-mute hover:ink transition-colors focus-ring rounded-[2px] px-2 py-1"
+        >
+          Take me back
+        </button>
+
+        {/* Footer — mono privacy note */}
+        <p className="font-mono text-2xs ink-faint text-center mt-8">
           Verification cached locally · No data leaves your device
         </p>
       </div>

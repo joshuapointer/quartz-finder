@@ -13,7 +13,7 @@ export default function WishlistView({ products }: { products: NormalizedProduct
 
   if (!hydrated) {
     return (
-      <div className="surface rounded-2xl px-6 py-16 text-center text-[var(--color-ink-mute)]">
+      <div className="ink-mute font-mono border-y border-[var(--color-line)] py-16 text-center text-sm">
         Loading wishlist…
       </div>
     );
@@ -27,10 +27,7 @@ export default function WishlistView({ products }: { products: NormalizedProduct
         title="Nothing saved yet"
         body="Tap the heart on any product card to start a list."
         action={
-          <Link
-            href="/shop"
-            className="focus-ring rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
-          >
+          <Link href="/shop" className="btn btn-ghost focus-ring">
             Browse the catalog
           </Link>
         }
@@ -40,8 +37,8 @@ export default function WishlistView({ products }: { products: NormalizedProduct
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <p className="text-sm text-[var(--color-ink-soft)]">
+      <div className="mb-8 flex items-center justify-between">
+        <p className="font-mono ink-mute text-xs">
           {items.length} saved item{items.length === 1 ? "" : "s"}
         </p>
         <button
@@ -49,12 +46,12 @@ export default function WishlistView({ products }: { products: NormalizedProduct
           onClick={() => {
             if (confirm("Clear all wishlist items?")) clear();
           }}
-          className="focus-ring rounded-md px-2 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-rose)]"
+          className="btn btn-ghost focus-ring text-xs"
         >
           Clear all
         </button>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}

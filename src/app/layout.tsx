@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b0a0f",
+  themeColor: "#0a0908",
   width: "device-width",
   initialScale: 1,
 };
@@ -72,6 +73,58 @@ export default function RootLayout({
         <Header />
         <main id="main" className="flex-1">{children}</main>
         <Footer />
+        <Script
+          id="reveal-observer"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+  if (typeof window === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Scroll: toggle data-scrolled on <html> when scrollY > 24 (rAF-throttled)
+  var ticking = false;
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        document.documentElement.dataset.scrolled = window.scrollY > 24 ? '' : undefined;
+        if (window.scrollY > 24) {
+          document.documentElement.setAttribute('data-scrolled', '');
+        } else {
+          document.documentElement.removeAttribute('data-scrolled');
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Reveal: IntersectionObserver toggles .is-in on .reveal elements
+  var observer = new IntersectionObserver(
+    function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: '-40px 0px' }
+  );
+
+  function observeReveal() {
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      observer.observe(el);
+    });
+  }
+
+  // Observe elements already in DOM, then watch for new ones via MutationObserver
+  observeReveal();
+  var mo = new MutationObserver(observeReveal);
+  mo.observe(document.body, { childList: true, subtree: true });
+})();`,
+          }}
+        />
       </body>
     </html>
   );

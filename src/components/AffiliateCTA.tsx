@@ -12,7 +12,7 @@ export default function AffiliateCTA({ href, brandName, soldOut }: Props) {
   const safeHref = safeExternalUrl(href);
   if (!safeHref) {
     return (
-      <div className="surface rounded-2xl p-5">
+      <div className="surface-flat p-6 rounded-[var(--radius-md)]">
         <p className="text-sm text-[var(--color-ink-soft)]">
           No direct retail link on file.
         </p>
@@ -20,6 +20,36 @@ export default function AffiliateCTA({ href, brandName, soldOut }: Props) {
           Contact {brandName} or check trusted dab forums for current stock.
         </p>
       </div>
+    );
+  }
+
+  if (soldOut) {
+    return (
+      <a
+        href={safeHref}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        onClick={() => {
+          if (typeof window !== "undefined" && "dispatchEvent" in window) {
+            window.dispatchEvent(
+              new CustomEvent("pp:affiliate-out", {
+                detail: { href: safeHref, brand: brandName },
+              }),
+            );
+          }
+        }}
+        className="btn btn-ghost focus-ring group flex w-full h-14 flex-col items-center justify-center text-sm tracking-[0.04em] uppercase"
+      >
+        <span>
+          Restock at{" "}
+          <span className="font-display italic normal-case tracking-normal">
+            {brandName}
+          </span>
+        </span>
+        <span className="font-mono text-2xs ink-faint normal-case tracking-normal mt-1">
+          (verify on site)
+        </span>
+      </a>
     );
   }
 
@@ -37,17 +67,25 @@ export default function AffiliateCTA({ href, brandName, soldOut }: Props) {
           );
         }
       }}
-      className={`group focus-ring inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold transition-transform hover:-translate-y-0.5 ${
-        soldOut
-          ? "border border-[var(--color-line)] bg-[var(--color-bg-elev)] text-[var(--color-ink-soft)]"
-          : "bg-[var(--color-amber)] text-[var(--color-bg)]"
-      }`}
+      className="btn btn-primary focus-ring group w-full h-14 text-sm tracking-[0.04em] uppercase font-medium"
     >
-      {soldOut ? "Check restock at " : "Buy direct from "}
-      <span className="font-display">{brandName}</span>
-      <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
-        ↗
+      Buy direct from{" "}
+      <span className="font-display italic normal-case tracking-normal">
+        {brandName}
       </span>
+      {/* 14×14 SVG external arrow — replaces ↗ glyph */}
+      <svg
+        viewBox="0 0 14 14"
+        width="14"
+        height="14"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        fill="none"
+        aria-hidden="true"
+        className="transition-transform group-hover:translate-x-0.5"
+      >
+        <path d="M3 11L11 3M5 3h6v6" />
+      </svg>
     </a>
   );
 }
