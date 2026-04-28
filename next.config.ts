@@ -7,9 +7,14 @@ const CSP = [
   "script-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "connect-src 'self'",
+  "frame-src 'none'",
   "frame-ancestors 'none'",
+  "object-src 'none'",
+  "worker-src 'self'",
+  "manifest-src 'self'",
   "base-uri 'self'",
   "form-action 'self'",
+  "upgrade-insecure-requests",
 ].join("; ");
 
 const nextConfig: NextConfig = {

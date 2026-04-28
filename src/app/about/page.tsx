@@ -4,7 +4,7 @@ import { getMetadata } from "@/lib/catalog";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Why Quartz Finder exists, how we curate, and the boundaries of what we do.",
+    "Why Pillar & Pearl exists, how we curate, and the boundaries of what we do.",
 };
 
 export default function AboutPage() {

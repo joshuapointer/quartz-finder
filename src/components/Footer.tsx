@@ -22,22 +22,22 @@ export default function Footer() {
           </h4>
           <ul className="mt-4 space-y-2 text-sm">
             <li>
-              <Link href="/shop" className="hover:text-[var(--color-amber)]">
+              <Link href="/shop" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
                 Shop all
               </Link>
             </li>
             <li>
-              <Link href="/brands" className="hover:text-[var(--color-amber)]">
+              <Link href="/brands" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
                 Brands
               </Link>
             </li>
             <li>
-              <Link href="/glossary" className="hover:text-[var(--color-amber)]">
+              <Link href="/glossary" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
                 Glossary
               </Link>
             </li>
             <li>
-              <Link href="/wishlist" className="hover:text-[var(--color-amber)]">
+              <Link href="/wishlist" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
                 Wishlist
               </Link>
             </li>
@@ -49,17 +49,18 @@ export default function Footer() {
           </h4>
           <ul className="mt-4 space-y-2 text-sm">
             <li>
-              <Link href="/about" className="hover:text-[var(--color-amber)]">
+              <Link href="/about" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
                 About
               </Link>
             </li>
             <li>
               <a
                 href="/api/products"
-                className="hover:text-[var(--color-amber)]"
+                className="focus-ring rounded-md hover:text-[var(--color-amber)]"
                 rel="nofollow"
+                target="_blank"
               >
-                JSON API
+                JSON API ↗
               </a>
             </li>
           </ul>

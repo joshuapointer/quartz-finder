@@ -64,7 +64,7 @@ export default function Filters({ products, initialCategory }: Props) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Brand, model, slurper..."
-              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)]/40"
             />
           </label>
           <label className="md:col-span-3">
@@ -74,7 +74,7 @@ export default function Filters({ products, initialCategory }: Props) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ProductCategory | "all")}
-              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)]/40"
             >
               {CATEGORY_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -90,7 +90,7 @@ export default function Filters({ products, initialCategory }: Props) {
             <select
               value={tier}
               onChange={(e) => setTier(e.target.value as Tier | "all")}
-              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)]/40"
             >
               {TIER_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -108,7 +108,7 @@ export default function Filters({ products, initialCategory }: Props) {
               onChange={(e) =>
                 setSort(e.target.value as NonNullable<ProductFilters["sort"]>)
               }
-              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-[var(--color-line)] bg-[var(--color-bg)] px-3 py-2 text-sm focus:border-[var(--color-amber)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)]/40"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>

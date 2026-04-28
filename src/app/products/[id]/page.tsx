@@ -48,14 +48,17 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-6xl px-6 py-14">
-      <nav className="mb-6 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
-        <Link href="/shop" className="hover:text-[var(--color-amber)]">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-6 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]"
+      >
+        <Link href="/shop" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
           Shop
         </Link>{" "}
         <span aria-hidden>/</span>{" "}
         <Link
           href={`/brands/${product.brandSlug}`}
-          className="hover:text-[var(--color-amber)]"
+          className="focus-ring rounded-md hover:text-[var(--color-amber)]"
         >
           {product.brandName}
         </Link>{" "}
@@ -92,7 +95,7 @@ export default async function ProductPage({ params }: Props) {
             By{" "}
             <Link
               href={`/brands/${product.brandSlug}`}
-              className="text-[var(--color-amber)] hover:underline"
+              className="focus-ring rounded-md text-[var(--color-amber)] hover:underline"
             >
               {product.brandName}
             </Link>

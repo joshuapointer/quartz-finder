@@ -10,7 +10,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/shop"
-        className="mt-8 rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
+        className="focus-ring mt-8 rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
       >
         Back to the atlas
       </Link>

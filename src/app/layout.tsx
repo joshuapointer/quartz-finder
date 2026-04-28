@@ -70,7 +70,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <AgeGate />
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="main" className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

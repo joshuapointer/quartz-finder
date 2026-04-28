@@ -44,8 +44,11 @@ export default async function BrandPage({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-7xl px-6 py-14">
-      <nav className="mb-6 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
-        <Link href="/brands" className="hover:text-[var(--color-amber)]">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-6 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]"
+      >
+        <Link href="/brands" className="focus-ring rounded-md hover:text-[var(--color-amber)]">
           Brands
         </Link>{" "}
         <span aria-hidden>/</span>{" "}
@@ -64,7 +67,7 @@ export default async function BrandPage({ params }: Props) {
               href={homepage}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="hover:text-[var(--color-amber)]"
+              className="focus-ring rounded-md hover:text-[var(--color-amber)]"
             >
               {brand.url} ↗
             </a>

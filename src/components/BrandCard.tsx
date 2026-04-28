@@ -7,7 +7,7 @@ export default function BrandCard({ brand }: { brand: BrandSummary }) {
   return (
     <Link
       href={`/brands/${brand.slug}`}
-      className="surface group flex h-full flex-col rounded-2xl p-6 transition-all hover:-translate-y-0.5 hover:border-[var(--color-amber)]/60"
+      className="surface focus-ring group flex h-full flex-col rounded-2xl p-6 transition-all hover:-translate-y-0.5 hover:border-[var(--color-amber)]/60"
     >
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-display text-xl leading-tight">{brand.name}</h3>

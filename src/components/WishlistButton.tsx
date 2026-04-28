@@ -24,7 +24,7 @@ export default function WishlistButton({ productId, size = "sm" }: Props) {
       }}
       aria-pressed={hydrated && has}
       aria-label={has ? "Remove from wishlist" : "Add to wishlist"}
-      className={`${dim} inline-flex items-center justify-center rounded-full border border-[var(--color-line)] bg-[var(--color-bg-elev)]/80 text-[var(--color-ink-soft)] backdrop-blur transition-all hover:border-[var(--color-amber)] hover:text-[var(--color-amber)] ${
+      className={`${dim} focus-ring inline-flex items-center justify-center rounded-full border border-[var(--color-line)] bg-[var(--color-bg-elev)]/80 text-[var(--color-ink-soft)] backdrop-blur transition-all hover:border-[var(--color-amber)] hover:text-[var(--color-amber)] ${
         hydrated && has ? "border-[var(--color-amber)] text-[var(--color-amber)]" : ""
       }`}
     >

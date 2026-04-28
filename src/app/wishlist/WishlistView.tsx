@@ -29,7 +29,7 @@ export default function WishlistView({ products }: { products: NormalizedProduct
         action={
           <Link
             href="/shop"
-            className="rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
+            className="focus-ring rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
           >
             Browse the catalog
           </Link>
@@ -49,7 +49,7 @@ export default function WishlistView({ products }: { products: NormalizedProduct
           onClick={() => {
             if (confirm("Clear all wishlist items?")) clear();
           }}
-          className="text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-rose)]"
+          className="focus-ring rounded-md px-2 py-1 text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-rose)]"
         >
           Clear all
         </button>

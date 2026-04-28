@@ -39,13 +39,13 @@ export default function HomePage() {
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
               href="/shop"
-              className="rounded-full bg-[var(--color-amber)] px-7 py-3.5 text-sm font-semibold text-[var(--color-bg)] transition-transform hover:-translate-y-0.5"
+              className="focus-ring rounded-full bg-[var(--color-amber)] px-7 py-3.5 text-sm font-semibold text-[var(--color-bg)] transition-transform hover:-translate-y-0.5"
             >
               Browse the catalog
             </Link>
             <Link
               href="/glossary"
-              className="rounded-full border border-[var(--color-line)] px-7 py-3.5 text-sm text-[var(--color-ink-soft)] transition-colors hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
+              className="focus-ring rounded-full border border-[var(--color-line)] px-7 py-3.5 text-sm text-[var(--color-ink-soft)] transition-colors hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
             >
               New to dabs? Start here →
             </Link>
@@ -83,22 +83,22 @@ export default function HomePage() {
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {(Object.keys(CATEGORY_META) as Array<keyof typeof CATEGORY_META>).map(
             (key) => {
-              const meta = CATEGORY_META[key];
+              const cat = CATEGORY_META[key];
               return (
                 <Link
                   key={key}
-                  href={{ pathname: "/shop", query: { category: meta.slug } }}
-                  className="surface group flex flex-col rounded-2xl p-7 transition-all hover:-translate-y-0.5 hover:border-[var(--color-amber)]/60"
+                  href={{ pathname: "/shop", query: { category: cat.slug } }}
+                  className="surface group flex flex-col rounded-2xl p-7 transition-all hover:-translate-y-0.5 hover:border-[var(--color-amber)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
                 >
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-ink-mute)]">
                     Category
                   </p>
-                  <h3 className="font-display mt-3 text-3xl">{meta.label}</h3>
+                  <h3 className="font-display mt-3 text-3xl">{cat.label}</h3>
                   <p className="mt-3 text-sm text-[var(--color-ink-soft)]">
-                    {meta.tagline}
+                    {cat.tagline}
                   </p>
                   <span className="mt-8 text-sm text-[var(--color-amber)]">
-                    Browse {meta.label} →
+                    Browse {cat.label} →
                   </span>
                 </Link>
               );
@@ -117,7 +117,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/shop"
-            className="hidden text-sm text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-amber)] md:inline"
+            className="focus-ring hidden rounded-md text-sm text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-amber)] md:inline"
           >
             See all →
           </Link>
@@ -139,7 +139,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/brands"
-            className="hidden text-sm text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-amber)] md:inline"
+            className="focus-ring hidden rounded-md text-sm text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-amber)] md:inline"
           >
             All brands →
           </Link>
@@ -173,7 +173,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/glossary"
-            className="mt-9 inline-flex rounded-full border border-[var(--color-line)] px-6 py-3 text-sm transition-colors hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
+            className="focus-ring mt-9 inline-flex rounded-full border border-[var(--color-line)] px-6 py-3 text-sm transition-colors hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
           >
             Full glossary →
           </Link>

@@ -14,7 +14,7 @@ export default function ProductCard({ product }: { product: NormalizedProduct })
   return (
     <Link
       href={`/products/${product.id}`}
-      className="group surface relative flex h-full flex-col overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--color-amber)]/60"
+      className="group surface focus-ring relative flex h-full flex-col overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--color-amber)]/60"
     >
       <div className="absolute right-4 top-4 z-10">
         <WishlistButton productId={product.id} />

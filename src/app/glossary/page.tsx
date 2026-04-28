@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GLOSSARY } from "@/lib/glossary";
+import { slugify } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Glossary · The dab dialect",
@@ -20,20 +21,31 @@ export default function GlossaryPage() {
       </p>
 
       <dl className="mt-12 space-y-10">
-        {GLOSSARY.map((g) => (
-          <div
-            key={g.term}
-            className="border-l-2 border-[var(--color-amber)]/30 pl-6"
-          >
-            <dt className="font-display text-3xl">{g.term}</dt>
-            <dd className="mt-2 text-sm uppercase tracking-[0.2em] text-[var(--color-amber)]">
-              {g.short}
-            </dd>
-            <p className="mt-3 leading-relaxed text-[var(--color-ink-soft)]">
-              {g.full}
-            </p>
-          </div>
-        ))}
+        {GLOSSARY.map((g) => {
+          const id = slugify(g.term);
+          return (
+            <div
+              key={g.term}
+              id={id}
+              className="scroll-mt-24 border-l-2 border-[var(--color-amber)]/30 pl-6"
+            >
+              <dt className="font-display text-3xl">
+                <a
+                  href={`#${id}`}
+                  className="focus-ring rounded-md hover:text-[var(--color-amber)]"
+                >
+                  {g.term}
+                </a>
+              </dt>
+              <dd className="mt-2 text-sm uppercase tracking-[0.2em] text-[var(--color-amber)]">
+                {g.short}
+              </dd>
+              <p className="mt-3 leading-relaxed text-[var(--color-ink-soft)]">
+                {g.full}
+              </p>
+            </div>
+          );
+        })}
       </dl>
     </div>
   );

@@ -29,13 +29,13 @@ export default function GlobalError({
         <button
           type="button"
           onClick={reset}
-          className="rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
+          className="focus-ring rounded-full bg-[var(--color-amber)] px-6 py-3 text-sm font-semibold text-[var(--color-bg)]"
         >
           Try again
         </button>
         <a
           href="/shop"
-          className="rounded-full border border-[var(--color-line)] px-6 py-3 text-sm text-[var(--color-ink-soft)] hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
+          className="focus-ring rounded-full border border-[var(--color-line)] px-6 py-3 text-sm text-[var(--color-ink-soft)] hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
         >
           Back to catalog
         </a>
