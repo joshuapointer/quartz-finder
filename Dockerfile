@@ -38,16 +38,18 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Worker role: tsx + source files + native deps for better-sqlite3
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./worker_modules
-COPY --from=builder --chown=nextjs:nodejs /app/src ./src
-COPY --from=builder --chown=nextjs:nodejs /app/worker.ts ./worker.ts
-COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x ./docker-entrypoint.sh \
+# Worker role: tsx + source files + native deps for better-sqlite3.
+# Placed under /app/worker so the worker has its own node_modules tree
+# (Node's ESM resolver does not honour NODE_PATH).
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules /app/worker/node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/src /app/worker/src
+COPY --from=builder --chown=nextjs:nodejs /app/worker.mts /app/worker/worker.mts
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json /app/worker/tsconfig.json
+COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/worker/package.json
+COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh \
     && mkdir -p /data \
-    && chown -R nextjs:nodejs /data
+    && chown -R nextjs:nodejs /data /app/worker
 
 USER nextjs
 EXPOSE 3000

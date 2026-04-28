@@ -51,6 +51,8 @@ services:
       PILLARPEARL_CRON: ${PILLARPEARL_CRON:-0 * * * *}
     volumes:
       - pillarpearl_data:/data
+    healthcheck:
+      disable: true
     labels:
       - org.pillarpearl.service=worker
 
