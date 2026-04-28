@@ -44,7 +44,7 @@ describe("parsePrice", () => {
 describe("catalog", () => {
   it("exposes metadata", () => {
     const meta = getMetadata();
-    expect(meta.title).toBe("Quartz Finder");
+    expect(meta.title).toBe("Pillar & Pearl");
     expect(meta.summary.total_brands).toBeGreaterThan(0);
   });
 

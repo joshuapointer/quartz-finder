@@ -33,7 +33,7 @@ export default function AgeGate() {
           Are you 21 or older?
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-[var(--color-ink-soft)]">
-          Quartz Finder catalogs cannabis-concentrate hardware. Entry is restricted
+          Pillar &amp; Pearl catalogs cannabis-concentrate hardware. Entry is restricted
           to adults of legal age in their jurisdiction. We do not sell, ship, or
           handle product — every link routes to an independent retailer.
         </p>

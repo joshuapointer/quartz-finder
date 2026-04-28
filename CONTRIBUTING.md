@@ -1,10 +1,10 @@
-# Contributing to Quartz Finder
+# Contributing to Pillar & Pearl
 
 Thanks for caring enough about quartz to send a PR.
 
 ## Adding or updating a brand
 
-1. Edit `src/data/quartz-finder.json`.
+1. Edit `src/data/catalog.json`.
 2. Match the existing schema exactly. The full type signature lives in
    `src/types/index.ts` — TypeScript will catch shape errors at typecheck time.
 3. Verify retail links resolve to a current product page (no homepage redirects).

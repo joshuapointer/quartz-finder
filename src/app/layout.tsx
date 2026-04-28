@@ -25,11 +25,11 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
   title: {
-    default: "Quartz Finder — Boutique Banger Atlas",
-    template: "%s · Quartz Finder",
+    default: "Pillar & Pearl — A Boutique Quartz Atlas",
+    template: "%s · Pillar & Pearl",
   },
   description:
-    "A curated atlas of quartz bangers, terp slurpers, control towers, and dunking stations from the most respected glass artists in dab culture.",
+    "Pillar & Pearl is a curated atlas of quartz bangers, terp slurpers, control towers, and dunking stations from the most respected glass artists in dab culture.",
   keywords: [
     "quartz banger",
     "terp slurper",
@@ -38,13 +38,14 @@ export const metadata: Metadata = {
     "low temp",
     "concentrate",
     "rosin",
+    "pillar and pearl",
   ],
   openGraph: {
     type: "website",
-    title: "Quartz Finder",
+    title: "Pillar & Pearl",
     description:
-      "Curated quartz banger atlas — control towers, terp slurpers, dunking stations.",
-    siteName: "Quartz Finder",
+      "A boutique quartz atlas — control towers, terp slurpers, dunking stations.",
+    siteName: "Pillar & Pearl",
   },
   robots: { index: true, follow: true },
 };

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: "Product not found" };
   return {
     title: `${product.name} — ${product.brandName}`,
-    description: `${product.name} from ${product.brandName}. ${product.categoryLabel} catalogued by Quartz Finder.`,
+    description: `${product.name} from ${product.brandName}. ${product.categoryLabel} catalogued by Pillar & Pearl.`,
   };
 }
 
@@ -135,8 +135,8 @@ export default async function ProductPage({ params }: Props) {
               brand&apos;s site.
             </p>
             <p>
-              ✦ Quartz Finder earns nothing on the click unless explicitly disclosed
-              on a brand&apos;s page.
+              ✦ Pillar &amp; Pearl earns nothing on the click unless explicitly
+              disclosed on a brand&apos;s page.
             </p>
             <p>✦ For 21+ legal-jurisdiction use only.</p>
           </div>

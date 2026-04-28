@@ -1,8 +1,8 @@
 {
-  "name": "quartz-finder",
+  "name": "pillar-and-pearl",
   "version": "0.1.0",
   "private": true,
-  "description": "Boutique quartz banger aggregator and marketplace for cannabis concentrate enthusiasts.",
+  "description": "Pillar & Pearl — a boutique atlas of quartz bangers, terp slurpers, and dab hardware for cannabis-concentrate enthusiasts.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

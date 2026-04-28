@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[rgba(11,10,15,0.85)] backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" aria-label="Quartz Finder home">
+        <Link href="/" aria-label="Pillar &amp; Pearl home">
           <Logo />
         </Link>
         <nav className="hidden items-center gap-7 md:flex" aria-label="Main">

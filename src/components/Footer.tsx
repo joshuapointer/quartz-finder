@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="mt-24 border-t border-[var(--color-line)] bg-[var(--color-bg-soft)]">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
-          <h3 className="font-display text-2xl">Quartz Finder</h3>
+          <h3 className="font-display text-2xl">Pillar &amp; Pearl</h3>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--color-ink-soft)]">
             A boutique atlas built for hash heads, flavor chasers, and anyone who
             dabs with intention. Independent, affiliate-supported, never sponsored.
@@ -68,7 +68,7 @@ export default function Footer() {
       <div className="border-t border-[var(--color-line)] px-6 py-6 text-center text-xs text-[var(--color-ink-mute)]">
         <p>{meta.disclaimer}</p>
         <p className="mt-2">
-          © {new Date().getFullYear()} Quartz Finder. Editorial; not legal,
+          © {new Date().getFullYear()} Pillar &amp; Pearl. Editorial; not legal,
           medical, or financial advice.
         </p>
       </div>

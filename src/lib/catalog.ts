@@ -5,7 +5,7 @@ import type {
   NormalizedProduct,
   ProductCategory,
 } from "@/types";
-import rawData from "@/data/quartz-finder.json";
+import rawData from "@/data/catalog.json";
 
 const catalog = rawData as unknown as Catalog;
 

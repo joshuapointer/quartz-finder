@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Quartz Finder is a static catalog site with no user accounts, no payment
+Pillar & Pearl is a static catalog site with no user accounts, no payment
 processing, and no PII collection. The wishlist + age-gate states are stored
 **only in the visitor's browser** (localStorage). There is no server-side data
 to compromise.

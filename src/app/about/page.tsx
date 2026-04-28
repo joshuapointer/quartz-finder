@@ -16,9 +16,11 @@ export default function AboutPage() {
       </p>
       <h1 className="font-display mt-3 text-5xl">Made for hash heads.</h1>
       <p className="mt-6 text-lg leading-relaxed text-[var(--color-ink-soft)]">
-        Quartz Finder is an editorial atlas of cannabis-concentrate hardware. It
-        was built because shopping for a serious banger means tab-juggling forty
-        glass-house websites, half of which are dead, broken, or wholesale-only.
+        Pillar &amp; Pearl is an editorial atlas of cannabis-concentrate
+        hardware — named after the two craft accessories that quietly define a
+        proper low-temp dab. It was built because shopping for a serious banger
+        means tab-juggling forty glass-house websites, half of which are dead,
+        broken, or wholesale-only.
       </p>
       <p className="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]">
         We catalog{" "}

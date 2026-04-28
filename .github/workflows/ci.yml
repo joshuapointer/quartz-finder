@@ -38,4 +38,4 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NEXT_PUBLIC_SITE_URL: https://quartzfinder.example.com
+          NEXT_PUBLIC_SITE_URL: https://pillarandpearl.example.com
