@@ -95,24 +95,53 @@ shape and feed it through `src/lib/catalog.ts`.
 
 ## Deploying
 
+### Coolify + Traefik (recommended self-host)
+
+1. Push the repo to GitHub.
+2. In Coolify → New Resource → Public/Private Repository → point at this repo.
+3. Build pack: **Dockerfile** (auto-detected).
+4. Set environment variables:
+   - `NEXT_PUBLIC_SITE_URL=https://pillarpearl.com`
+5. Set domain to `pillarpearl.com` (and optionally `www.pillarpearl.com`).
+   Coolify auto-attaches Traefik labels and provisions a Let's Encrypt cert.
+6. Cloudflare DNS: add `A pillarpearl.com → <vps-ip>` and `A www → <vps-ip>`.
+   Set Cloudflare proxy to **DNS only** (gray cloud) if you want Traefik to
+   handle TLS directly; **Proxied** (orange cloud) if you want CF in front.
+7. Deploy.
+
+The Dockerfile is multi-stage and ships only `.next/standalone` + static
+assets — final image is ~150 MB.
+
 ### Vercel
 
-1. Push the repo
-2. Import on [vercel.com/new](https://vercel.com/new)
-3. Set `NEXT_PUBLIC_SITE_URL` to the production domain
-4. Deploy
+1. Import on [vercel.com/new](https://vercel.com/new)
+2. Set `NEXT_PUBLIC_SITE_URL`
+3. Deploy
 
 The catalog is statically built with 1-day ISR; trigger a redeploy when
 `catalog.json` changes for an immediate refresh.
 
-### Self-hosted
+### Plain Docker
+
+```bash
+docker build -t pillar-and-pearl --build-arg NEXT_PUBLIC_SITE_URL=https://pillarpearl.com .
+docker run --rm -p 3000:3000 pillar-and-pearl
+```
+
+Or via Compose:
+
+```bash
+docker compose up -d
+```
+
+### Bare-metal
 
 ```bash
 npm run build
 npm start            # listens on :3000 by default
 ```
 
-Pair with a reverse proxy (Caddy, nginx) and HTTPS termination.
+Pair with a reverse proxy (Caddy, nginx, Traefik) and HTTPS termination.
 
 ## Compliance & disclaimer
 
