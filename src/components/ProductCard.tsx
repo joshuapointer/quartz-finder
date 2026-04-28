@@ -20,16 +20,30 @@ export default function ProductCard({ product }: { product: NormalizedProduct })
         <WishlistButton productId={product.id} />
       </div>
 
-      <div
-        aria-hidden="true"
-        className="flex h-32 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-bg-elev)] to-[var(--color-bg)] text-5xl text-[var(--color-amber-soft)]/70 ring-1 ring-inset ring-[var(--color-line)]"
-      >
-        {CATEGORY_GLYPH[product.category]}
-      </div>
+      {product.imageHash ? (
+        <div className="relative h-36 overflow-hidden rounded-xl bg-[var(--color-bg-elev)] ring-1 ring-inset ring-[var(--color-line)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`/img/${product.imageHash}`}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+          />
+        </div>
+      ) : (
+        <div
+          aria-hidden="true"
+          className="flex h-36 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-bg-elev)] to-[var(--color-bg)] text-5xl text-[var(--color-amber-soft)]/70 ring-1 ring-inset ring-[var(--color-line)]"
+        >
+          {CATEGORY_GLYPH[product.category]}
+        </div>
+      )}
 
-      <div className="mt-4 flex items-center gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
         <TierBadge tier={product.brandTier} />
         <StatusBadge status={product.brandStatus} soldOut={product.soldOut} />
+        <FreshBadge product={product} />
       </div>
 
       <h3 className="font-display mt-3 text-lg leading-tight text-[var(--color-ink)]">
@@ -56,5 +70,21 @@ export default function ProductCard({ product }: { product: NormalizedProduct })
         </span>
       </div>
     </Link>
+  );
+}
+
+function FreshBadge({ product }: { product: NormalizedProduct }) {
+  const ts = product.brandLastFetchedOkAt;
+  if (!ts) return null;
+  const ageMs = Date.now() - ts;
+  if (ageMs < 0) return null;
+  if (ageMs < 24 * 60 * 60 * 1000) return null;
+  return (
+    <span
+      className="inline-flex items-center rounded-full border border-[var(--color-ink-mute)]/40 bg-[var(--color-bg-elev)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--color-ink-mute)]"
+      title={`Last verified ${new Date(ts).toUTCString()}`}
+    >
+      Stale
+    </span>
   );
 }

@@ -2,7 +2,11 @@
 
 import { useMemo, useState } from "react";
 import type { NormalizedProduct, ProductCategory, Tier } from "@/types";
-import { CATEGORY_META, filterProducts, type ProductFilters } from "@/lib/catalog";
+import {
+  CATEGORY_META,
+  filterProducts,
+  type ProductFilters,
+} from "@/lib/catalog-shared";
 import { searchProducts } from "@/lib/search";
 import ProductCard from "./ProductCard";
 import EmptyState from "./EmptyState";

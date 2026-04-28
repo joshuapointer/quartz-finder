@@ -53,11 +53,14 @@ describe("catalog", () => {
     expect(brands.length).toBe(getMetadata().summary.total_brands);
   });
 
-  it("yields one product per available category per brand", () => {
+  it("yields products with valid categories", () => {
     const products = getAllProducts();
     expect(products.length).toBeGreaterThan(0);
     for (const p of products) {
-      expect(p.id).toMatch(/--(control_tower|terp_slurper|dunking_station)$/);
+      expect(p.id).toContain("--");
+      expect(["control_tower", "terp_slurper", "dunking_station"]).toContain(
+        p.category,
+      );
       expect(p.available).toBe(true);
     }
   });

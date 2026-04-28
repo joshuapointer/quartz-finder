@@ -1,60 +1,150 @@
 import type {
   Brand,
+  BrandStatus,
   BrandSummary,
   Catalog,
+  CatalogMeta,
   NormalizedProduct,
   ProductCategory,
+  Tier,
 } from "@/types";
-import rawData from "@/data/catalog.json";
+import { getDb } from "./db";
+import { seedIfEmpty } from "./seed";
+import {
+  slugify,
+  parsePrice,
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  CATEGORY_META,
+  filterProducts,
+  type ProductFilters,
+} from "./catalog-shared";
+import seedJson from "@/data/catalog.json";
 
-const catalog = rawData as unknown as Catalog;
+let _bootstrapped = false;
+function bootstrap(): void {
+  if (_bootstrapped) return;
+  seedIfEmpty();
+  _bootstrapped = true;
+}
 
-const CATEGORY_LABELS: Record<ProductCategory, string> = {
-  control_tower: "Control Tower",
-  terp_slurper: "Terp Slurper",
-  dunking_station: "Dunking Station",
+export {
+  slugify,
+  parsePrice,
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  CATEGORY_META,
+  filterProducts,
 };
+export type { ProductFilters };
 
-const CATEGORY_ORDER: ProductCategory[] = [
-  "control_tower",
-  "terp_slurper",
-  "dunking_station",
-];
-
-export function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+interface BrandRow {
+  slug: string;
+  name: string;
+  url: string;
+  url_note: string | null;
+  tier: Tier;
+  status: BrandStatus;
+  status_label: string | null;
+  last_fetched_ok_at: number | null;
+  consecutive_failures: number;
+  dormant: number;
 }
 
-export function parsePrice(price: string | null | undefined): number | null {
-  if (!price) return null;
-  const match = price.match(/\$?\s*(\d+(?:\.\d+)?)/);
-  if (!match) return null;
-  const n = Number(match[1]);
-  return Number.isFinite(n) ? n : null;
+interface ProductRow {
+  id: string;
+  brand_slug: string;
+  brand_name: string;
+  brand_tier: Tier;
+  brand_status: BrandStatus;
+  category: ProductCategory;
+  name: string;
+  price: string | null;
+  original_price: string | null;
+  sold_out: number;
+  available: number;
+  link: string | null;
+  note: string | null;
+  status_note: string | null;
+  image_hash: string | null;
+  last_seen_at: number;
+  brand_last_fetched_ok_at: number | null;
+  brand_dormant: number;
 }
 
-export function getMetadata(): Catalog["metadata"] {
-  return catalog.metadata;
+export function getMetadata(): CatalogMeta {
+  bootstrap();
+  const db = getDb();
+  const seedRow = db
+    .prepare("SELECT value FROM metadata WHERE key = 'seed_metadata'")
+    .get() as { value: string } | undefined;
+  const seed = seedRow
+    ? (JSON.parse(seedRow.value) as CatalogMeta)
+    : ((seedJson as unknown as Catalog).metadata as CatalogMeta);
+
+  const counts = db
+    .prepare(
+      `SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active,
+        SUM(CASE WHEN status != 'active' THEN 1 ELSE 0 END) AS inactive,
+        SUM(CASE WHEN tier = 'import' THEN 1 ELSE 0 END) AS import,
+        SUM(CASE WHEN tier = 'usmade' THEN 1 ELSE 0 END) AS usmade
+      FROM brands`,
+    )
+    .get() as {
+    total: number;
+    active: number;
+    inactive: number;
+    import: number;
+    usmade: number;
+  };
+
+  return {
+    ...seed,
+    summary: {
+      total_brands: counts.total ?? 0,
+      active_brands: counts.active ?? 0,
+      inactive_brands: counts.inactive ?? 0,
+      import_tier_count: counts.import ?? 0,
+      usmade_tier_count: counts.usmade ?? 0,
+    },
+  };
 }
 
 export function getAllBrands(): Brand[] {
-  return catalog.brands;
+  bootstrap();
+  const db = getDb();
+  const rows = db
+    .prepare("SELECT * FROM brands ORDER BY rowid")
+    .all() as BrandRow[];
+  return rows.map(rowToBrand);
+}
+
+export function getBrandBySlug(slug: string): Brand | undefined {
+  bootstrap();
+  const db = getDb();
+  const row = db
+    .prepare("SELECT * FROM brands WHERE slug = ?")
+    .get(slug) as BrandRow | undefined;
+  if (!row) return undefined;
+  return rowToBrand(row);
 }
 
 export function getBrandSummaries(): BrandSummary[] {
-  return catalog.brands.map(toBrandSummary);
+  return getAllBrands().map(toBrandSummary);
 }
 
 export function toBrandSummary(brand: Brand): BrandSummary {
+  bootstrap();
   const slug = slugify(brand.name);
-  const productCount = CATEGORY_ORDER.filter(
-    (c) => brand.products[c]?.available,
-  ).length;
+  const db = getDb();
+  const cats = db
+    .prepare(
+      "SELECT category FROM products WHERE brand_slug = ? AND available = 1",
+    )
+    .all(slug) as { category: ProductCategory }[];
+  const set = new Set(cats.map((c) => c.category));
   return {
     slug,
     name: brand.name,
@@ -63,157 +153,157 @@ export function toBrandSummary(brand: Brand): BrandSummary {
     tier: brand.tier,
     status: brand.status,
     statusLabel: brand.status_label ?? null,
-    productCount,
+    productCount: cats.length,
     accessoryCount: brand.accessories?.length ?? 0,
-    hasControlTower: brand.products.control_tower?.available ?? false,
-    hasTerpSlurper: brand.products.terp_slurper?.available ?? false,
-    hasDunkingStation: brand.products.dunking_station?.available ?? false,
+    hasControlTower: set.has("control_tower"),
+    hasTerpSlurper: set.has("terp_slurper"),
+    hasDunkingStation: set.has("dunking_station"),
   };
 }
 
-export function getBrandBySlug(slug: string): Brand | undefined {
-  return catalog.brands.find((b) => slugify(b.name) === slug);
-}
-
-function buildAllProducts(): NormalizedProduct[] {
-  const products: NormalizedProduct[] = [];
-  for (const brand of catalog.brands) {
-    const brandSlug = slugify(brand.name);
-    for (const category of CATEGORY_ORDER) {
-      const entry = brand.products[category];
-      if (!entry?.available) continue;
-      products.push({
-        id: `${brandSlug}--${category}`,
-        brandSlug,
-        brandName: brand.name,
-        brandTier: brand.tier,
-        brandStatus: brand.status,
-        category,
-        categoryLabel: CATEGORY_LABELS[category],
-        name: entry.name ?? `${brand.name} ${CATEGORY_LABELS[category]}`,
-        price: entry.price ?? "—",
-        priceValue: parsePrice(entry.price ?? null),
-        originalPrice: entry.original_price ?? null,
-        soldOut: entry.sold_out ?? false,
-        available: entry.available,
-        link: entry.link ?? null,
-        note: entry.note ?? null,
-        statusNote: entry.status_note ?? null,
-      });
-    }
-  }
-  return products;
-}
-
-const ALL_PRODUCTS: NormalizedProduct[] = buildAllProducts();
-const PRODUCT_BY_ID = new Map(ALL_PRODUCTS.map((p) => [p.id, p]));
+const PRODUCT_BASE_QUERY = `
+  SELECT
+    p.id, p.brand_slug, p.category, p.name, p.price, p.original_price,
+    p.sold_out, p.available, p.link, p.note, p.status_note, p.image_hash,
+    p.last_seen_at,
+    b.name AS brand_name, b.tier AS brand_tier, b.status AS brand_status,
+    b.last_fetched_ok_at AS brand_last_fetched_ok_at, b.dormant AS brand_dormant
+  FROM products p
+  JOIN brands b ON b.slug = p.brand_slug
+`;
 
 export function getAllProducts(): NormalizedProduct[] {
-  return ALL_PRODUCTS;
+  bootstrap();
+  const db = getDb();
+  const rows = db
+    .prepare(`${PRODUCT_BASE_QUERY} WHERE p.available = 1 ORDER BY b.rowid, p.category`)
+    .all() as ProductRow[];
+  return rows.map(rowToProduct);
 }
 
 export function getProductById(id: string): NormalizedProduct | undefined {
-  return PRODUCT_BY_ID.get(id);
+  bootstrap();
+  const db = getDb();
+  const row = db
+    .prepare(`${PRODUCT_BASE_QUERY} WHERE p.id = ?`)
+    .get(id) as ProductRow | undefined;
+  return row ? rowToProduct(row) : undefined;
 }
 
 export function getProductsByBrandSlug(slug: string): NormalizedProduct[] {
-  return ALL_PRODUCTS.filter((p) => p.brandSlug === slug);
+  bootstrap();
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `${PRODUCT_BASE_QUERY} WHERE p.brand_slug = ? AND p.available = 1 ORDER BY p.category`,
+    )
+    .all(slug) as ProductRow[];
+  return rows.map(rowToProduct);
 }
 
 export function getProductsByCategory(
   category: ProductCategory,
 ): NormalizedProduct[] {
-  return ALL_PRODUCTS.filter((p) => p.category === category);
+  bootstrap();
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `${PRODUCT_BASE_QUERY} WHERE p.category = ? AND p.available = 1 ORDER BY b.rowid`,
+    )
+    .all(category) as ProductRow[];
+  return rows.map(rowToProduct);
 }
 
 export function getRelatedProducts(
   id: string,
   limit = 4,
 ): NormalizedProduct[] {
-  const product = PRODUCT_BY_ID.get(id);
+  const product = getProductById(id);
   if (!product) return [];
-  return ALL_PRODUCTS.filter(
-    (p) => p.id !== id && p.category === product.category,
-  ).slice(0, limit);
+  bootstrap();
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `${PRODUCT_BASE_QUERY} WHERE p.category = ? AND p.id != ? AND p.available = 1 ORDER BY b.rowid LIMIT ?`,
+    )
+    .all(product.category, id, limit) as ProductRow[];
+  return rows.map(rowToProduct);
 }
 
-export interface ProductFilters {
-  category?: ProductCategory;
-  tier?: "import" | "usmade";
-  inStock?: boolean;
-  query?: string;
-  sort?: "price-asc" | "price-desc" | "brand" | "name";
+
+function rowToBrand(row: BrandRow): Brand {
+  bootstrap();
+  const db = getDb();
+  const accs = db
+    .prepare(
+      "SELECT name, price FROM accessories WHERE brand_slug = ? ORDER BY id",
+    )
+    .all(row.slug) as { name: string; price: string }[];
+  const products: Brand["products"] = {
+    control_tower: { available: false },
+    terp_slurper: { available: false },
+    dunking_station: { available: false },
+  };
+  const productRows = db
+    .prepare(
+      "SELECT category, name, price, original_price, sold_out, available, link, note, status_note FROM products WHERE brand_slug = ? AND available = 1",
+    )
+    .all(row.slug) as Array<{
+    category: ProductCategory;
+    name: string;
+    price: string | null;
+    original_price: string | null;
+    sold_out: number;
+    available: number;
+    link: string | null;
+    note: string | null;
+    status_note: string | null;
+  }>;
+  for (const p of productRows) {
+    products[p.category] = {
+      available: true,
+      name: p.name,
+      price: p.price ?? undefined,
+      original_price: p.original_price ?? undefined,
+      sold_out: p.sold_out === 1,
+      link: p.link ?? undefined,
+      note: p.note ?? undefined,
+      status_note: p.status_note ?? undefined,
+    };
+  }
+  return {
+    name: row.name,
+    url: row.url,
+    url_note: row.url_note ?? undefined,
+    tier: row.tier,
+    status: row.status,
+    status_label: row.status_label ?? undefined,
+    products,
+    accessories: accs.length ? accs : undefined,
+  };
 }
 
-export function filterProducts(
-  products: NormalizedProduct[],
-  filters: ProductFilters,
-): NormalizedProduct[] {
-  let result = [...products];
-
-  if (filters.category) {
-    result = result.filter((p) => p.category === filters.category);
-  }
-  if (filters.tier) {
-    result = result.filter((p) => p.brandTier === filters.tier);
-  }
-  if (filters.inStock) {
-    result = result.filter((p) => !p.soldOut && p.brandStatus === "active");
-  }
-  if (filters.query) {
-    const q = filters.query.toLowerCase();
-    result = result.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.brandName.toLowerCase().includes(q) ||
-        p.categoryLabel.toLowerCase().includes(q),
-    );
-  }
-
-  switch (filters.sort) {
-    case "price-asc":
-    case "price-desc": {
-      const dir = filters.sort === "price-asc" ? 1 : -1;
-      result.sort((a, b) => {
-        const ap = a.priceValue;
-        const bp = b.priceValue;
-        if (ap == null && bp == null) return 0;
-        if (ap == null) return 1;
-        if (bp == null) return -1;
-        return (ap - bp) * dir;
-      });
-      break;
-    }
-    case "brand":
-      result.sort((a, b) => a.brandName.localeCompare(b.brandName));
-      break;
-    case "name":
-      result.sort((a, b) => a.name.localeCompare(b.name));
-      break;
-  }
-
-  return result;
+function rowToProduct(row: ProductRow): NormalizedProduct {
+  return {
+    id: row.id,
+    brandSlug: row.brand_slug,
+    brandName: row.brand_name,
+    brandTier: row.brand_tier,
+    brandStatus: row.brand_status,
+    category: row.category,
+    categoryLabel: CATEGORY_LABELS[row.category],
+    name: row.name,
+    price: row.price ?? "—",
+    priceValue: parsePrice(row.price),
+    originalPrice: row.original_price,
+    soldOut: row.sold_out === 1,
+    available: row.available === 1,
+    link: row.link,
+    note: row.note,
+    statusNote: row.status_note,
+    imageHash: row.image_hash,
+    lastSeenAt: row.last_seen_at,
+    brandLastFetchedOkAt: row.brand_last_fetched_ok_at,
+    brandDormant: row.brand_dormant === 1,
+  };
 }
-
-export const CATEGORY_META: Record<
-  ProductCategory,
-  { label: string; tagline: string; slug: string }
-> = {
-  control_tower: {
-    label: "Control Towers",
-    tagline: "Tall chambers, big dabs, less splash.",
-    slug: "control_tower",
-  },
-  terp_slurper: {
-    label: "Terp Slurpers",
-    tagline: "Vortex airflow. Flavor first.",
-    slug: "terp_slurper",
-  },
-  dunking_station: {
-    label: "Dunking Stations",
-    tagline: "Loaders, troughs, ISO baskets.",
-    slug: "dunking_station",
-  },
-};
-
-export { CATEGORY_LABELS, CATEGORY_ORDER };

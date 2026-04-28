@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Filter and compare every quartz banger, terp slurper, control tower, and dunking station in our atlas.",
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 const VALID_CATEGORIES: ProductCategory[] = [
   "control_tower",

@@ -68,6 +68,10 @@ export interface NormalizedProduct {
   link: string | null;
   note: string | null;
   statusNote: string | null;
+  imageHash?: string | null;
+  lastSeenAt?: number | null;
+  brandLastFetchedOkAt?: number | null;
+  brandDormant?: boolean;
 }
 
 export interface BrandSummary {

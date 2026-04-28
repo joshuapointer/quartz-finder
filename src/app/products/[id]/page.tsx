@@ -17,7 +17,7 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   return getAllProducts().map((p) => ({ id: p.id }));
@@ -67,16 +67,27 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <div className="grid gap-10 md:grid-cols-2">
-        <div className="surface relative flex aspect-square items-center justify-center rounded-3xl">
-          <div className="absolute right-5 top-5">
+        <div className="surface relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl">
+          <div className="absolute right-5 top-5 z-10">
             <WishlistButton productId={product.id} size="md" />
           </div>
-          <div
-            className="font-display text-[12rem] leading-none text-[var(--color-amber-soft)]/70"
-            aria-hidden="true"
-          >
-            {CATEGORY_GLYPH[product.category]}
-          </div>
+          {product.imageHash ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={`/img/${product.imageHash}`}
+              alt={product.name}
+              className="h-full w-full object-contain p-6"
+              loading="eager"
+              decoding="async"
+            />
+          ) : (
+            <div
+              className="font-display text-[12rem] leading-none text-[var(--color-amber-soft)]/70"
+              aria-hidden="true"
+            >
+              {CATEGORY_GLYPH[product.category]}
+            </div>
+          )}
         </div>
 
         <div>
@@ -134,8 +145,10 @@ export default async function ProductPage({ params }: Props) {
 
           <div className="mt-6 grid gap-2 text-xs text-[var(--color-ink-mute)]">
             <p>
-              ✦ Pricing scraped ~April 2026. Final price + availability live on the
-              brand&apos;s site.
+              ✦{" "}
+              {product.brandLastFetchedOkAt
+                ? `Last verified ${new Date(product.brandLastFetchedOkAt).toUTCString()}.`
+                : "Pricing scraped editorially. Final price + availability live on the brand's site."}
             </p>
             <p>
               ✦ Pillar &amp; Pearl earns nothing on the click unless explicitly

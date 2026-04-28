@@ -1,7 +1,6 @@
-# Coolify-friendly compose — exposes the container to Traefik without
-# binding ports on the host. Use `docker compose up` for local-only runs.
+# Coolify-friendly compose — web + scraper worker share an SQLite volume.
 services:
-  app:
+  web:
     build:
       context: .
       args:
@@ -9,10 +8,15 @@ services:
     image: pillar-and-pearl:latest
     restart: unless-stopped
     environment:
+      ROLE: web
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://pillarpearl.com}
+      PILLARPEARL_DB: /data/pillarpearl.db
+      PILLARPEARL_IMAGE_DIR: /data/images
+    volumes:
+      - pillarpearl_data:/data
     expose:
       - "3000"
     healthcheck:
@@ -22,11 +26,24 @@ services:
       retries: 5
       start_period: 60s
     labels:
-      # Coolify auto-injects its Traefik labels; uncomment for bare Traefik:
-      # - traefik.enable=true
-      # - traefik.http.routers.pillarpearl.rule=Host(`pillarpearl.com`) || Host(`www.pillarpearl.com`)
-      # - traefik.http.routers.pillarpearl.entrypoints=websecure
-      # - traefik.http.routers.pillarpearl.tls=true
-      # - traefik.http.routers.pillarpearl.tls.certresolver=cloudflare
-      # - traefik.http.services.pillarpearl.loadbalancer.server.port=3000
       - org.pillarpearl.service=web
+
+  worker:
+    image: pillar-and-pearl:latest
+    restart: unless-stopped
+    depends_on:
+      - web
+    environment:
+      ROLE: worker
+      NODE_ENV: production
+      PILLARPEARL_DB: /data/pillarpearl.db
+      PILLARPEARL_IMAGE_DIR: /data/images
+      PILLARPEARL_CRON: ${PILLARPEARL_CRON:-0 * * * *}
+    volumes:
+      - pillarpearl_data:/data
+    labels:
+      - org.pillarpearl.service=worker
+
+volumes:
+  pillarpearl_data:
+    name: pillarpearl_data
