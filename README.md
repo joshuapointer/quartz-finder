@@ -105,8 +105,10 @@ shape and feed it through `src/lib/catalog.ts`.
 5. Set domain to `pillarpearl.com` (and optionally `www.pillarpearl.com`).
    Coolify auto-attaches Traefik labels and provisions a Let's Encrypt cert.
 6. Cloudflare DNS: add `A pillarpearl.com → <vps-ip>` and `A www → <vps-ip>`.
-   Set Cloudflare proxy to **DNS only** (gray cloud) if you want Traefik to
-   handle TLS directly; **Proxied** (orange cloud) if you want CF in front.
+   For full CF protection (proxy/WAF/cache) **and** real Traefik TLS, see
+   [`docs/deploy-cloudflare.md`](./docs/deploy-cloudflare.md) — combo of
+   orange-cloud + Full (strict) + DNS-01 LE certs + optional Authenticated
+   Origin Pulls.
 7. Deploy.
 
 The Dockerfile is multi-stage and ships only `.next/standalone` + static
