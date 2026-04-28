@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0a0f;
+  --color-bg-soft: #14121a;
+  --color-bg-elev: #1c1924;
+  --color-line: #2a2532;
+  --color-ink: #f5f1e8;
+  --color-ink-soft: #b9b1a3;
+  --color-ink-mute: #7a7264;
+  --color-amber: #d39a3e;
+  --color-amber-soft: #f0c270;
+  --color-quartz: #c9b8d1;
+  --color-rose: #b86a7d;
+  --color-jade: #4a8c6a;
+
+  --font-display:
+    var(--font-display-loaded), "Cormorant Garamond", "Iowan Old Style", Georgia,
+    serif;
+  --font-sans:
+    var(--font-sans-loaded), "Inter", "Helvetica Neue", system-ui, -apple-system,
+    sans-serif;
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-image:
+    radial-gradient(at 12% 8%, rgba(211, 154, 62, 0.08) 0, transparent 42%),
+    radial-gradient(at 85% 110%, rgba(184, 106, 125, 0.07) 0, transparent 38%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(211, 154, 62, 0.35);
+  color: var(--color-ink);
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-feature-settings: "liga", "dlig";
+    letter-spacing: -0.01em;
+  }
+  .surface {
+    background-color: var(--color-bg-soft);
+    border: 1px solid var(--color-line);
+  }
+  .surface-elev {
+    background-color: var(--color-bg-elev);
+    border: 1px solid var(--color-line);
+  }
+  .ink-mute {
+    color: var(--color-ink-mute);
+  }
+  .ink-soft {
+    color: var(--color-ink-soft);
+  }
+  .glow-amber {
+    box-shadow:
+      0 0 0 1px rgba(211, 154, 62, 0.25),
+      0 12px 40px -16px rgba(211, 154, 62, 0.35);
+  }
+  .hairline-grad {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(211, 154, 62, 0.4) 50%,
+      transparent 100%
+    );
+  }
+}

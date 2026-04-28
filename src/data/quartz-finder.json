@@ -1,0 +1,1113 @@
+{
+  "metadata": {
+    "title": "Quartz Finder",
+    "subtitle": "Control Towers · Terp Slurpers · Dunking Stations · Accessories",
+    "disclaimer": "Prices & availability verified ~April 2026. Always confirm before purchasing.",
+    "product_categories": [
+      "Control Tower",
+      "Terp Slurper",
+      "Dunking Station"
+    ],
+    "tiers": {
+      "import": {
+        "label": "Import",
+        "price_range": "$30–80"
+      },
+      "usmade": {
+        "label": "US-Made",
+        "price_range": "$80–180+"
+      }
+    },
+    "summary": {
+      "total_brands": 34,
+      "active_brands": 27,
+      "inactive_brands": 7,
+      "import_tier_count": 26,
+      "usmade_tier_count": 8
+    }
+  },
+  "brands": [
+    {
+      "name": "710 Coils",
+      "url": "710coils.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Fully Worked Control Tower",
+          "price": "$67",
+          "original_price": "$80",
+          "sold_out": true,
+          "link": "https://710coils.com/collections/terp-slurpers"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Fully Worked Terp Slurper",
+          "price": "$67",
+          "original_price": "$80",
+          "link": "https://710coils.com/products/710-coils-fully-worked-terp-slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "AFM Glass (Alien Flower Monkey)",
+      "url": "smokeafm.com",
+      "url_note": "afmglass.com = wholesale only",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Quartz Control Tower Slurper Set",
+          "price": "~$40–50",
+          "sold_out": true
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Terp Slurper + Marble Pill Set (25mm)",
+          "price": "$49.99",
+          "link": "https://smokeafm.com/products/afm-terp-slurper-25mm-caps-pill"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "aLeaf Glass",
+      "url": "aleafglass.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Spinner Kit \"Tower\" (banger + mushroom cap + 2 pearls)",
+          "price": "~$40",
+          "link": "https://www.aleafglass.com/products/spinner-kit-tower"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Spinner Kit \"Y\" Terp Slurper Kit",
+          "price": "$35",
+          "link": "https://www.aleafglass.com/products/spinner-kit-y"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Banger Supply Co.",
+      "url": "banger.supply",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Highly Educated Control Tower w/ SE Pillar",
+          "price": "~$380",
+          "sold_out": true,
+          "status_note": "Delisted"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Faceted Slurper",
+          "price": "$39.95",
+          "link": "https://banger.supply/products/faceted-slurp"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Bear Quartz",
+      "url": "bearquartz.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Lowrider Tower Set",
+          "price": "$41",
+          "original_price": "$55",
+          "link": "https://www.bearquartz.com/product-page/tower"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Bear Slurper",
+          "price": "$55",
+          "link": "https://www.bearquartz.com/product-page/bear-slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "Polar Pack — insulated concentrate transport case w/ temp reader",
+          "price": "$30"
+        },
+        {
+          "name": "3mm Mini Pearls Value Jar (12-pack + ISO jar)",
+          "price": "$15"
+        },
+        {
+          "name": "Hourglass Pillar 3-pack",
+          "price": "$25"
+        },
+        {
+          "name": "Bear Quartz Bubble Cap",
+          "price": "$20"
+        },
+        {
+          "name": "BQ Pocket Spatula (titanium tip)",
+          "price": "$25"
+        }
+      ]
+    },
+    {
+      "name": "Black Sheep Gallery",
+      "url": "blacksheepgallery.com",
+      "tier": "import",
+      "status": "dead",
+      "status_label": "Domain Expired",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Site for sale — unavailable"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "Site for sale — unavailable"
+        },
+        "dunking_station": {
+          "available": false,
+          "note": "Site for sale — unavailable"
+        }
+      }
+    },
+    {
+      "name": "Campfire Quartz",
+      "url": "campfirequartz.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "XXL Straight Banger (tower-style)",
+          "price": "$59.99",
+          "link": "https://campfirequartz.com/products/campfire-tower-banger"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Campfire XXL Slurper (free ruby pearl)",
+          "price": "$59.99",
+          "link": "https://campfirequartz.com/products/campfire-xxl-slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "Ruby Terp Pearls by RubyPearlCo",
+          "price": "from $5.99"
+        },
+        {
+          "name": "Quartz Hollow Pillars Spiral",
+          "price": "from $7.99"
+        },
+        {
+          "name": "Color Tower Cap",
+          "price": "from $24.99"
+        },
+        {
+          "name": "V2 Slurper (budget alt)",
+          "price": "$44.99"
+        }
+      ]
+    },
+    {
+      "name": "Diamond Glass / Diamond Caps",
+      "url": "diamondglassllc.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Highly Educated CTC w/ Pillar (10mm 90°)",
+          "price": "$300",
+          "sold_out": true
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "XL Barrel Slurper 10mm",
+          "price": "$35",
+          "link": "https://diamondglassllc.com/products/xl-barrel-slurper-10m"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "D-Nail",
+      "url": "d-nail.com",
+      "url_note": "quartz via Victory Glassworks — US-made",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "VGW Diamond Tower (hybrid tower/slurper)",
+          "price": "$70",
+          "link": "https://d-nail.com/victory-glassworks-slurpers-blenders-towers/"
+        },
+        "dunking_station": {
+          "available": true,
+          "name": "Dabitat™ Dishware (ceramic/silicone trays)",
+          "price": "$22–99",
+          "link": "https://d-nail.com/dabitat-dishware-sunset-dragon-large-ceramic-plate/"
+        }
+      },
+      "accessories": [
+        {
+          "name": "Dabrite 1.2 IR Temp Sensor",
+          "price": "$169.99"
+        },
+        {
+          "name": "Dabrite Pro IR Temp Sensor",
+          "price": "$299"
+        },
+        {
+          "name": "Sapphire Insert 22×19mm",
+          "price": "$250"
+        },
+        {
+          "name": "Monocrystalline SiC Pearls & Pillars",
+          "price": "$105"
+        },
+        {
+          "name": "6-Point Lateral Cap",
+          "price": "$94.99"
+        },
+        {
+          "name": "Pukinbeagle Apex Cap Special",
+          "price": "$135"
+        },
+        {
+          "name": "Optech SiC Spheres 4/5/6mm",
+          "price": "$12.50"
+        }
+      ]
+    },
+    {
+      "name": "Empire Glassworks",
+      "url": "empireglassworks.com",
+      "tier": "import",
+      "status": "dead",
+      "status_label": "No Bangers",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Decorative glass only — no quartz bangers"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "Decorative glass only — no quartz bangers"
+        },
+        "dunking_station": {
+          "available": false,
+          "note": "Not applicable"
+        }
+      }
+    },
+    {
+      "name": "GeeWest Glass",
+      "url": "geewestglass.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Not available as banger (CTC caps only — $9.99)"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "20mm Opaque Slurper Full Weld",
+          "price": "from $24.99",
+          "link": "https://geewestglass.com/products/20mm-geewest-opaque-slurper-full-weld"
+        },
+        "dunking_station": {
+          "available": true,
+          "name": "Banger Basket V4 LE (dual-chamber ISO + rinse)",
+          "price": "$49.99",
+          "link": "https://www.geewestglass.com/products/banger-basket"
+        }
+      },
+      "accessories": [
+        {
+          "name": "Quartz Drip Cup — slow-release concentrate loader (12/16/22mm)",
+          "price": "$12.99"
+        },
+        {
+          "name": "Ruby Terp Pearls 3–8mm",
+          "price": "from $1.99"
+        },
+        {
+          "name": "Color Control Tower Bubble Cap 16mm",
+          "price": "$19.99"
+        },
+        {
+          "name": "Artist 5-pc Terp Pearl & Pillar Set",
+          "price": "$24.99"
+        },
+        {
+          "name": "20mm Clear Seamless Terp Slurper",
+          "price": "$49.99"
+        }
+      ]
+    },
+    {
+      "name": "Glass House Quartz",
+      "url": "glasshousequartz.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Slurper",
+          "price": "$119.99",
+          "link": "https://www.glasshousequartz.com/products/slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Glob Squad",
+      "url": "globsquad.com",
+      "tier": "import",
+      "status": "dead",
+      "status_label": "Site Down",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Site unreachable (ECONNREFUSED)"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "Site unreachable (ECONNREFUSED)"
+        },
+        "dunking_station": {
+          "available": false,
+          "note": "Site unreachable (ECONNREFUSED)"
+        }
+      }
+    },
+    {
+      "name": "GRAV",
+      "url": "grav.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "14mm 90° Control Tower Quartz Banger",
+          "price": "$25.99",
+          "link": "https://grav.com/products/grav-14mm-90-quartz-control-tower-banger"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "14mm 90° Quartz Slurper Bucket",
+          "price": "$25.99",
+          "link": "https://grav.com/products/grav-14mm-90-quartz-slurper-bucket"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "Terp Accessory Set (20mm marble + pillar + 2 pearls)",
+          "price": "$9.99"
+        },
+        {
+          "name": "Boro Terp Pearls 6mm (10-pack)",
+          "price": "$4.99"
+        },
+        {
+          "name": "Bucket Dabber Set",
+          "price": "$11.99"
+        },
+        {
+          "name": "Control Tower Banger Set (banger + insert)",
+          "price": "$29.99"
+        },
+        {
+          "name": "Hourglass Quartz Banger 14mm 90°",
+          "price": "$29.99"
+        }
+      ]
+    },
+    {
+      "name": "Greek Glass",
+      "url": "greekglassshop.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "GG Tower (14mm, 2mm wall, 30mm dish)",
+          "price": "$60",
+          "link": "https://www.greekglassshop.com/product/gg-tower"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "HQ Mini Slurper (25mm top, 3mm wall)",
+          "price": "$50",
+          "link": "https://www.greekglassshop.com/product/hq-mini-slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "High Five Vapor",
+      "url": "highfivevape.com",
+      "url_note": "e-nail focus",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Terp E-Slurper Banger (torch & e-nail compatible)",
+          "price": "~$17",
+          "original_price": "$29",
+          "link": "https://highfivevape.com/products/terp-e-slurper-banger"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "AIN (Aluminum Induction Nail) Insert",
+          "price": "$65"
+        },
+        {
+          "name": "Razer Hot Knife Dab Tool (heated blade)",
+          "price": "$15.95"
+        },
+        {
+          "name": "Tower Top Opal Carb Cap",
+          "price": "$13.75"
+        },
+        {
+          "name": "Ruby Terp Pearl 4mm or 6mm",
+          "price": "from $3"
+        },
+        {
+          "name": "ISO Station (borosilicate)",
+          "price": "$8.25"
+        }
+      ]
+    },
+    {
+      "name": "Honeybee Herb",
+      "url": "honeybeeherb.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Honey Tower Quartz Banger 90°",
+          "price": "$29.99",
+          "link": "https://honeybeeherb.com/products/honey-tower-quartz-banger-90-degree-yl"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Honeysuckle Quartz Banger 90°",
+          "price": "~$30–45",
+          "link": "https://honeybeeherb.com/products/honeysuckle-quartz-banger-90-degree-yl"
+        },
+        "dunking_station": {
+          "available": false,
+          "note": "Not available (extensive ISO station lineup)"
+        }
+      },
+      "accessories": [
+        {
+          "name": "Pro ISO Station (dual-chamber)",
+          "price": "$39.99"
+        },
+        {
+          "name": "Boutique ISO Station",
+          "price": "$29.99"
+        },
+        {
+          "name": "Lux ISO Station",
+          "price": "$34.99"
+        },
+        {
+          "name": "23-Piece Dab Insert Accessory Set",
+          "price": "$59.99"
+        },
+        {
+          "name": "Honey Terp Pearls (4/6/8mm, multi-color)",
+          "price": "varies"
+        },
+        {
+          "name": "Hollow Quartz Terp Pillar 3-pack",
+          "price": "varies"
+        }
+      ]
+    },
+    {
+      "name": "MJ Arsenal",
+      "url": "mjarsenal.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Quartz Terp Slurper (Full Weld, 10mm)",
+          "price": "$29",
+          "link": "https://mjarsenal.com/products/quartz-terp-slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "Space Station — silicone session organizer (7 slots)",
+          "price": "$34"
+        },
+        {
+          "name": "Slurper Marble Kits (21mm marble + 6mm pill + 12mm pearl)",
+          "price": "$8"
+        },
+        {
+          "name": "ISO Station (borosilicate)",
+          "price": "$24"
+        },
+        {
+          "name": "Mushroom Spinner Carb Cap",
+          "price": "$24"
+        },
+        {
+          "name": "Houdini Filter",
+          "price": "$10"
+        }
+      ]
+    },
+    {
+      "name": "Pulsar",
+      "url": "pulsarshop.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "GRAV Control Tower Banger Set",
+          "price": "$29.99",
+          "link": "https://www.pulsarshop.com/collections/concentrates/products/grav-control-tower-banger-set"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Full Weld Terp Slurper Quartz Banger",
+          "price": "from $25.99",
+          "link": "https://www.pulsarshop.com/products/terp-slurper-quartz-banger-no-weld"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Ruby Pearl Co.",
+      "url": "rubypearlco.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Control Tower Banger by DCS Quartz",
+          "price": "$299.99",
+          "link": "https://www.rubypearlco.com/products/control-tower-banger-by-dcs-quartz"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Campfire Quartz V2 Slurper (+ free ruby pearl)",
+          "price": "$44.99",
+          "link": "https://www.rubypearlco.com/products/campfire-quartz-v2-slurper-style-banger-fully-fused-weld"
+        },
+        "dunking_station": {
+          "available": true,
+          "name": "Banger Basket (dual-chamber soak + rinse)",
+          "price": "~$49.99",
+          "link": "https://www.rubypearlco.com/products/banger-basket"
+        }
+      },
+      "accessories": [
+        {
+          "name": "TemperTerp IR Temp Gauge (predictive decay, 20+ faceplates)",
+          "price": "$159.99"
+        },
+        {
+          "name": "Dabber Dock 3-Pack Combo Kit",
+          "price": "$12.99"
+        },
+        {
+          "name": "SiC Terp Pearls 5mm",
+          "price": "$11.99"
+        },
+        {
+          "name": "Sapphire Terp Pearls (multiple colors)",
+          "price": "from $5.99"
+        },
+        {
+          "name": "GordoScientific Clear GTR Carb Cap",
+          "price": "$119.99"
+        },
+        {
+          "name": "Artist Bubble Caps (ABMP, Soup, AdaptGlass…)",
+          "price": "$29.99–159.99"
+        }
+      ]
+    },
+    {
+      "name": "SD Dank Quartz",
+      "url": "sd-dank-quartz.myshopify.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "16mm Turbo Tower 2.0 Fully Blown",
+          "price": "~$30",
+          "link": "https://sd-dank-quartz.myshopify.com/products/16mm-turbo-tower"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Turbo Terp Slurp V2 20mm",
+          "price": "~$50",
+          "link": "https://sd-dank-quartz.myshopify.com"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Terporium",
+      "url": "terporium.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "XXL Tower Banger",
+          "price": "$75",
+          "link": "https://terporium.com/product/xxl-tower/"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Terp Taster Terp Slurper",
+          "price": "$60",
+          "link": "https://terporium.com/product/terp-taster-terp-slurper/"
+        },
+        "dunking_station": {
+          "available": true,
+          "name": "Terp Slurper Feeder (+ $15 spare dish)",
+          "price": "$75",
+          "link": "https://terporium.com/product/taster-terp-slurper-feeder/"
+        }
+      },
+      "accessories": [
+        {
+          "name": "Feeder Dish Replacement (standalone, 11mm or 15mm)",
+          "price": "$15"
+        },
+        {
+          "name": "Cubic Zirconia Terp Pearls 3mm or 6mm",
+          "price": "$25"
+        },
+        {
+          "name": "SiC Terp Pearls 3mm or 6mm",
+          "price": "$15–20"
+        },
+        {
+          "name": "Dichro Marble & Pillar Set",
+          "price": "$35"
+        },
+        {
+          "name": "Fully Faceted Tower Banger",
+          "price": "$80"
+        },
+        {
+          "name": "Rectangular Dab Station w/ Accessories Tray",
+          "price": "$38.50"
+        },
+        {
+          "name": "Tower Terp Slurper (hybrid style)",
+          "price": "varies"
+        }
+      ]
+    },
+    {
+      "name": "Thick Ass Glass (TAG)",
+      "url": "thickassglass.com",
+      "tier": "import",
+      "status": "dead",
+      "status_label": "Not Carried",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Not stocked — TAG bucket bangers only"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "Not stocked — TAG bucket bangers only"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Tiki Quartz",
+      "url": "tikiquartz.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Tiki Slurper",
+          "price": "from $29.99",
+          "link": "https://tikiquartz.com/products/tiki-slurper-1"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "Tiki Marble Set (for Slurper V2)",
+          "price": "$24.99"
+        },
+        {
+          "name": "Tiki Pillar Set (3x pillars + slurper cap)",
+          "price": "$34.99"
+        },
+        {
+          "name": "Tiki Head Cap (decorative sculpted cap)",
+          "price": "$49.99"
+        },
+        {
+          "name": "Tiki Tornillo screw-style quartz pillar",
+          "price": "$19.99"
+        },
+        {
+          "name": "Digitul by Stache (digital temp/timer)",
+          "price": "$30"
+        },
+        {
+          "name": "Tiki Slurper V2 Set (banger + marble set)",
+          "price": "$70"
+        }
+      ]
+    },
+    {
+      "name": "Victory Glassworks",
+      "url": "victoryglassworks.com",
+      "url_note": "US-made artisan",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Classic Slurper v1.2",
+          "price": "$60",
+          "link": "https://victoryglassworks.com/classic-slurper-v1-2/"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      },
+      "accessories": [
+        {
+          "name": "Encased Opal Cubes (boro insert, 10–12mm)",
+          "price": "$45–65"
+        },
+        {
+          "name": "Optech SiC Spheres 4/5/6mm",
+          "price": "$12.50"
+        },
+        {
+          "name": "Boro Apex Cap (16/20/25mm)",
+          "price": "$39–59"
+        },
+        {
+          "name": "G5 Valorian Slurper (premium)",
+          "price": "$130"
+        },
+        {
+          "name": "Cantilever Stands (banger display)",
+          "price": "$49.99"
+        },
+        {
+          "name": "Diamond Slurper Set",
+          "price": "$225"
+        }
+      ]
+    },
+    {
+      "name": "Yo Dabba Dabba",
+      "url": "yodabbadabba.com",
+      "tier": "import",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Seamless Terp Slurp",
+          "price": "$49.99",
+          "link": "https://yodabbadabba.com/product/seamless-terp-slurp/"
+        },
+        "dunking_station": {
+          "available": true,
+          "name": "Quartz Terp Feeder (slurper + loading dish)",
+          "price": "$39.99",
+          "link": "https://yodabbadabba.com/product/quartz-terp-feeder/"
+        }
+      },
+      "accessories": [
+        {
+          "name": "Quartz Trough (concentrate staging dish)",
+          "price": "$17.99"
+        },
+        {
+          "name": "Ruby Pills (ruby terp pearls)",
+          "price": "$19.99"
+        },
+        {
+          "name": "Dichro Valve Marble",
+          "price": "$14.99"
+        },
+        {
+          "name": "Opal Cap Set",
+          "price": "$69.99"
+        },
+        {
+          "name": "Seamless Terp Slurp Set (+ dichro cap + valve + ruby pill)",
+          "price": "$39.99–44.99"
+        }
+      ]
+    },
+    {
+      "name": "DCS Quartz",
+      "url": "dcsquartz.com",
+      "url_note": "age-gated — buy via ZeeVapor",
+      "tier": "usmade",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "DCS Control Tower Slurper (10mm or 14mm)",
+          "price": "$300–310",
+          "link": "https://www.zeevapor.com/product/dcs-quartz-control-tower-slurper/"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "DCS Premium Quartz Terp Slurper",
+          "price": "$299.99",
+          "link": "https://www.zeevapor.com/product/dcs-quartz-premium-quartz-terp-slurper/"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Evan Shore / Small Werld Glass",
+      "url": "evanshore.com · smallwerldglass.com",
+      "tier": "usmade",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Evan Shore Slurpee Terp Slurper",
+          "price": "$280",
+          "link": "https://sweetglassgallery.com/products/evan-shore-slurpee-terp-slurper"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Hoyes Quartz",
+      "url": "hoyesquartz.com",
+      "url_note": "expired SSL — buy via retailers",
+      "tier": "usmade",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": false
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "V2 XL Slurper Quartz Banger",
+          "price": "~$280–310",
+          "link": "https://sherlocksglass.com/product/hoyes-quartz-terp-slurper-style-banger-3-10mm-male-90/"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Jake Mizer (Mizer Glass)",
+      "url": "jakemizer.com",
+      "url_note": "mizermade.com offline",
+      "tier": "usmade",
+      "status": "dead",
+      "status_label": "Not Carried",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Not available — flat/round bottom bangers only"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "Not available — flat/round bottom bangers only"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "JM Glass Co.",
+      "url": "jmglassco.com",
+      "url_note": "wholesale / B2B only — $1,000 min",
+      "tier": "usmade",
+      "status": "dead",
+      "status_label": "Wholesale Only",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "No retail listings"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "No retail listings"
+        },
+        "dunking_station": {
+          "available": false,
+          "note": "No retail listings"
+        }
+      }
+    },
+    {
+      "name": "Joel Halen Quartz",
+      "url": "joelhalenglass.bigcartel.com",
+      "tier": "usmade",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "The Gremlin (pillar-feed dish, 25mm dish, 2 slits)",
+          "price": "$225–325",
+          "link": "https://joelhalenglass.bigcartel.com/product/gremlin"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Dab Devil Terp Slurper Set",
+          "price": "$300–420",
+          "link": "https://www.zeevapor.com/product/joel-halen-the-dab-devil-terp-slurper-set/"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Long Island Quartz (LIQ)",
+      "url": "longislandquartz.com",
+      "url_note": "site timed out",
+      "tier": "usmade",
+      "status": "dead",
+      "status_label": "Not Carried",
+      "products": {
+        "control_tower": {
+          "available": false,
+          "note": "Not available — etched flat-top bangers only"
+        },
+        "terp_slurper": {
+          "available": false,
+          "note": "Not available — etched flat-top bangers only"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    },
+    {
+      "name": "Nastee Glass",
+      "url": "No website — via Headdy Glass, PipeNJ, AquaLab",
+      "tier": "usmade",
+      "status": "active",
+      "products": {
+        "control_tower": {
+          "available": true,
+          "name": "Nastee Glass Quartz Tower",
+          "price": "~$200+",
+          "status_note": "Secondary Market",
+          "link": "https://glasspass.com/posts/nasteeglass-quartz-67141bb0d1d11abd4d225366"
+        },
+        "terp_slurper": {
+          "available": true,
+          "name": "Nastee Glass Long Neck Terp Slurper",
+          "price": "$172–250",
+          "link": "https://www.pipenj.com/product-p/nastee1.htm"
+        },
+        "dunking_station": {
+          "available": false
+        }
+      }
+    }
+  ]
+}
