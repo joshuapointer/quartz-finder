@@ -22,12 +22,8 @@ export default function GlossaryPage() {
 
   return (
     <section
-      style={{
-        display: "grid",
-        gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-        position: "relative",
-        overflow: "hidden",
-      }}
+      className="bs-3"
+      style={{ position: "relative", overflow: "hidden" }}
     >
       <Caustics opacity={0.4} />
       <div className="bs-gutter">

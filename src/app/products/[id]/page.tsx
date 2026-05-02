@@ -217,8 +217,8 @@ export default async function ProductPage({ params }: Props) {
       <section
         style={{
           display: "grid",
-          gap: 40,
-          padding: 40,
+          gap: "clamp(24px, 4vw, 40px)",
+          padding: "clamp(20px, 4vw, 40px)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -244,7 +244,7 @@ export default async function ProductPage({ params }: Props) {
             <PlatePlaceholder
               label={`${product.brandName} · ${product.name}`}
               sublabel="3/4 view"
-              height={620}
+              height="clamp(360px, 60vw, 620px)"
               hero
               imageSrc={heroImage}
               imageAlt={product.name}
@@ -281,13 +281,10 @@ export default async function ProductPage({ params }: Props) {
         </div>
 
         <div
-          className="heavy-glass"
+          className="heavy-glass md:sticky md:top-[100px] md:self-start"
           style={{
             borderRadius: 10,
-            padding: 40,
-            position: "sticky",
-            top: 100,
-            alignSelf: "start",
+            padding: "clamp(24px, 4vw, 40px)",
             overflow: "hidden",
           }}
         >

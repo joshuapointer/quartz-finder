@@ -11,8 +11,19 @@ export function QuartzOrb({
   size?: number;
   intensity?: number;
 }) {
+  // width clamps below `size` only when the parent is narrower than `size` —
+  // works inside both flex/inline-flex parents (which give the child `size`)
+  // and percent-width parents (which clamp via min()).
+  const dim = `min(100%, ${size}px)`;
   return (
-    <div style={{ width: size, height: size, position: "relative" }}>
+    <div
+      style={{
+        width: dim,
+        height: dim,
+        aspectRatio: "1 / 1",
+        position: "relative",
+      }}
+    >
       <div
         aria-hidden
         style={{

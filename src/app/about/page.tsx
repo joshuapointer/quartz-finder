@@ -31,12 +31,8 @@ export default function AboutPage() {
   const meta = getMetadata();
   return (
     <section
-      style={{
-        display: "grid",
-        gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-        position: "relative",
-        overflow: "hidden",
-      }}
+      className="bs-3"
+      style={{ position: "relative", overflow: "hidden" }}
     >
       <Caustics opacity={0.45} />
       <div className="bs-gutter">

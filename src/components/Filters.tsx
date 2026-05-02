@@ -262,10 +262,9 @@ export default function Filters({ products, initialCategory }: Props) {
     >
       {/* ── Left rail ── */}
       <aside
+        className="md:min-h-[1400px] md:border-r md:border-[var(--color-hairline)]"
         style={{
-          padding: "28px 28px 28px 40px",
-          borderRight: "1px solid var(--color-hairline)",
-          minHeight: 1400,
+          padding: "28px 24px",
         }}
       >
         <div
@@ -493,7 +492,7 @@ export default function Filters({ products, initialCategory }: Props) {
       </aside>
 
       {/* ── Right region ── */}
-      <main style={{ padding: "28px 40px" }}>
+      <main style={{ padding: "28px clamp(20px, 4vw, 40px)" }}>
         <div
           style={{
             display: "flex",

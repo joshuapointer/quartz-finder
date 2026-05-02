@@ -39,7 +39,7 @@ export default async function ShopPage({
     <div>
       <section
         style={{
-          padding: "56px 40px 40px",
+          padding: "clamp(40px, 6vw, 56px) clamp(20px, 4vw, 40px) clamp(28px, 4vw, 40px)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -78,7 +78,7 @@ export default async function ShopPage({
               <h1
                 className="font-display ink"
                 style={{
-                  fontSize: "clamp(72px, 11vw, 140px)",
+                  fontSize: "clamp(56px, 12vw, 140px)",
                   fontWeight: 200,
                   margin: 0,
                   lineHeight: 0.9,

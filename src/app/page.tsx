@@ -108,10 +108,8 @@ export default function HomePage() {
       <section style={{ position: "relative", overflow: "hidden" }}>
         <Caustics opacity={0.6} />
         <div
+          className="bs-2"
           style={{
-            display: "grid",
-            gridTemplateColumns:
-              "var(--bs-gutter) minmax(0,3fr) minmax(0,5fr) var(--bs-gutter)",
             borderBottom: "1px solid var(--color-hairline)",
             position: "relative",
           }}
@@ -131,7 +129,7 @@ export default function HomePage() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              minHeight: 720,
+              minHeight: "clamp(420px, 80vw, 720px)",
             }}
           >
             <div>
@@ -150,17 +148,25 @@ export default function HomePage() {
               <h1
                 className="font-display reveal"
                 style={{
-                  fontSize: "clamp(72px, 8vw, 116px)",
+                  fontSize: "clamp(56px, 9vw, 116px)",
                   fontWeight: 300,
                   lineHeight: 0.86,
                   letterSpacing: "-0.04em",
                   margin: "32px 0 0",
                   color: "var(--color-pearl)",
+                  hyphens: "manual",
+                  overflowWrap: "normal",
+                  wordBreak: "normal",
                 }}
               >
                 The
                 <br />
-                <span style={{ display: "inline-block", marginLeft: 32 }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    marginLeft: "clamp(0px, 4vw, 32px)",
+                  }}
+                >
                   unhurried
                 </span>
                 <br />
@@ -171,7 +177,7 @@ export default function HomePage() {
                     fontStyle: "italic",
                     fontWeight: 300,
                     color: "var(--color-brass-light)",
-                    fontSize: "clamp(108px, 12vw, 168px)",
+                    fontSize: "clamp(80px, 13vw, 168px)",
                     display: "inline-block",
                     marginLeft: -8,
                     marginTop: -8,
@@ -215,7 +221,7 @@ export default function HomePage() {
           <div
             style={{
               position: "relative",
-              minHeight: 720,
+              minHeight: "clamp(420px, 80vw, 720px)",
               display: "flex",
               flexDirection: "column",
             }}
@@ -281,7 +287,7 @@ export default function HomePage() {
                 ) : null}
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
+            <div className="bs-stats-4">
               {stats.map((s, i) => (
                 <div
                   key={s.label}
@@ -330,11 +336,8 @@ export default function HomePage() {
 
       {/* ───────── SECTION — bench, with corridor sparklines ───────── */}
       <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-          borderBottom: "1px solid var(--color-hairline)",
-        }}
+        className="bs-3"
+        style={{ borderBottom: "1px solid var(--color-hairline)" }}
       >
         <div className="bs-gutter">
           <RotatedKicker>§1 — On the bench this week</RotatedKicker>
@@ -481,12 +484,8 @@ export default function HomePage() {
       {/* ───────── MAKER FEATURE — broadsheet article ───────── */}
       {featuredBrand ? (
         <section
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "var(--bs-gutter) minmax(0, 2fr) minmax(0, 3fr) var(--bs-gutter)",
-            borderBottom: "1px solid var(--color-hairline)",
-          }}
+          className="bs-feat"
+          style={{ borderBottom: "1px solid var(--color-hairline)" }}
         >
           <div className="bs-gutter">
             <RotatedKicker>§2 — A maker portrait</RotatedKicker>
@@ -495,7 +494,7 @@ export default function HomePage() {
             style={{
               borderRight: "1px solid var(--color-hairline)",
               position: "relative",
-              minHeight: 480,
+              minHeight: "clamp(280px, 50vw, 480px)",
             }}
           >
             <PlatePlaceholder
@@ -504,7 +503,7 @@ export default function HomePage() {
               height="100%"
             />
           </div>
-          <div style={{ padding: "64px 48px" }}>
+          <div style={{ padding: "clamp(40px, 6vw, 64px) clamp(24px, 4vw, 48px)" }}>
             <div className="kicker" style={{ marginBottom: 20 }}>
               Plate V.004 · Maker · Issue 01
             </div>
@@ -582,11 +581,8 @@ export default function HomePage() {
 
       {/* ───────── CABINET — by instrument ───────── */}
       <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-          borderBottom: "1px solid var(--color-hairline)",
-        }}
+        className="bs-3"
+        style={{ borderBottom: "1px solid var(--color-hairline)" }}
       >
         <div className="bs-gutter">
           <RotatedKicker>§3 — The cabinet, by instrument</RotatedKicker>
@@ -627,18 +623,13 @@ export default function HomePage() {
               <Link
                 key={row.key}
                 href={`/shop?category=${row.cat.slug}`}
-                className="focus-ring group"
+                className="focus-ring group bs-cabinet-row"
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "60px 240px 1fr 240px 60px",
-                  alignItems: "center",
-                  padding: "24px 32px",
                   borderBottom:
                     i < arr.length - 1
                       ? "1px solid var(--color-hairline)"
                       : "none",
                   position: "relative",
-                  gap: 16,
                 }}
               >
                 <div
@@ -672,17 +663,16 @@ export default function HomePage() {
                   {row.cat.tagline}
                 </div>
                 <div
-                  className="font-mono ink-soft"
+                  className="font-mono ink-soft cab-meta"
                   style={{
                     fontSize: 11,
                     letterSpacing: "0.06em",
-                    textAlign: "right",
                   }}
                 >
                   {range}
                 </div>
                 <div
-                  className="font-display ink-brass"
+                  className="font-display ink-brass cab-arrow"
                   style={{
                     fontSize: 24,
                     textAlign: "right",
@@ -780,12 +770,8 @@ export default function HomePage() {
 
       {/* ───────── DISPATCH — final folio ───────── */}
       <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-          position: "relative",
-          overflow: "hidden",
-        }}
+        className="bs-3"
+        style={{ position: "relative", overflow: "hidden" }}
       >
         <Caustics opacity={0.5} />
         <div className="bs-gutter" style={{ position: "relative" }}>
@@ -918,11 +904,8 @@ export default function HomePage() {
 
       {/* ───────── GLOSSARY TEASER (preserve from old layout) ───────── */}
       <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-          borderTop: "1px solid var(--color-hairline)",
-        }}
+        className="bs-3"
+        style={{ borderTop: "1px solid var(--color-hairline)" }}
       >
         <div className="bs-gutter">
           <RotatedKicker>§5 — Speak the dialect</RotatedKicker>

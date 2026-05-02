@@ -411,30 +411,72 @@ input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.30); }
     }
   }
 
-  /* ---- Broadsheet column grammar: 40px / content / 40px ---- */
-  .broadsheet {
+  /* ---- Broadsheet column grammar (mobile-first: single col → 40 col 40 on md+) ---- */
+  .bs-3 {
     display: grid;
-    grid-template-columns: var(--bs-gutter) 1fr var(--bs-gutter);
+    grid-template-columns: 1fr;
   }
-  .broadsheet-2 {
+  .bs-2 {
     display: grid;
-    grid-template-columns: var(--bs-gutter) 3fr 5fr var(--bs-gutter);
+    grid-template-columns: 1fr;
   }
-  .broadsheet-feature {
+  .bs-feat {
     display: grid;
-    grid-template-columns: var(--bs-gutter) 2fr 3fr var(--bs-gutter);
+    grid-template-columns: 1fr;
+  }
+  .bs-stats-4 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bs-cabinet-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 18px 0 !important;
+  }
+  .bs-cabinet-row .cab-arrow { display: none; }
+  .bs-cabinet-row .cab-meta {
+    text-align: left !important;
+  }
+  @media (min-width: 768px) {
+    .bs-3 {
+      grid-template-columns: var(--bs-gutter) 1fr var(--bs-gutter);
+    }
+    .bs-2 {
+      grid-template-columns: var(--bs-gutter) minmax(0, 3fr) minmax(0, 5fr) var(--bs-gutter);
+    }
+    .bs-feat {
+      grid-template-columns: var(--bs-gutter) minmax(0, 2fr) minmax(0, 3fr) var(--bs-gutter);
+    }
+    .bs-stats-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .bs-cabinet-row {
+      grid-template-columns: 60px 240px 1fr 240px 60px;
+      gap: 16px;
+      align-items: center;
+      padding: 24px 32px !important;
+    }
+    .bs-cabinet-row .cab-arrow { display: block; }
+    .bs-cabinet-row .cab-meta { text-align: right !important; }
   }
   .bs-gutter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 0;
-    border-right: 1px solid var(--color-hairline);
+    display: none;
   }
-  .bs-gutter-r {
-    border-right: none;
-    border-left: 1px solid var(--color-hairline);
+  @media (min-width: 768px) {
+    .bs-gutter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 0;
+      border-right: 1px solid var(--color-hairline);
+    }
+    .bs-gutter-r {
+      border-right: none;
+      border-left: 1px solid var(--color-hairline);
+    }
   }
+  /* row dividers between mobile-stacked broadsheet sections still want to be visible */
 
   /* ---- Drop cap helper (used by DropCap component) ---- */
   .drop-cap-letter {

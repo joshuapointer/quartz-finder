@@ -88,10 +88,8 @@ export default async function BrandPage({ params }: Props) {
 
       {/* HERO */}
       <section
+        className="bs-feat"
         style={{
-          display: "grid",
-          gridTemplateColumns:
-            "var(--bs-gutter) minmax(0,2fr) minmax(0,3fr) var(--bs-gutter)",
           borderBottom: "1px solid var(--color-hairline)",
           position: "relative",
           overflow: "hidden",
@@ -106,7 +104,7 @@ export default async function BrandPage({ params }: Props) {
           style={{
             borderRight: "1px solid var(--color-hairline)",
             position: "relative",
-            minHeight: 480,
+            minHeight: "clamp(280px, 50vw, 480px)",
           }}
         >
           <PlatePlaceholder
@@ -116,7 +114,12 @@ export default async function BrandPage({ params }: Props) {
           />
         </div>
 
-        <div style={{ padding: "64px 48px", position: "relative" }}>
+        <div
+          style={{
+            padding: "clamp(40px, 6vw, 64px) clamp(24px, 4vw, 48px)",
+            position: "relative",
+          }}
+        >
           <div
             className="kicker"
             style={{
@@ -278,11 +281,8 @@ export default async function BrandPage({ params }: Props) {
 
       {/* LINEUP */}
       <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-          borderBottom: "1px solid var(--color-hairline)",
-        }}
+        className="bs-3"
+        style={{ borderBottom: "1px solid var(--color-hairline)" }}
       >
         <div className="bs-gutter">
           <RotatedKicker>§1 — Lineup · {products.length} pieces</RotatedKicker>

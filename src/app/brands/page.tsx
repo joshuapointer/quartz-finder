@@ -21,11 +21,8 @@ export default function BrandsPage() {
       <section style={{ position: "relative", overflow: "hidden" }}>
         <Caustics opacity={0.5} />
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-            borderBottom: "1px solid var(--color-hairline)",
-          }}
+          className="bs-3"
+          style={{ borderBottom: "1px solid var(--color-hairline)" }}
         >
           <div className="bs-gutter">
             <RotatedKicker>
@@ -141,11 +138,8 @@ function Section({
 }) {
   return (
     <section
-      style={{
-        display: "grid",
-        gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
-        borderBottom: "1px solid var(--color-hairline)",
-      }}
+      className="bs-3"
+      style={{ borderBottom: "1px solid var(--color-hairline)" }}
     >
       <div className="bs-gutter">
         <RotatedKicker>{sectionLabel}</RotatedKicker>
