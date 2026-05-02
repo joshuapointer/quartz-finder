@@ -27,7 +27,7 @@ export default function WishlistPage() {
           className="font-display ink"
           style={{
             fontSize: "clamp(64px, 10vw, 132px)",
-            fontWeight: 200,
+            fontWeight: 400,
             lineHeight: 0.9,
             letterSpacing: "-0.045em",
             margin: 0,
@@ -36,7 +36,7 @@ export default function WishlistPage() {
           The{" "}
           <em
             className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 300 }}
+            style={{ fontStyle: "italic", fontWeight: 400 }}
           >
             Bench.
           </em>

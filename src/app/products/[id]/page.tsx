@@ -301,7 +301,7 @@ export default async function ProductPage({ params }: Props) {
               className="font-display ink"
               style={{
                 fontSize: "clamp(48px, 7vw, 76px)",
-                fontWeight: 200,
+                fontWeight: 400,
                 lineHeight: 0.95,
                 letterSpacing: "-0.035em",
                 margin: 0,
@@ -368,7 +368,7 @@ export default async function ProductPage({ params }: Props) {
                     style={{
                       fontSize: 64,
                       letterSpacing: "-0.035em",
-                      fontWeight: 200,
+                      fontWeight: 400,
                     }}
                   >
                     ${best?.price ?? product.price.replace(/[^\d.]/g, "")}
@@ -540,7 +540,7 @@ export default async function ProductPage({ params }: Props) {
               className="font-display ink"
               style={{
                 fontSize: "clamp(48px, 7vw, 72px)",
-                fontWeight: 200,
+                fontWeight: 400,
                 margin: 0,
                 letterSpacing: "-0.03em",
                 lineHeight: 1,
@@ -549,7 +549,7 @@ export default async function ProductPage({ params }: Props) {
               Where to buy,{" "}
               <em
                 className="ink-brass-l"
-                style={{ fontWeight: 300, fontStyle: "italic" }}
+                style={{ fontWeight: 400, fontStyle: "italic" }}
               >
                 and at what cost.
               </em>
@@ -654,7 +654,7 @@ export default async function ProductPage({ params }: Props) {
                   style={{
                     fontSize: 24,
                     letterSpacing: "-0.025em",
-                    fontWeight: 300,
+                    fontWeight: 400,
                   }}
                 >
                   ${v.price}
@@ -789,7 +789,7 @@ export default async function ProductPage({ params }: Props) {
                 className="font-display ink"
                 style={{
                   fontSize: 48,
-                  fontWeight: 200,
+                  fontWeight: 400,
                   margin: 0,
                   letterSpacing: "-0.025em",
                   lineHeight: 1.05,
@@ -816,7 +816,7 @@ export default async function ProductPage({ params }: Props) {
                 className="font-display ink"
                 style={{
                   fontSize: 48,
-                  fontWeight: 200,
+                  fontWeight: 400,
                   margin: 0,
                   letterSpacing: "-0.025em",
                   lineHeight: 1.05,
@@ -831,12 +831,12 @@ export default async function ProductPage({ params }: Props) {
                   lineHeight: 1.55,
                   marginTop: 28,
                   fontStyle: "italic",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   maxWidth: 580,
                 }}
               >
                 {product.note ??
-                  `The ${product.name} sits comfortably in the middle of ${product.brandName}'s catalog and earns its place on the bench. We've seen the corridor settle within $${Math.abs((corridor.high - corridor.low) || 0)} across ${vendors.length} vendors — a tight spread for a piece this size.`}
+                  `${vendors.length} vendors carry the ${product.name}. The corridor sits within $${Math.abs((corridor.high - corridor.low) || 0)} from low to high — see the comparison above for shipping and stock.`}
               </p>
               <div
                 className="font-mono ink-faint"
@@ -847,7 +847,7 @@ export default async function ProductPage({ params }: Props) {
                   marginTop: 24,
                 }}
               >
-                — House Editor · Issue 01
+                — The House
               </div>
             </div>
           </div>
@@ -958,7 +958,7 @@ function RelatedCard({ product }: { product: NormalizedProduct }) {
           className="font-display ink tabular-nums"
           style={{
             fontSize: 22,
-            fontWeight: 300,
+            fontWeight: 400,
             letterSpacing: "-0.02em",
           }}
         >

@@ -519,7 +519,7 @@ export function SectionRule({
           className="font-display"
           style={{
             fontSize: 56,
-            fontWeight: 300,
+            fontWeight: 400,
             fontStyle: "italic",
             margin: 0,
             color: "var(--color-pearl)",

@@ -190,7 +190,7 @@ export default function Header() {
               }}
             >
               Pillar{" "}
-              <em className="ink-brass-l" style={{ fontStyle: "italic", fontWeight: 300 }}>
+              <em className="ink-brass-l" style={{ fontStyle: "italic", fontWeight: 400 }}>
                 &amp;
               </em>{" "}
               Pearl
@@ -316,7 +316,7 @@ export default function Header() {
             style={{ fontSize: 18, color: "var(--color-pearl)", letterSpacing: "-0.01em" }}
           >
             Pillar{" "}
-            <em className="ink-brass-l" style={{ fontStyle: "italic", fontWeight: 300 }}>
+            <em className="ink-brass-l" style={{ fontStyle: "italic", fontWeight: 400 }}>
               &amp;
             </em>{" "}
             Pearl

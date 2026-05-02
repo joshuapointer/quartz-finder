@@ -166,7 +166,7 @@ export default function BrandCard({ brand }: { brand: BrandSummary }) {
           style={{
             fontSize: 22,
             fontStyle: "italic",
-            fontWeight: 300,
+            fontWeight: 400,
             lineHeight: 1,
             transition: "transform var(--duration-base) var(--ease-expressive)",
           }}

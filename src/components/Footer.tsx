@@ -45,7 +45,7 @@ export default function Footer() {
           right: 0,
           fontFamily: "var(--font-display)",
           fontSize: 280,
-          fontWeight: 300,
+          fontWeight: 400,
           fontStyle: "italic",
           color: "var(--color-pearl)",
           opacity: 0.025,
@@ -75,7 +75,7 @@ export default function Footer() {
                 className="font-display ink"
                 style={{
                   fontSize: 28,
-                  fontWeight: 300,
+                  fontWeight: 400,
                   marginTop: 12,
                   lineHeight: 1.1,
                 }}

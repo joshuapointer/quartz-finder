@@ -24,7 +24,7 @@ export default function EmptyState({ title, body, action }: Props) {
         style={{
           fontSize: 36,
           fontStyle: "italic",
-          fontWeight: 300,
+          fontWeight: 400,
           letterSpacing: "-0.02em",
           marginTop: 28,
         }}

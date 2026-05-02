@@ -84,7 +84,7 @@ export default function HomePage() {
 
   const stats: { value: string; label: string }[] = [
     { value: products.length.toLocaleString(), label: "pieces" },
-    { value: meta.summary.active_brands.toString(), label: "lapidaries" },
+    { value: meta.summary.active_brands.toString(), label: "makers" },
     { value: corridor, label: "price corridor" },
   ];
 
@@ -135,7 +135,7 @@ export default function HomePage() {
                 className="font-display reveal"
                 style={{
                   fontSize: "clamp(56px, 9vw, 116px)",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   lineHeight: 0.86,
                   letterSpacing: "-0.04em",
                   margin: "32px 0 0",
@@ -161,7 +161,7 @@ export default function HomePage() {
                 <em
                   style={{
                     fontStyle: "italic",
-                    fontWeight: 300,
+                    fontWeight: 400,
                     color: "var(--color-brass-light)",
                     fontSize: "clamp(80px, 13vw, 168px)",
                     display: "inline-block",
@@ -176,7 +176,7 @@ export default function HomePage() {
             </div>
             <div className="reveal" style={{ marginTop: 48, maxWidth: 460 }}>
               <DropCap>
-                {`${products.length.toLocaleString()} pieces from ${meta.summary.active_brands} lapidaries, shopped against authorized vendors and indexed each night.`}
+                {`${products.length.toLocaleString()} pieces from ${meta.summary.active_brands} makers, compared across vendors. Updated nightly.`}
               </DropCap>
               <div
                 style={{
@@ -268,7 +268,7 @@ export default function HomePage() {
                     className="font-display ink"
                     style={{
                       fontSize: 32,
-                      fontWeight: 300,
+                      fontWeight: 400,
                       letterSpacing: "-0.02em",
                       lineHeight: 1,
                     }}
@@ -327,7 +327,7 @@ export default function HomePage() {
                 className="font-display"
                 style={{
                   fontSize: "clamp(40px, 6vw, 64px)",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   fontStyle: "italic",
                   margin: 0,
                   color: "var(--color-pearl)",
@@ -467,22 +467,19 @@ export default function HomePage() {
               className="font-display ink"
               style={{
                 fontSize: "clamp(40px, 5.5vw, 68px)",
-                fontWeight: 300,
-                lineHeight: 0.95,
-                letterSpacing: "-0.03em",
+                fontWeight: 400,
+                lineHeight: 0.98,
+                letterSpacing: "-0.025em",
                 margin: 0,
               }}
             >
+              On{" "}
               <em
                 className="ink-brass-l"
-                style={{ fontWeight: 300, fontStyle: "italic" }}
+                style={{ fontWeight: 400, fontStyle: "italic" }}
               >
-                {featuredBrand.name}
+                {featuredBrand.name}.
               </em>
-              <span style={{ color: "var(--color-pearl-2)" }}>
-                {" "}
-                — why a banger should outlive its first owner.
-              </span>
             </h2>
             <p
               className="font-display ink-soft"
@@ -507,7 +504,7 @@ export default function HomePage() {
                 textTransform: "uppercase",
               }}
             >
-              — Lead lapidary, {featuredBrand.name}
+              — {featuredBrand.name}
             </p>
             <Link
               href={`/brands/${featuredBrand.slug}`}
@@ -552,7 +549,7 @@ export default function HomePage() {
               className="font-display ink"
               style={{
                 fontSize: "clamp(40px, 6vw, 64px)",
-                fontWeight: 300,
+                fontWeight: 400,
                 fontStyle: "italic",
                 margin: 0,
                 letterSpacing: "-0.02em",
@@ -587,7 +584,7 @@ export default function HomePage() {
                   style={{
                     fontSize: 28,
                     fontStyle: "italic",
-                    fontWeight: 300,
+                    fontWeight: 400,
                   }}
                 >
                   {roman}
@@ -666,7 +663,7 @@ export default function HomePage() {
             className="font-display ink"
             style={{
               fontSize: "clamp(48px, 7vw, 84px)",
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 0.95,
               letterSpacing: "-0.04em",
               margin: "32px auto 0",
@@ -675,7 +672,7 @@ export default function HomePage() {
           >
             <em
               className="ink-brass-l"
-              style={{ fontStyle: "italic", fontWeight: 300 }}
+              style={{ fontStyle: "italic", fontWeight: 400 }}
             >
               The Dispatch.
             </em>
@@ -718,7 +715,7 @@ export default function HomePage() {
                 fontSize: 20,
                 outline: "none",
                 fontStyle: "italic",
-                fontWeight: 300,
+                fontWeight: 400,
               }}
             />
             <button
@@ -733,7 +730,7 @@ export default function HomePage() {
                 fontStyle: "italic",
                 cursor: "pointer",
                 padding: "0 6px",
-                fontWeight: 300,
+                fontWeight: 400,
               }}
             >
               →
@@ -772,7 +769,7 @@ export default function HomePage() {
               className="font-display ink"
               style={{
                 fontSize: 48,
-                fontWeight: 300,
+                fontWeight: 400,
                 fontStyle: "italic",
                 margin: 0,
                 letterSpacing: "-0.025em",

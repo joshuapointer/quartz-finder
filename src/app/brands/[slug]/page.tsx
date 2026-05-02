@@ -150,7 +150,7 @@ export default async function BrandPage({ params }: Props) {
             className="font-display ink"
             style={{
               fontSize: "clamp(48px, 7vw, 92px)",
-              fontWeight: 200,
+              fontWeight: 400,
               lineHeight: 0.92,
               letterSpacing: "-0.035em",
               margin: 0,
@@ -158,7 +158,7 @@ export default async function BrandPage({ params }: Props) {
           >
             <em
               className="ink-brass-l"
-              style={{ fontStyle: "italic", fontWeight: 300 }}
+              style={{ fontStyle: "italic", fontWeight: 400 }}
             >
               {brand.name}
             </em>
@@ -260,7 +260,7 @@ export default async function BrandPage({ params }: Props) {
                   className="font-display ink tabular-nums"
                   style={{
                     fontSize: 32,
-                    fontWeight: 300,
+                    fontWeight: 400,
                     letterSpacing: "-0.02em",
                     lineHeight: 1,
                   }}
@@ -302,7 +302,7 @@ export default async function BrandPage({ params }: Props) {
               className="font-display ink"
               style={{
                 fontSize: "clamp(40px, 6vw, 64px)",
-                fontWeight: 300,
+                fontWeight: 400,
                 fontStyle: "italic",
                 margin: 0,
                 letterSpacing: "-0.02em",
@@ -312,7 +312,7 @@ export default async function BrandPage({ params }: Props) {
               <span style={{ fontStyle: "normal" }}>The lineup,</span>{" "}
               <em
                 className="ink-brass-l"
-                style={{ fontStyle: "italic", fontWeight: 300 }}
+                style={{ fontStyle: "italic", fontWeight: 400 }}
               >
                 indexed.
               </em>
@@ -384,7 +384,7 @@ export default async function BrandPage({ params }: Props) {
                 className="font-display ink"
                 style={{
                   fontSize: "clamp(36px, 5vw, 56px)",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   fontStyle: "italic",
                   margin: 0,
                   letterSpacing: "-0.02em",
@@ -394,7 +394,7 @@ export default async function BrandPage({ params }: Props) {
                 <span style={{ fontStyle: "normal" }}>Accessories,</span>{" "}
                 <em
                   className="ink-brass-l"
-                  style={{ fontStyle: "italic", fontWeight: 300 }}
+                  style={{ fontStyle: "italic", fontWeight: 400 }}
                 >
                   on file.
                 </em>
@@ -428,7 +428,7 @@ export default async function BrandPage({ params }: Props) {
                     className="font-display ink-brass-l tabular-nums"
                     style={{
                       fontSize: 22,
-                      fontWeight: 300,
+                      fontWeight: 400,
                       letterSpacing: "-0.02em",
                     }}
                   >

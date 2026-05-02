@@ -46,32 +46,26 @@ export default function AboutPage() {
           className="font-display ink"
           style={{
             fontSize: "clamp(56px, 8vw, 96px)",
-            fontWeight: 300,
+            fontWeight: 400,
             lineHeight: 0.92,
             letterSpacing: "-0.04em",
             margin: 0,
             maxWidth: 920,
           }}
         >
-          Made for{" "}
+          An{" "}
           <em
             className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 300 }}
+            style={{ fontStyle: "italic", fontWeight: 400 }}
           >
-            hash heads,
+            editorial atlas
           </em>{" "}
-          built like a{" "}
-          <em
-            className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 300 }}
-          >
-            broadsheet.
-          </em>
+          of cannabis-concentrate hardware.
         </h1>
 
         <div style={{ marginTop: 56, maxWidth: 720 }}>
           <DropCap>
-            {`Pillar & Pearl is the bench you'd keep if shopping for serious quartz didn't mean tab-juggling forty glass houses, half of which are dead, broken, or wholesale-only. We catalog ${meta.summary.total_brands} brands across two tiers — import-priced workhorses and US-made artisan glass — and shop them against the eighteen authorized vendors of these United States, indexed each night.`}
+            {`Shopping for serious quartz means tab-juggling forty maker sites, half of them dead or wholesale-only. We catalog ${meta.summary.total_brands} brands across two tiers — import-priced workhorses and US-made artisan glass — and compare them across vendors. Updated nightly.`}
           </DropCap>
         </div>
 
@@ -88,7 +82,7 @@ export default function AboutPage() {
             style={{
               fontSize: "clamp(28px, 4vw, 44px)",
               fontStyle: "italic",
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 1.2,
               letterSpacing: "-0.02em",
               margin: 0,
@@ -128,7 +122,7 @@ export default function AboutPage() {
               style={{
                 fontSize: 40,
                 fontStyle: "italic",
-                fontWeight: 300,
+                fontWeight: 400,
                 margin: 0,
                 letterSpacing: "-0.02em",
                 lineHeight: 1.05,
@@ -161,7 +155,7 @@ export default function AboutPage() {
                     style={{
                       fontSize: 28,
                       fontStyle: "italic",
-                      fontWeight: 300,
+                      fontWeight: 400,
                     }}
                   >
                     {item.label}.
@@ -186,7 +180,7 @@ export default function AboutPage() {
               style={{
                 fontSize: 40,
                 fontStyle: "italic",
-                fontWeight: 300,
+                fontWeight: 400,
                 margin: 0,
                 letterSpacing: "-0.02em",
                 lineHeight: 1.05,

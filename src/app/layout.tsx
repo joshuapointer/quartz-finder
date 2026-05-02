@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, JetBrains_Mono } from "next/font/google";
+import { Newsreader, Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AgeGate from "@/components/AgeGate";
 
-const display = Fraunces({
+const display = Newsreader({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
@@ -14,9 +14,9 @@ const display = Fraunces({
   variable: "--font-display-loaded",
 });
 
-const sans = Geist({
+const sans = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
   variable: "--font-sans-loaded",
 });
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     template: "%s · Pillar & Pearl",
   },
   description:
-    "An aggregate marketplace for high-end quartz cannabis accessories — bangers, slurpers, pearls, and rigs from forty-two lapidaries, indexed nightly against eighteen authorized vendors.",
+    "An editorial atlas of cannabis-concentrate hardware — quartz bangers, terp slurpers, dunking stations and rigs from independent makers, compared across vendors and updated nightly.",
   keywords: [
     "quartz banger",
     "terp slurper",

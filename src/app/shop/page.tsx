@@ -79,7 +79,7 @@ export default async function ShopPage({
                 className="font-display ink"
                 style={{
                   fontSize: "clamp(56px, 12vw, 140px)",
-                  fontWeight: 200,
+                  fontWeight: 400,
                   margin: 0,
                   lineHeight: 0.9,
                   letterSpacing: "-0.045em",
@@ -88,7 +88,7 @@ export default async function ShopPage({
                 Bangers,{" "}
                 <em
                   className="ink-brass-l"
-                  style={{ fontWeight: 300, fontStyle: "italic" }}
+                  style={{ fontWeight: 400, fontStyle: "italic" }}
                 >
                   indexed.
                 </em>
@@ -105,8 +105,8 @@ export default async function ShopPage({
                 }}
               >
                 {products.length.toLocaleString()} pieces from{" "}
-                {meta.summary.active_brands} lapidaries — shopped against
-                authorized vendors, sorted by your bench.
+                {meta.summary.active_brands} makers, compared across
+                vendors. Filter to taste.
               </p>
             </div>
           </div>

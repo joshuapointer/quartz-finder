@@ -4,7 +4,7 @@ import BrandCard from "@/components/BrandCard";
 import { Caustics, RotatedKicker } from "@/components/editorial";
 
 export const metadata: Metadata = {
-  title: "Makers · Glass houses & lapidaries",
+  title: "Makers · Glass houses we track",
   description:
     "Every banger maker we track — import, US-made, active, dormant. Curated by craft, not algorithm.",
 };
@@ -37,7 +37,7 @@ export default function BrandsPage() {
               className="font-display ink"
               style={{
                 fontSize: "clamp(64px, 9vw, 132px)",
-                fontWeight: 200,
+                fontWeight: 400,
                 lineHeight: 0.9,
                 letterSpacing: "-0.04em",
                 margin: 0,
@@ -46,12 +46,12 @@ export default function BrandsPage() {
               {meta.summary.total_brands}{" "}
               <em
                 className="ink-brass-l"
-                style={{ fontStyle: "italic", fontWeight: 300 }}
+                style={{ fontStyle: "italic", fontWeight: 400 }}
               >
-                lapidaries,
+                makers
               </em>
               <br />
-              one bench.
+              tracked.
             </h1>
             <p
               className="font-display ink-soft"
@@ -64,10 +64,9 @@ export default function BrandsPage() {
                 maxWidth: 640,
               }}
             >
-              {meta.summary.active_brands} actively shipping ·{" "}
-              {meta.summary.usmade_tier_count} US-made artisans ·{" "}
-              {meta.summary.import_tier_count} import-tier value picks. Curated
-              by craft, not algorithm.
+              {meta.summary.active_brands} active ·{" "}
+              {meta.summary.usmade_tier_count} US-made ·{" "}
+              {meta.summary.import_tier_count} import.
             </p>
           </div>
           <div className="bs-gutter bs-gutter-r">
@@ -158,7 +157,7 @@ function Section({
             className="font-display ink"
             style={{
               fontSize: "clamp(40px, 6vw, 64px)",
-              fontWeight: 300,
+              fontWeight: 400,
               fontStyle: "italic",
               margin: 0,
               letterSpacing: "-0.02em",
@@ -168,7 +167,7 @@ function Section({
             <span style={{ fontStyle: "normal" }}>{title}</span>{" "}
             <em
               className="ink-brass-l"
-              style={{ fontStyle: "italic", fontWeight: 300 }}
+              style={{ fontStyle: "italic", fontWeight: 400 }}
             >
               {titleEm}
             </em>

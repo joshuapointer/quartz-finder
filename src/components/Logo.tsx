@@ -29,7 +29,7 @@ export default function Logo({
           Pillar{" "}
           <em
             className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 300 }}
+            style={{ fontStyle: "italic", fontWeight: 400 }}
           >
             &amp;
           </em>{" "}

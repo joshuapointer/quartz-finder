@@ -137,7 +137,7 @@ export default function ProductCard({
               className="font-display ink tabular-nums"
               style={{
                 fontSize: 28,
-                fontWeight: 300,
+                fontWeight: 400,
                 letterSpacing: "-0.02em",
               }}
             >

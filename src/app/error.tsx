@@ -41,7 +41,7 @@ export default function GlobalError({
           className="font-display ink"
           style={{
             fontSize: "clamp(56px, 8vw, 96px)",
-            fontWeight: 200,
+            fontWeight: 400,
             lineHeight: 0.95,
             letterSpacing: "-0.04em",
             margin: 0,
@@ -50,7 +50,7 @@ export default function GlobalError({
           Something{" "}
           <em
             className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 300 }}
+            style={{ fontStyle: "italic", fontWeight: 400 }}
           >
             fractured.
           </em>

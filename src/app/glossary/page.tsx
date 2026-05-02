@@ -38,7 +38,7 @@ export default function GlossaryPage() {
           className="font-display ink"
           style={{
             fontSize: "clamp(56px, 8vw, 116px)",
-            fontWeight: 300,
+            fontWeight: 400,
             lineHeight: 0.92,
             letterSpacing: "-0.04em",
             margin: 0,
@@ -47,7 +47,7 @@ export default function GlossaryPage() {
           Speak the{" "}
           <em
             className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 300 }}
+            style={{ fontStyle: "italic", fontWeight: 400 }}
           >
             dialect.
           </em>
@@ -63,8 +63,7 @@ export default function GlossaryPage() {
             maxWidth: 640,
           }}
         >
-          The vocabulary of modern low-temp dabbing — distilled for newcomers,
-          cross-referenced for veterans.
+          The vocabulary of low-temp dabbing — for newcomers and veterans.
         </p>
 
         <nav

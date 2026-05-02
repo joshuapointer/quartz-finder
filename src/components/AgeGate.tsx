@@ -166,7 +166,7 @@ export default function AgeGate() {
                 className="font-display"
                 style={{
                   fontSize: "clamp(56px, 7vw, 96px)",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   margin: 0,
                   lineHeight: 0.88,
                   letterSpacing: "-0.04em",
@@ -180,7 +180,7 @@ export default function AgeGate() {
                 <em
                   style={{
                     fontStyle: "italic",
-                    fontWeight: 300,
+                    fontWeight: 400,
                     color: "var(--color-brass-light)",
                     fontSize: "clamp(72px, 9vw, 132px)",
                     display: "block",
@@ -215,7 +215,7 @@ export default function AgeGate() {
                 }}
               >
                 Pillar &amp; Pearl curates quartz from a small bench of artisans
-                &amp; lapidaries. By entering, you affirm legal age and assume
+                &amp; makers. By entering, you affirm legal age and assume
                 responsibility for what follows.
               </p>
               <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
@@ -326,7 +326,7 @@ export default function AgeGate() {
                   fontSize: 18,
                   color: i === 0 ? "var(--color-brass-light)" : "var(--color-smoke)",
                   fontStyle: "italic",
-                  fontWeight: 300,
+                  fontWeight: 400,
                 }}
               >
                 {n}
@@ -372,7 +372,7 @@ export default function AgeGate() {
             className="font-display"
             style={{
               fontSize: 56,
-              fontWeight: 300,
+              fontWeight: 400,
               margin: 0,
               lineHeight: 0.92,
               letterSpacing: "-0.04em",
@@ -402,7 +402,7 @@ export default function AgeGate() {
             }}
           >
             Pillar &amp; Pearl curates quartz from a small bench of artisans
-            &amp; lapidaries. By entering, you affirm legal age.
+            &amp; makers. By entering, you affirm legal age.
           </p>
           <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
             <button
