@@ -2,86 +2,112 @@
 
 @theme {
   /* ==== Color: ground ==== */
-  --color-bg:        #0a0908;   /* deeper warm black */
-  --color-bg-soft:   #121110;   /* card body */
-  --color-bg-elev:   #1a1816;   /* modals, popovers, single hero panel */
-  --color-bg-sunk:   #060504;   /* footer, chrome inversion */
+  --color-ink:        #06070A;
+  --color-ink-2:      #0B0D12;
+  --color-ink-3:      #11141B;
+  --color-ink-4:      #1A1E27;
 
-  /* ==== Color: line / hairlines ==== */
-  --color-line:        #2a2622;   /* default 1px hairline */
-  --color-line-soft:   #1f1c19;   /* whisper-thin divisions inside cards */
-  --color-line-strong: #3a342d;   /* on-hover / active borders */
+  /* ==== Color: ink (warm pearl family) — semantic copy colors ==== */
+  --color-pearl:      #F8F6F0;
+  --color-pearl-2:    #DCDAD2;
+  --color-bone:       #9A988F;
+  --color-smoke:      #5F5E58;
 
-  /* ==== Color: ink (warm ivory family) ==== */
-  --color-ink:       #f3ece0;   /* primary copy */
-  --color-ink-soft:  #b6ad9d;   /* secondary copy */
-  --color-ink-mute:  #76705f;   /* metadata, eyebrows on muted */
-  --color-ink-faint: #4a4439;   /* deep mute, dividers, strikethrough */
+  /* ==== Color: brass — primary metallic accent ==== */
+  --color-brass:       #D4AE6E;
+  --color-brass-2:     #9C7B40;
+  --color-brass-light: #F2D49A;
 
-  /* ==== Color: chromatics (restrained) ==== */
-  --color-amber:       #c8923a;   /* desaturated primary accent */
-  --color-amber-soft:  #e6b878;   /* hover/light variant */
-  --color-amber-deep:  #8a6224;   /* pressed / borders on amber tints */
-  --color-quartz:      #b8aac4;   /* lavender secondary */
-  --color-quartz-soft: #d6cce0;
-  --color-sage:        #7a9785;   /* replaces jade — in-stock signal */
+  /* ==== Color: quartz — secondary lavender accent ==== */
+  --color-quartz:       #B8A8E8;
+  --color-quartz-dark:  #5C4F8A;
+  --color-quartz-light: #E0D6FF;
+
+  /* signal / destructive */
+  --color-ember: #F26B4A;
+  --color-sage:  #7A9785;
+
+  /* ==== Hairlines ==== */
+  --color-hairline:        rgba(255, 255, 255, 0.08);
+  --color-hairline-strong: rgba(255, 255, 255, 0.16);
+  --color-hairline-soft:   rgba(255, 255, 255, 0.04);
+
+  /* glass */
+  --color-glass:               rgba(255, 255, 255, 0.04);
+  --color-glass-strong:        rgba(255, 255, 255, 0.08);
+  --color-glass-border:        rgba(255, 255, 255, 0.12);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.22);
+
+  /* legacy aliases used by some still-existing components */
+  --color-bg:        var(--color-ink);
+  --color-bg-soft:   var(--color-ink-2);
+  --color-bg-elev:   var(--color-ink-3);
+  --color-bg-sunk:   var(--color-ink);
+  --color-line:        var(--color-hairline);
+  --color-line-soft:   var(--color-hairline-soft);
+  --color-line-strong: var(--color-hairline-strong);
+  --color-ink-soft:    var(--color-pearl-2);
+  --color-ink-mute:    var(--color-bone);
+  --color-ink-faint:   var(--color-smoke);
+  --color-amber:       var(--color-brass);
+  --color-amber-soft:  var(--color-brass-light);
+  --color-amber-deep:  var(--color-brass-2);
+  --color-quartz-soft: var(--color-quartz-light);
   --color-sage-soft:   #a4bfae;
-  --color-rose:        #a96374;   /* desat sold-out / destructive accent */
+  --color-rose:        var(--color-ember);
 
-  /* ==== Type: families ==== */
-  --font-display: var(--font-display-loaded), "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
-  --font-sans:    var(--font-sans-loaded),    "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
-  /* No --font-mono-loaded this cycle; system mono stack used directly */
-  --font-mono:    ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* ==== Type ==== */
+  --font-display: var(--font-display-loaded), "Fraunces", "Tiempos Headline", Georgia, serif;
+  --font-sans:    var(--font-sans-loaded),    "Geist", "Inter Tight", system-ui, -apple-system, sans-serif;
+  --font-mono:    var(--font-mono-loaded),    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  /* ==== Type scale (1.250 modular, 16px base) ==== */
-  --text-2xs:  0.6875rem;   /* 11px — eyebrow, micro-meta */
-  --text-xs:   0.75rem;     /* 12px — meta, footer */
-  --text-sm:   0.875rem;    /* 14px — UI labels, captions */
-  --text-base: 1rem;        /* 16px — body */
-  --text-lg:   1.125rem;    /* 18px — lead paragraph */
-  --text-xl:   1.4375rem;   /* 23px — small heading */
-  --text-2xl:  1.75rem;     /* 28px — h3 */
-  --text-3xl:  2.1875rem;   /* 35px — h2 */
-  --text-4xl:  2.75rem;     /* 44px — page h1 */
-  --text-5xl:  3.4375rem;   /* 55px — section feature */
-  --text-6xl:  4.3125rem;   /* 69px — hero (md) */
-  --text-7xl:  5.375rem;    /* 86px — hero (lg) */
+  --text-2xs:  0.6875rem;
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.4375rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  2.1875rem;
+  --text-4xl:  2.75rem;
+  --text-5xl:  3.4375rem;
+  --text-6xl:  4.3125rem;
+  --text-7xl:  5.375rem;
 
-  /* Tracking */
-  --tracking-tight:   -0.02em;
-  --tracking-snug:    -0.01em;
-  --tracking-normal:   0em;
-  --tracking-wide:     0.04em;
-  --tracking-eyebrow:  0.22em;   /* small caps eyebrow */
-  --tracking-rule:     0.34em;   /* tiny rule labels */
+  --tracking-tight:    -0.04em;
+  --tracking-snug:     -0.02em;
+  --tracking-normal:    0em;
+  --tracking-wide:      0.04em;
+  --tracking-eyebrow:   0.22em;
+  --tracking-rule:      0.32em;
+  --tracking-folio:     0.42em;
 
-  /* Leading */
-  --leading-display: 1.02;
-  --leading-tight:   1.18;
+  --leading-display: 0.86;
+  --leading-tight:   1.1;
   --leading-snug:    1.35;
   --leading-body:    1.6;
   --leading-loose:   1.85;
 
-  /* ==== Radii ==== */
-  --radius-hairline: 2px;    /* buttons, chips */
-  --radius-sm:       4px;    /* inputs, selects */
-  --radius-md:       8px;    /* cards default */
-  --radius-lg:       16px;   /* hero panels, modals */
-  --radius-xl:       24px;   /* marquee panels */
-  --radius-pill:     999px;  /* RESERVED: badges, count chips, skip-link only */
+  --radius-hairline: 2px;
+  --radius-sm:       4px;
+  --radius-md:       8px;
+  --radius-lg:       16px;
+  --radius-xl:       24px;
+  --radius-pill:     999px;
 
-  /* ==== Shadows ==== */
-  --shadow-hairline:        inset 0 0 0 1px var(--color-line);
-  --shadow-hairline-strong: inset 0 0 0 1px var(--color-line-strong);
+  --shadow-hairline:        inset 0 0 0 1px var(--color-hairline);
+  --shadow-hairline-strong: inset 0 0 0 1px var(--color-hairline-strong);
   --shadow-soft:
-    0 1px 0 0 rgba(255, 240, 220, 0.02),
+    0 1px 0 0 rgba(255, 255, 255, 0.04),
     0 12px 32px -20px rgba(0, 0, 0, 0.7);
   --shadow-modal:
-    0 1px 0 0 rgba(255, 240, 220, 0.04),
+    0 1px 0 0 rgba(255, 255, 255, 0.06),
     0 24px 64px -24px rgba(0, 0, 0, 0.85);
+  --shadow-glass:
+    0 1px 0 rgba(255, 255, 255, 0.10) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.30) inset,
+    0 30px 60px rgba(0, 0, 0, 0.40);
 
-  /* ==== Motion ==== */
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 400ms;
@@ -92,20 +118,18 @@
   --ease-expressive: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* consumed via var() only — not Tailwind-generated */
-/* --space-N, --section-y, --section-y-lg, --container-*, --gutter* */
 :root {
-  --space-1:   4px;
-  --space-2:   8px;
-  --space-3:   12px;
-  --space-4:   16px;
-  --space-5:   24px;
-  --space-6:   32px;
-  --space-7:   48px;
-  --space-8:   64px;
-  --space-9:   96px;
-  --space-10:  128px;
-  --space-11:  176px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-11: 176px;
 
   --section-y:    96px;
   --section-y-lg: 144px;
@@ -113,17 +137,19 @@
   --container-narrow: 720px;
   --container-prose:  62ch;
   --container-base:   1200px;
-  --container-wide:   1360px;
+  --container-wide:   1440px;
 
   --gutter:    24px;
-  --gutter-md: 40px;
-  --gutter-lg: 64px;
+  --gutter-md: 32px;
+  --gutter-lg: 40px;
+
+  /* broadsheet column gutter — fixed 40px each side per design */
+  --bs-gutter: 40px;
 }
 
-html,
-body {
-  background-color: var(--color-bg);
-  color: var(--color-ink);
+html, body {
+  background-color: var(--color-ink);
+  color: var(--color-pearl);
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-body);
@@ -132,19 +158,23 @@ body {
 }
 
 body {
-  /* Single warm vignette — subtler than previous dual radial */
   background-image:
-    radial-gradient(ellipse at 50% -10%, rgba(200, 146, 58, 0.05) 0, transparent 55%),
-    radial-gradient(ellipse at 50% 120%, rgba(184, 170, 196, 0.025) 0, transparent 60%);
+    radial-gradient(ellipse at 50% -10%, rgba(212, 174, 110, 0.045) 0, transparent 55%),
+    radial-gradient(ellipse at 50% 120%, rgba(184, 168, 232, 0.025) 0, transparent 60%);
   background-attachment: fixed;
 }
 
-/* Noise overlay omitted entirely — no broken asset risk */
-
 ::selection {
-  background: rgba(200, 146, 58, 0.28);
-  color: var(--color-ink);
+  background: rgba(212, 174, 110, 0.28);
+  color: var(--color-pearl);
 }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: 999px;
+}
+input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.30); }
 
 @layer utilities {
   /* ---- Type families ---- */
@@ -160,52 +190,87 @@ body {
 
   /* ---- Surfaces ---- */
   .surface {
-    background-color: var(--color-bg-soft);
+    background-color: var(--color-ink-2);
     box-shadow: var(--shadow-hairline);
     border-radius: var(--radius-md);
   }
   .surface-elev {
-    background-color: var(--color-bg-elev);
+    background-color: var(--color-ink-3);
     box-shadow: var(--shadow-hairline);
     border-radius: var(--radius-md);
   }
   .surface-flat {
-    /* No fill, only a hairline. For editorial panels on the page bg. */
     background: transparent;
     box-shadow: var(--shadow-hairline);
   }
 
+  /* ---- Glass surfaces (signature of bespoke direction) ---- */
+  .glass-card {
+    background: var(--color-glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--color-glass-border);
+  }
+  .heavy-glass {
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid var(--color-glass-border-strong);
+    box-shadow: var(--shadow-glass);
+  }
+
   /* ---- Ink helpers ---- */
-  .ink       { color: var(--color-ink); }
-  .ink-soft  { color: var(--color-ink-soft); }
-  .ink-mute  { color: var(--color-ink-mute); }
-  .ink-faint { color: var(--color-ink-faint); }
+  .ink         { color: var(--color-pearl); }
+  .ink-soft    { color: var(--color-pearl-2); }
+  .ink-mute    { color: var(--color-bone); }
+  .ink-faint   { color: var(--color-smoke); }
+  .ink-brass   { color: var(--color-brass); }
+  .ink-brass-l { color: var(--color-brass-light); }
+  .ink-quartz  { color: var(--color-quartz); }
 
   /* ---- Editorial primitives ---- */
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: var(--tracking-rule);
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+  .kicker-mute  { color: var(--color-smoke); }
+  .kicker-pearl { color: var(--color-pearl); }
+  .kicker-light { color: var(--color-brass-light); }
+
   .eyebrow {
-    font-family: var(--font-sans);
-    font-size: var(--text-2xs);
+    font-family: var(--font-mono);
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
-    color: var(--color-amber);
+    color: var(--color-brass);
   }
-  .eyebrow-mute {
-    color: var(--color-ink-mute);
-  }
+  .eyebrow-mute { color: var(--color-bone); }
 
-  .rule-label {
-    font-family: var(--font-sans);
+  .rotated-kicker {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-mono);
     font-size: 10px;
+    color: var(--color-brass);
     letter-spacing: var(--tracking-rule);
     text-transform: uppercase;
-    color: var(--color-ink-mute);
+    white-space: nowrap;
   }
 
   .rule {
     height: 1px;
     width: 100%;
-    background: var(--color-line);
+    background: var(--color-hairline);
+  }
+  .rule-strong {
+    height: 1px;
+    width: 100%;
+    background: var(--color-hairline-strong);
   }
   .rule-amber {
     height: 1px;
@@ -213,8 +278,8 @@ body {
     background: linear-gradient(
       90deg,
       transparent 0%,
-      var(--color-amber) 14%,
-      var(--color-amber) 86%,
+      var(--color-brass) 14%,
+      var(--color-brass) 86%,
       transparent 100%
     );
     opacity: 0.45;
@@ -222,18 +287,16 @@ body {
   .hairline-vertical {
     width: 1px;
     align-self: stretch;
-    background: var(--color-line);
+    background: var(--color-hairline);
   }
 
-  /* ---- Display italic luxury inline accent ---- */
   .swash {
     font-style: italic;
     font-family: var(--font-display);
     font-feature-settings: "liga", "dlig", "swsh", "calt";
-    color: var(--color-amber-soft);
+    color: var(--color-brass-light);
   }
 
-  /* ---- Lift — card hover (replaces ad-hoc translates) ---- */
   .lift {
     transition:
       transform var(--duration-base) var(--ease-expressive),
@@ -251,7 +314,6 @@ body {
     transition-duration: var(--duration-fast);
   }
 
-  /* ---- Reveal on scroll (paired with IntersectionObserver in layout.tsx) ---- */
   .reveal {
     opacity: 0;
     transform: translateY(8px);
@@ -271,10 +333,11 @@ body {
     justify-content: center;
     gap: 8px;
     font-family: var(--font-sans);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 14px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 14px 26px;
     border-radius: var(--radius-hairline);
     transition:
       background-color var(--duration-fast) var(--ease-standard),
@@ -283,33 +346,41 @@ body {
       transform var(--duration-base) var(--ease-expressive);
   }
   .btn-primary {
-    background: var(--color-amber);
-    color: var(--color-bg);
-    box-shadow: inset 0 0 0 1px var(--color-amber-deep);
+    background: var(--color-pearl);
+    color: var(--color-ink);
+    border: none;
   }
   .btn-primary:hover {
-    background: var(--color-amber-soft);
+    background: #ffffff;
     transform: translateY(-1px);
   }
   .btn-ghost {
     background: transparent;
-    color: var(--color-ink-soft);
-    box-shadow: inset 0 0 0 1px var(--color-line);
+    color: var(--color-bone);
+    border: 1px solid var(--color-hairline-strong);
   }
   .btn-ghost:hover {
+    color: var(--color-pearl);
+    border-color: var(--color-brass-light);
+  }
+  .btn-pearl {
+    background: linear-gradient(135deg, var(--color-pearl), var(--color-pearl-2));
     color: var(--color-ink);
-    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+    border: none;
+    border-radius: 999px;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+      0 12px 28px rgba(0, 0, 0, 0.4),
+      0 0 40px rgba(212, 174, 110, 0.3);
   }
 
-  /* ---- Focus ring ---- */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2
-           focus-visible:ring-[var(--color-amber)]
+           focus-visible:ring-[var(--color-brass-light)]
            focus-visible:ring-offset-2
-           focus-visible:ring-offset-[var(--color-bg)];
+           focus-visible:ring-offset-[var(--color-ink)];
   }
 
-  /* ---- Containers ---- */
   .container-narrow {
     max-width: var(--container-narrow);
     margin-inline: auto;
@@ -340,25 +411,61 @@ body {
     }
   }
 
-  /* ---- Section rhythm ---- */
+  /* ---- Broadsheet column grammar: 40px / content / 40px ---- */
+  .broadsheet {
+    display: grid;
+    grid-template-columns: var(--bs-gutter) 1fr var(--bs-gutter);
+  }
+  .broadsheet-2 {
+    display: grid;
+    grid-template-columns: var(--bs-gutter) 3fr 5fr var(--bs-gutter);
+  }
+  .broadsheet-feature {
+    display: grid;
+    grid-template-columns: var(--bs-gutter) 2fr 3fr var(--bs-gutter);
+  }
+  .bs-gutter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+    border-right: 1px solid var(--color-hairline);
+  }
+  .bs-gutter-r {
+    border-right: none;
+    border-left: 1px solid var(--color-hairline);
+  }
+
+  /* ---- Drop cap helper (used by DropCap component) ---- */
+  .drop-cap-letter {
+    font-family: var(--font-display);
+    font-size: 88px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--color-brass-light);
+    float: left;
+    line-height: 0.85;
+    padding-right: 12px;
+    padding-top: 6px;
+  }
+
   .section-y    { padding-block: var(--section-y); }
   .section-y-lg { padding-block: var(--section-y-lg); }
 
-  /* ---- Body measure ---- */
   .prose-measure { max-width: var(--container-prose); }
-
-  /* ---- Tabular numerals ---- */
   .tabular { font-feature-settings: "tnum"; }
 
-  /* DEPRECATED: .glow-amber removed (no glows in new system) */
-  /* RENAMED: .hairline-grad → .rule-amber */
+  /* pearl dot — radial highlight orb (small) */
+  .pearl-dot {
+    display: inline-block;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--color-pearl), var(--color-brass) 70%);
+    box-shadow: 0 0 6px rgba(212, 174, 110, 0.5);
+  }
 }
 
-*:focus-visible {
-  outline: none;
-}
+*:focus-visible { outline: none; }
 
-/* ---- AgeGate entrance animation ---- */
 @keyframes age-gate-enter {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: none; }
@@ -367,12 +474,27 @@ body {
   animation: age-gate-enter 400ms var(--ease-expressive);
 }
 
-/* ---- data-scrolled header blur ramp ---- */
+@keyframes brass-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--color-brass); }
+  50%      { opacity: 0.55; box-shadow: 0 0 12px var(--color-brass-light); }
+}
+.brass-pulse {
+  animation: brass-pulse 2.4s var(--ease-standard) infinite;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: ticker-scroll 50s linear infinite;
+}
+
 header {
   transition: backdrop-filter var(--duration-base) var(--ease-standard);
 }
-[data-scrolled="true"] header {
-  backdrop-filter: blur(16px);
+[data-scrolled] header {
+  backdrop-filter: blur(20px) saturate(140%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -384,12 +506,10 @@ header {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  /* Force reveal elements visible when motion is reduced */
   .reveal {
     opacity: 1 !important;
     transform: none !important;
   }
-  .age-gate-enter {
-    animation: none;
-  }
+  .age-gate-enter { animation: none; }
+  .ticker-track   { animation: none; }
 }

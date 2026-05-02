@@ -1,7 +1,10 @@
 import Link from "next/link";
 import type { BrandSummary } from "@/types";
-import TierBadge from "./TierBadge";
-import StatusBadge from "./StatusBadge";
+
+const TIER_LABEL: Record<BrandSummary["tier"], string> = {
+  import: "Import",
+  usmade: "US-Made",
+};
 
 interface DotProps {
   on: boolean;
@@ -13,51 +16,119 @@ function Dot({ on, "aria-label": ariaLabel }: DotProps) {
     <span
       role="img"
       aria-label={ariaLabel}
-      className={`inline-block h-1.5 w-1.5 rounded-full ${
-        on ? "bg-[var(--color-amber)]" : "bg-[var(--color-line-strong)]"
-      }`}
+      className="inline-block"
+      style={{
+        width: 6,
+        height: 6,
+        borderRadius: "50%",
+        background: on
+          ? "radial-gradient(circle at 30% 30%, var(--color-pearl), var(--color-brass) 70%)"
+          : "var(--color-hairline-strong)",
+        boxShadow: on ? "0 0 6px rgba(212, 174, 110, 0.5)" : undefined,
+      }}
     />
   );
 }
 
 export default function BrandCard({ brand }: { brand: BrandSummary }) {
+  const dead = brand.status === "dead";
   return (
     <Link
       href={`/brands/${brand.slug}`}
-      className="surface lift focus-ring group flex h-full flex-col p-7 rounded-[var(--radius-md)]"
+      className="heavy-glass lift focus-ring group relative flex h-full flex-col overflow-hidden"
+      style={{
+        borderRadius: 8,
+        padding: 28,
+      }}
     >
-      {/* Top row: brand name + tier badge */}
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-2xl tracking-[-0.005em] leading-tight">
-          {brand.name}
-        </h3>
-        <TierBadge tier={brand.tier} />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute"
+        style={{
+          top: -60,
+          right: -60,
+          width: 220,
+          height: 220,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, var(--color-quartz) 0%, transparent 70%)",
+          opacity: 0.14,
+          filter: "blur(24px)",
+        }}
+      />
+
+      <div className="relative flex items-baseline justify-between gap-3">
+        <div
+          className="kicker kicker-light"
+          style={{ marginBottom: 0 }}
+        >
+          {TIER_LABEL[brand.tier]}
+        </div>
+        {dead ? (
+          <span
+            className="font-mono"
+            style={{
+              fontSize: 9,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "var(--color-ember)",
+            }}
+          >
+            Dormant
+          </span>
+        ) : null}
       </div>
 
-      {/* URL line — mono for catalog-card feel */}
-      <p className="font-mono text-2xs ink-mute mt-2 break-all">{brand.url}</p>
+      <h3
+        className="font-display ink relative mt-3"
+        style={{
+          fontSize: 32,
+          fontStyle: "italic",
+          fontWeight: 400,
+          letterSpacing: "-0.01em",
+          lineHeight: 1.05,
+        }}
+      >
+        {brand.name}
+      </h3>
 
-      {/* Status badge */}
-      <div className="mt-3">
-        <StatusBadge status={brand.status} label={brand.statusLabel} />
-      </div>
+      <p
+        className="font-mono ink-faint relative mt-2 break-all"
+        style={{ fontSize: 10, letterSpacing: "0.04em" }}
+      >
+        {brand.url}
+      </p>
 
-      {/* Capability table — 2-col grid with hairlines */}
-      <dl className="mt-5 grid grid-cols-[1fr_auto] text-sm">
-        <dt className="ink-soft py-2 border-b border-[var(--color-line-soft)]">
+      <dl
+        className="relative mt-6 grid"
+        style={{ gridTemplateColumns: "1fr auto", fontSize: 13 }}
+      >
+        <dt
+          className="ink-soft py-2"
+          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
+        >
           Control Tower
         </dt>
-        <dd className="ml-4 self-center border-b border-[var(--color-line-soft)] py-2">
+        <dd
+          className="ml-4 self-center py-2"
+          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
+        >
           <Dot
             on={brand.hasControlTower}
             aria-label={brand.hasControlTower ? "In stock" : "Out of stock"}
           />
         </dd>
 
-        <dt className="ink-soft py-2 border-b border-[var(--color-line-soft)]">
+        <dt
+          className="ink-soft py-2"
+          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
+        >
           Terp Slurper
         </dt>
-        <dd className="ml-4 self-center border-b border-[var(--color-line-soft)] py-2">
+        <dd
+          className="ml-4 self-center py-2"
+          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
+        >
           <Dot
             on={brand.hasTerpSlurper}
             aria-label={brand.hasTerpSlurper ? "In stock" : "Out of stock"}
@@ -73,15 +144,34 @@ export default function BrandCard({ brand }: { brand: BrandSummary }) {
         </dd>
       </dl>
 
-      {/* Footer row */}
-      <div className="mt-auto flex items-center justify-between pt-5 text-xs">
-        <span className="font-mono text-2xs ink-mute">
-          {brand.productCount} product{brand.productCount === 1 ? "" : "s"} ·{" "}
-          {brand.accessoryCount} accessor
-          {brand.accessoryCount === 1 ? "y" : "ies"}
+      <div
+        className="relative mt-auto flex items-end justify-between"
+        style={{
+          paddingTop: 18,
+          borderTop: "1px solid var(--color-hairline)",
+        }}
+      >
+        <span
+          className="font-mono ink-mute"
+          style={{
+            fontSize: 10,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          {brand.productCount} piece{brand.productCount === 1 ? "" : "s"}
         </span>
-        <span className="text-sm ink-soft transition-colors group-hover:text-[var(--color-amber)]">
-          Explore →
+        <span
+          className="font-display ink-brass-l"
+          style={{
+            fontSize: 22,
+            fontStyle: "italic",
+            fontWeight: 300,
+            lineHeight: 1,
+            transition: "transform var(--duration-base) var(--ease-expressive)",
+          }}
+        >
+          ↗
         </span>
       </div>
     </Link>

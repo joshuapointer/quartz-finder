@@ -40,3 +40,6 @@ yarn-error.log*
 # orchestration state
 .omc/
 
+# local sqlite seed
+/data/
+

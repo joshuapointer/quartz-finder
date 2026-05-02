@@ -2,16 +2,44 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import Logo from "./Logo";
+import { useEffect, useMemo, useState } from "react";
+import { PPMark } from "./editorial";
+import { toRoman } from "@/lib/roman";
 import { useWishlist } from "@/store/wishlist";
 
-const NAV = [
-  { href: "/shop", label: "Shop" },
-  { href: "/brands", label: "Brands" },
-  { href: "/glossary", label: "Glossary" },
-  { href: "/about", label: "About" },
+type NavItem = { href: string; label: string; n: string; group: "L" | "R" };
+
+const NAV: NavItem[] = [
+  { href: "/", label: "Index", n: "0.0", group: "L" },
+  { href: "/shop", label: "Bangers", n: "1.0", group: "L" },
+  { href: "/brands", label: "Makers", n: "2.0", group: "L" },
+  { href: "/glossary", label: "Glossary", n: "3.0", group: "R" },
+  { href: "/about", label: "House", n: "4.0", group: "R" },
 ];
+
+function formatLedgerDate(d: Date) {
+  const day = d.toLocaleDateString("en-US", { weekday: "long" });
+  const date = d.getDate();
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const month = monthNames[d.getMonth()];
+  const year = d.getFullYear();
+  // crude roman numeral conversion for years 2000-2999
+  const romanYear = toRoman(year);
+  return `${day}, ${date} ${month} ${romanYear}`;
+}
 
 export default function Header() {
   const pathname = usePathname();
@@ -19,12 +47,15 @@ export default function Header() {
   const hydrated = useWishlist((s) => s.hydrated);
   const [open, setOpen] = useState(false);
 
-  // Close drawer on route change
+  const isActive = (href: string) =>
+    href === "/"
+      ? pathname === "/"
+      : pathname === href || pathname.startsWith(`${href}/`);
+
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Esc closes mobile drawer
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -34,102 +65,307 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
+  const ledgerDate = useMemo(
+    () => (now ? formatLedgerDate(now) : null),
+    [now],
+  );
+  const leftNav = NAV.filter((n) => n.group === "L");
+  const rightNav = NAV.filter((n) => n.group === "R");
+
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[rgba(10,9,8,0.78)] backdrop-blur-md">
-      {/* Skip link */}
+    <header
+      className="sticky top-0 z-40"
+      style={{
+        background: "rgba(6,7,10,0.85)",
+        backdropFilter: "blur(20px) saturate(140%)",
+        WebkitBackdropFilter: "blur(20px) saturate(140%)",
+      }}
+    >
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[2px] focus:bg-[var(--color-amber)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--color-bg)]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-pill focus:bg-[var(--color-pearl)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--color-ink)]"
       >
         Skip to content
       </a>
 
-      <div className="container-wide flex items-center justify-between py-5">
-        <Link
-          href="/"
-          aria-label="Pillar &amp; Pearl home"
-          className="rounded-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-amber)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
-        >
-          <Logo size="sm" />
-        </Link>
+      {/* ledger strip */}
+      <div
+        className="hidden md:flex"
+        style={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "8px 32px",
+          borderBottom: "1px solid var(--color-hairline)",
+          fontFamily: "var(--font-mono)",
+          fontSize: 9,
+          color: "var(--color-smoke)",
+          letterSpacing: "0.28em",
+          textTransform: "uppercase",
+        }}
+      >
+        <span suppressHydrationWarning>
+          Edition № 0247
+          {ledgerDate ? ` · ${ledgerDate}` : ""} · Indexed 04:12 PT
+        </span>
+        <span style={{ display: "flex", gap: 22 }}>
+          <span>$ USD</span>
+          <span>EN</span>
+          <span style={{ color: "var(--color-brass)" }}>Concierge</span>
+        </span>
+      </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-9 md:flex" aria-label="Main">
-          {NAV.map((item) => {
-            const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+      {/* main row (desktop) */}
+      <div
+        className="hidden md:grid"
+        style={{
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          padding: "14px 32px",
+          gap: 28,
+          borderBottom: "1px solid var(--color-hairline)",
+        }}
+      >
+        <nav aria-label="Main left" style={{ display: "flex", gap: 24, alignItems: "center" }}>
+          {leftNav.map((i) => {
+            const active = isActive(i.href);
             return (
               <Link
-                key={item.href}
-                href={item.href}
+                key={i.href}
+                href={i.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative text-sm tracking-[0.04em] transition-colors focus-ring rounded-[2px] ${
-                  active
-                    ? "text-[var(--color-ink)]"
-                    : "text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
-                }`}
+                className="focus-ring"
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 6,
+                  fontFamily: "var(--font-sans)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: active ? "var(--color-pearl)" : "var(--color-bone)",
+                  paddingBottom: 4,
+                  borderBottom: active
+                    ? "1px solid var(--color-brass)"
+                    : "1px solid transparent",
+                  transition: "color var(--duration-fast) var(--ease-standard)",
+                }}
               >
-                {item.label}
-                {/* Amber underbar — active state (non-color affordance) */}
-                {active && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute -bottom-[6px] left-0 h-px w-6 bg-[var(--color-amber)]"
-                  />
-                )}
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 9,
+                    color: active ? "var(--color-brass)" : "var(--color-smoke)",
+                  }}
+                >
+                  §{i.n}
+                </span>
+                {i.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
-          {/* Wishlist control — hairline bordered, no rounded-full */}
+        <Link
+          href="/"
+          aria-label="Pillar & Pearl home"
+          className="focus-ring"
+          style={{ display: "flex", alignItems: "center", gap: 12 }}
+        >
+          <PPMark size={26} />
+          <span
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              lineHeight: 1,
+            }}
+          >
+            <span
+              className="font-display"
+              style={{
+                fontSize: 22,
+                fontWeight: 400,
+                color: "var(--color-pearl)",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Pillar{" "}
+              <em className="ink-brass-l" style={{ fontStyle: "italic", fontWeight: 300 }}>
+                &amp;
+              </em>{" "}
+              Pearl
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 8,
+                color: "var(--color-smoke)",
+                letterSpacing: "0.42em",
+                textTransform: "uppercase",
+                marginTop: 4,
+              }}
+            >
+              The Quartz Index
+            </span>
+          </span>
+        </Link>
+
+        <nav
+          aria-label="Main right"
+          style={{
+            display: "flex",
+            gap: 24,
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          {rightNav.map((i) => {
+            const active = isActive(i.href);
+            return (
+              <Link
+                key={i.href}
+                href={i.href}
+                aria-current={active ? "page" : undefined}
+                className="focus-ring"
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 6,
+                  fontFamily: "var(--font-sans)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: active ? "var(--color-pearl)" : "var(--color-bone)",
+                  paddingBottom: 4,
+                  borderBottom: active
+                    ? "1px solid var(--color-brass)"
+                    : "1px solid transparent",
+                  transition: "color var(--duration-fast) var(--ease-standard)",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 9,
+                    color: active ? "var(--color-brass)" : "var(--color-smoke)",
+                  }}
+                >
+                  §{i.n}
+                </span>
+                {i.label}
+              </Link>
+            );
+          })}
+          <span
+            aria-hidden
+            style={{
+              width: 1,
+              height: 18,
+              background: "var(--color-hairline-strong)",
+            }}
+          />
+          <Link
+            href="/shop"
+            className="focus-ring"
+            aria-label="Search the catalog"
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              color: "var(--color-pearl)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+            }}
+          >
+            Search
+          </Link>
           <Link
             href="/wishlist"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[2px] border border-[var(--color-line)] hover:border-[var(--color-line-strong)] transition-colors focus-ring"
-            aria-label={`Wishlist${hydrated && count > 0 ? ` (${count} items)` : ""}`}
+            className="focus-ring"
+            aria-label={`Bench${hydrated && count > 0 ? ` (${count} items)` : ""}`}
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              color: "var(--color-pearl)",
+              display: "flex",
+              alignItems: "baseline",
+              gap: 4,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+            }}
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+            Bench
+            <span
+              style={{
+                color: "var(--color-brass)",
+                fontFamily: "var(--font-display)",
+                fontSize: 16,
+                fontStyle: "italic",
+              }}
             >
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
-            </svg>
-            <span className="hidden text-sm text-[var(--color-ink-soft)] sm:inline">
-              Wishlist
+              ({hydrated ? count : 0})
             </span>
-            {hydrated && count > 0 ? (
-              <span className="rounded-full bg-[var(--color-amber)] text-[var(--color-bg)] text-[10px] font-medium px-1.5 leading-[18px]">
-                {count}
-              </span>
-            ) : null}
           </Link>
+        </nav>
+      </div>
 
-          {/* Mobile burger — squared, hairline border */}
+      {/* mobile row */}
+      <div className="md:hidden flex items-center justify-between border-b border-[var(--color-hairline)] px-5 py-3">
+        <Link href="/" aria-label="Pillar & Pearl home" className="focus-ring flex items-center gap-2">
+          <PPMark size={24} />
+          <span
+            className="font-display"
+            style={{ fontSize: 18, color: "var(--color-pearl)", letterSpacing: "-0.01em" }}
+          >
+            Pillar{" "}
+            <em className="ink-brass-l" style={{ fontStyle: "italic", fontWeight: 300 }}>
+              &amp;
+            </em>{" "}
+            Pearl
+          </span>
+        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/wishlist"
+            className="focus-ring inline-flex items-center gap-1 px-3 py-1.5 text-xs"
+            aria-label={`Bench${hydrated && count > 0 ? ` (${count})` : ""}`}
+            style={{
+              fontFamily: "var(--font-mono)",
+              color: "var(--color-pearl)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              border: "1px solid var(--color-hairline-strong)",
+              borderRadius: 2,
+            }}
+          >
+            Bench
+            <span style={{ color: "var(--color-brass)", fontFamily: "var(--font-display)", fontStyle: "italic" }}>
+              ({hydrated ? count : 0})
+            </span>
+          </Link>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-[2px] border border-[var(--color-line)] text-[var(--color-ink-soft)] transition-colors hover:border-[var(--color-line-strong)] hover:text-[var(--color-ink)] focus-ring md:hidden"
+            className="focus-ring inline-flex h-10 w-10 items-center justify-center"
+            style={{
+              border: "1px solid var(--color-hairline-strong)",
+              borderRadius: 2,
+              color: "var(--color-pearl)",
+            }}
           >
             <svg
-              width="18"
-              height="18"
+              width={18}
+              height={18}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.4"
               strokeLinecap="round"
-              aria-hidden="true"
+              aria-hidden
             >
               {open ? (
                 <>
@@ -148,28 +384,36 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile drawer — bookshop menu feel */}
       {open ? (
         <nav
           id="mobile-nav"
           aria-label="Mobile"
-          className="border-t border-[var(--color-line)] bg-[var(--color-bg-soft)] md:hidden"
+          className="md:hidden border-b border-[var(--color-hairline)] bg-[var(--color-ink-2)]"
         >
-          <ul className="container-wide flex flex-col py-2">
+          <ul className="flex flex-col px-5 py-2">
             {NAV.map((item) => {
-              const active =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const active = isActive(item.href);
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`block px-1 py-4 font-display text-base tracking-[-0.005em] border-b border-[var(--color-line-soft)] last:border-b-0 transition-colors ${
-                      active
-                        ? "text-[var(--color-ink)]"
-                        : "text-[var(--color-ink-soft)] hover:text-[var(--color-ink)]"
-                    }`}
+                    className="focus-ring flex items-baseline gap-3 border-b border-[var(--color-hairline-soft)] py-4 last:border-b-0"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: 22,
+                      color: active ? "var(--color-pearl)" : "var(--color-bone)",
+                    }}
                   >
+                    <span
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 10,
+                        color: active ? "var(--color-brass)" : "var(--color-smoke)",
+                      }}
+                    >
+                      §{item.n}
+                    </span>
                     {item.label}
                   </Link>
                 </li>
@@ -178,7 +422,6 @@ export default function Header() {
           </ul>
         </nav>
       ) : null}
-      {/* hairline-grad bar REMOVED per spec B.2 */}
     </header>
   );
 }
