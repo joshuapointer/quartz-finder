@@ -2,10 +2,8 @@ import Link from "next/link";
 import {
   CATEGORY_META,
   getAllProducts,
-  getBrandSummaries,
   getMetadata,
 } from "@/lib/catalog";
-import { GLOSSARY } from "@/lib/glossary";
 import {
   Caustics,
   DropCap,
@@ -50,15 +48,10 @@ function plateNumber(p: NormalizedProduct, idx: number): string {
 export default function HomePage() {
   const meta = getMetadata();
   const products = getAllProducts();
-  const brands = getBrandSummaries();
 
   const featured = products
     .filter((p) => !p.soldOut && p.priceValue != null)
-    .slice(0, 4);
-
-  const featuredBrand = brands.find(
-    (b) => b.tier === "usmade" && b.status === "active",
-  );
+    .slice(0, 3);
 
   const heroProduct = featured[0];
 
@@ -192,12 +185,6 @@ export default function HomePage() {
                   className="btn btn-primary focus-ring"
                 >
                   Browse the Index →
-                </Link>
-                <Link
-                  href="/glossary"
-                  className="btn btn-ghost focus-ring"
-                >
-                  This week&apos;s drop
                 </Link>
               </div>
             </div>
@@ -437,96 +424,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────── MAKER FEATURE — broadsheet article ───────── */}
-      {featuredBrand ? (
-        <section
-          className="bs-feat"
-          style={{ borderBottom: "1px solid var(--color-hairline)" }}
-        >
-          <div className="bs-gutter">
-            <RotatedKicker>§2 — A maker portrait</RotatedKicker>
-          </div>
-          <div
-            style={{
-              borderRight: "1px solid var(--color-hairline)",
-              position: "relative",
-              minHeight: "clamp(280px, 50vw, 480px)",
-            }}
-          >
-            <PlatePlaceholder
-              label={`${featuredBrand.name} · atelier`}
-              plate="V.004"
-              height="100%"
-            />
-          </div>
-          <div style={{ padding: "clamp(40px, 6vw, 64px) clamp(24px, 4vw, 48px)" }}>
-            <div className="kicker" style={{ marginBottom: 20 }}>
-              § Maker portrait
-            </div>
-            <h2
-              className="font-display ink"
-              style={{
-                fontSize: "clamp(40px, 5.5vw, 68px)",
-                fontWeight: 400,
-                lineHeight: 0.98,
-                letterSpacing: "-0.025em",
-                margin: 0,
-              }}
-            >
-              On{" "}
-              <em
-                className="ink-brass-l"
-                style={{ fontWeight: 400, fontStyle: "italic" }}
-              >
-                {featuredBrand.name}.
-              </em>
-            </h2>
-            <p
-              className="font-display ink-soft"
-              style={{
-                marginTop: 32,
-                fontSize: 20,
-                fontStyle: "italic",
-                fontWeight: 400,
-                lineHeight: 1.55,
-                maxWidth: 560,
-              }}
-            >
-              &ldquo;A banger ought to outlive its first owner. Else why bother
-              with the work.&rdquo;
-            </p>
-            <p
-              className="font-mono ink-faint"
-              style={{
-                marginTop: 14,
-                fontSize: 10,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-              }}
-            >
-              — {featuredBrand.name}
-            </p>
-            <Link
-              href={`/brands/${featuredBrand.slug}`}
-              className="focus-ring inline-flex items-center gap-2"
-              style={{
-                marginTop: 32,
-                fontFamily: "var(--font-sans)",
-                fontSize: 12,
-                fontWeight: 500,
-                color: "var(--color-brass-light)",
-                padding: "10px 0",
-                borderBottom: "1px solid var(--color-brass-2)",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-              }}
-            >
-              See the lineup →
-            </Link>
-          </div>
-        </section>
-      ) : null}
-
       {/* ───────── CABINET — by instrument ───────── */}
       <section
         className="bs-3"
@@ -744,102 +641,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────── GLOSSARY TEASER (preserve from old layout) ───────── */}
-      <section
-        className="bs-3"
-        style={{ borderTop: "1px solid var(--color-hairline)" }}
-      >
-        <div className="bs-gutter">
-          <RotatedKicker>§5 — Speak the dialect</RotatedKicker>
-        </div>
-        <div
-          style={{
-            padding: "64px 32px",
-            display: "grid",
-            gap: 48,
-            gridTemplateColumns: "1fr 1.4fr",
-            alignItems: "start",
-          }}
-        >
-          <div>
-            <div className="kicker" style={{ marginBottom: 14 }}>
-              Glossary
-            </div>
-            <h2
-              className="font-display ink"
-              style={{
-                fontSize: 48,
-                fontWeight: 400,
-                fontStyle: "italic",
-                margin: 0,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.05,
-              }}
-            >
-              Speak the dialect.
-            </h2>
-            <p
-              className="font-display ink-soft"
-              style={{
-                fontSize: 18,
-                fontStyle: "italic",
-                lineHeight: 1.55,
-                marginTop: 18,
-                maxWidth: 440,
-              }}
-            >
-              From terp pearls to ISO stations — the language of low-temp dabs,
-              distilled.
-            </p>
-            <Link
-              href="/glossary"
-              className="btn btn-ghost focus-ring"
-              style={{ marginTop: 28 }}
-            >
-              Full glossary →
-            </Link>
-          </div>
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {GLOSSARY.slice(0, 4).map((g) => (
-              <li
-                key={g.term}
-                style={{
-                  paddingTop: 16,
-                  paddingBottom: 16,
-                  borderTop: "1px solid var(--color-hairline-soft)",
-                }}
-              >
-                <p
-                  className="font-display ink"
-                  style={{
-                    fontSize: 22,
-                    fontWeight: 400,
-                    margin: 0,
-                    fontStyle: "italic",
-                  }}
-                >
-                  {g.term}
-                </p>
-                <p
-                  className="ink-mute"
-                  style={{
-                    fontSize: 14,
-                    marginTop: 4,
-                    lineHeight: 1.55,
-                  }}
-                >
-                  {g.short}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="bs-gutter bs-gutter-r">
-          <RotatedKicker color="var(--color-smoke)">
-            Knowledge · Folio V
-          </RotatedKicker>
-        </div>
-      </section>
     </>
   );
 }
