@@ -92,7 +92,7 @@ export default function Header() {
         Skip to content
       </a>
 
-      {/* ledger strip */}
+      {/* ledger strip — kept thin: edition + date only */}
       <div
         className="hidden md:flex"
         style={{
@@ -108,13 +108,10 @@ export default function Header() {
         }}
       >
         <span suppressHydrationWarning>
-          Edition № 0247
-          {ledgerDate ? ` · ${ledgerDate}` : ""} · Indexed 04:12 PT
+          № 0247{ledgerDate ? ` · ${ledgerDate}` : ""}
         </span>
-        <span style={{ display: "flex", gap: 22 }}>
-          <span>$ USD</span>
-          <span>EN</span>
-          <span style={{ color: "var(--color-brass)" }}>Concierge</span>
+        <span style={{ color: "var(--color-brass)" }}>
+          Indexed nightly
         </span>
       </div>
 

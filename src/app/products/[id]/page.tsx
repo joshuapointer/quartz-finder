@@ -250,34 +250,6 @@ export default async function ProductPage({ params }: Props) {
               imageAlt={product.name}
             />
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 12,
-            }}
-          >
-            {["Top down", "Profile", "Joint detail", "In rig"].map((v, i) => (
-              <div
-                key={v}
-                className="heavy-glass"
-                style={{
-                  borderRadius: 6,
-                  padding: 6,
-                  outline:
-                    i === 0 ? "1px solid var(--color-brass-light)" : "none",
-                  outlineOffset: 2,
-                }}
-              >
-                <PlatePlaceholder
-                  label={v}
-                  height={120}
-                  imageSrc={i === 0 ? heroImage : null}
-                  imageAlt={`${product.name} — ${v}`}
-                />
-              </div>
-            ))}
-          </div>
         </div>
 
         <div
@@ -541,25 +513,6 @@ export default async function ProductPage({ params }: Props) {
               Compare {vendors.length} vendors below ↓
             </Link>
 
-            <div
-              style={{
-                marginTop: 24,
-                display: "flex",
-                gap: 16,
-                flexWrap: "wrap",
-                fontFamily: "var(--font-mono)",
-                fontSize: 10,
-                color: "var(--color-bone)",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                paddingTop: 22,
-                borderTop: "1px solid var(--color-hairline)",
-              }}
-            >
-              <span>◇ Verified maker</span>
-              <span>◇ Affiliate-supported</span>
-              <span>◇ 21+ jurisdiction only</span>
-            </div>
           </div>
         </div>
       </section>
@@ -620,7 +573,7 @@ export default async function ProductPage({ params }: Props) {
           <div
             className="hidden md:grid"
             style={{
-              gridTemplateColumns: "2.4fr 1fr 1fr 1.4fr 1.4fr 1.6fr 1fr",
+              gridTemplateColumns: "2.4fr 1fr 1.6fr 0.8fr 1fr",
               padding: "18px 24px",
               borderBottom: "1px solid var(--color-hairline)",
               fontFamily: "var(--font-mono)",
@@ -632,18 +585,15 @@ export default async function ProductPage({ params }: Props) {
           >
             <span>Vendor</span>
             <span>Price</span>
-            <span>Ship</span>
             <span>Stock</span>
-            <span>ETA</span>
-            <span>Trust</span>
+            <span>Rating</span>
             <span style={{ textAlign: "right" }}>Action</span>
           </div>
           {vendors.map((v, i) => (
             <div
               key={`${v.name}-${i}`}
-              className="grid"
+              className="grid grid-cols-1 md:[grid-template-columns:2.4fr_1fr_1.6fr_0.8fr_1fr]"
               style={{
-                gridTemplateColumns: "1fr",
                 padding: "22px 24px",
                 borderBottom:
                   i < vendors.length - 1
@@ -656,103 +606,34 @@ export default async function ProductPage({ params }: Props) {
                   : "transparent",
               }}
             >
-              <div className="md:contents">
-                <div className="md:[grid-column:1] flex items-center gap-3">
-                  {v.best ? (
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: 9,
-                        color: "var(--color-ink)",
-                        background:
-                          "linear-gradient(135deg, var(--color-brass-light), var(--color-brass))",
-                        padding: "5px 9px",
-                        letterSpacing: "0.2em",
-                        borderRadius: 999,
-                        boxShadow: "0 0 12px rgba(212,174,110,0.5)",
-                      }}
-                    >
-                      BEST
-                    </span>
-                  ) : null}
-                  <div>
-                    <div
-                      className="font-display ink"
-                      style={{
-                        fontSize: 22,
-                        fontStyle: "italic",
-                        fontWeight: 400,
-                      }}
-                    >
-                      {v.name}
-                      {v.signed ? (
-                        <span
-                          className="ink-brass-l"
-                          style={{
-                            fontSize: 11,
-                            marginLeft: 8,
-                            fontStyle: "normal",
-                          }}
-                        >
-                          ★ maker-signed
-                        </span>
-                      ) : null}
-                    </div>
-                    <div
-                      className="font-mono ink-faint"
-                      style={{
-                        fontSize: 10,
-                        letterSpacing: "0.16em",
-                        textTransform: "uppercase",
-                        marginTop: 2,
-                      }}
-                    >
-                      {v.loc}
-                    </div>
-                  </div>
-                </div>
-                <div className="md:[grid-column:2]">
+              <div className="flex items-center gap-3">
+                {v.best ? (
                   <span
-                    className="font-display ink tabular-nums"
+                    className="font-mono"
                     style={{
-                      fontSize: 24,
-                      letterSpacing: "-0.025em",
-                      fontWeight: 300,
+                      fontSize: 9,
+                      color: "var(--color-ink)",
+                      background:
+                        "linear-gradient(135deg, var(--color-brass-light), var(--color-brass))",
+                      padding: "5px 9px",
+                      letterSpacing: "0.2em",
+                      borderRadius: 999,
+                      boxShadow: "0 0 12px rgba(212,174,110,0.5)",
                     }}
                   >
-                    ${v.price}
+                    BEST
                   </span>
-                </div>
-                <div
-                  className="md:[grid-column:3] font-mono"
-                  style={{
-                    fontSize: 12,
-                    color:
-                      v.ship === "$0"
-                        ? "var(--color-brass-light)"
-                        : "var(--color-pearl-2)",
-                  }}
-                >
-                  {v.ship === "$0" ? "Free" : v.ship}
-                </div>
-                <div
-                  className="md:[grid-column:4] ink-soft"
-                  style={{ fontSize: 12 }}
-                >
-                  {v.stock}
-                </div>
-                <div
-                  className="md:[grid-column:5] ink-soft"
-                  style={{ fontSize: 12 }}
-                >
-                  {v.eta}
-                </div>
-                <div className="md:[grid-column:6]">
+                ) : null}
+                <div>
                   <div
-                    className="font-mono ink-brass-l"
-                    style={{ fontSize: 12 }}
+                    className="font-display ink"
+                    style={{
+                      fontSize: 22,
+                      fontStyle: "italic",
+                      fontWeight: 400,
+                    }}
                   >
-                    ★ {v.rating}
+                    {v.name}
                   </div>
                   <div
                     className="font-mono ink-faint"
@@ -763,10 +644,67 @@ export default async function ProductPage({ params }: Props) {
                       marginTop: 2,
                     }}
                   >
-                    {v.reviews.toLocaleString()} reviews
+                    {v.loc}
                   </div>
                 </div>
-                <div className="md:[grid-column:7] md:text-right">
+              </div>
+              <div>
+                <span
+                  className="font-display ink tabular-nums"
+                  style={{
+                    fontSize: 24,
+                    letterSpacing: "-0.025em",
+                    fontWeight: 300,
+                  }}
+                >
+                  ${v.price}
+                </span>
+                {v.ship === "$0" ? (
+                  <div
+                    className="font-mono ink-brass-l"
+                    style={{
+                      fontSize: 9,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      marginTop: 2,
+                    }}
+                  >
+                    + Free ship
+                  </div>
+                ) : (
+                  <div
+                    className="font-mono ink-faint"
+                    style={{
+                      fontSize: 9,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      marginTop: 2,
+                    }}
+                  >
+                    + {v.ship} ship
+                  </div>
+                )}
+              </div>
+              <div>
+                <div className="ink-soft" style={{ fontSize: 13 }}>
+                  {v.stock}
+                </div>
+                <div
+                  className="font-mono ink-faint"
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    marginTop: 2,
+                  }}
+                >
+                  {v.eta}
+                </div>
+              </div>
+              <div className="font-mono ink-brass-l" style={{ fontSize: 13 }}>
+                ★ {v.rating}
+              </div>
+              <div className="md:text-right">
                   {v.href ? (
                     <a
                       href={v.href}
@@ -814,7 +752,6 @@ export default async function ProductPage({ params }: Props) {
                     </button>
                   )}
                 </div>
-              </div>
             </div>
           ))}
         </div>
@@ -864,25 +801,8 @@ export default async function ProductPage({ params }: Props) {
                 <SpecRow k="Maker" v={product.brandName} />
                 <SpecRow k="Tier" v={brand?.tier === "usmade" ? "US-Made" : "Import"} />
                 <SpecRow k="Instrument" v={product.categoryLabel} />
-                <SpecRow
-                  k="Status"
-                  v={
-                    product.soldOut
-                      ? "Sold out"
-                      : product.brandStatus === "active"
-                        ? "In stock — verify on site"
-                        : "Brand dormant"
-                  }
-                />
                 <SpecRow k="MSRP" v={product.price} />
-                {product.originalPrice ? (
-                  <SpecRow k="Original price" v={product.originalPrice} />
-                ) : null}
                 <SpecRow k="Best vendor" v={best?.name ?? "—"} />
-                <SpecRow
-                  k="Indexed"
-                  v={indexedLabel}
-                />
               </div>
             </div>
             <div>
@@ -928,67 +848,6 @@ export default async function ProductPage({ params }: Props) {
                 }}
               >
                 — House Editor · Issue 01
-              </div>
-
-              <div
-                style={{
-                  marginTop: 48,
-                  paddingTop: 28,
-                  borderTop: "1px solid var(--color-hairline)",
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: 24,
-                }}
-              >
-                {[
-                  [`${best?.rating ?? "4.9"}`, "Bench rating", `${vendors.length} vendors`],
-                  [
-                    `$${(corridor.high - corridor.low) || 0}`,
-                    "Corridor span",
-                    `low → high`,
-                  ],
-                  [
-                    `${vendors.filter((v) => v.ship === "$0").length}/${vendors.length}`,
-                    "Free shipping",
-                    "vendor count",
-                  ],
-                ].map(([k, l, s]) => (
-                  <div key={l}>
-                    <div
-                      className="font-display ink tabular-nums"
-                      style={{
-                        fontSize: 48,
-                        letterSpacing: "-0.03em",
-                        fontWeight: 200,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {k}
-                    </div>
-                    <div
-                      className="font-mono ink-brass-l"
-                      style={{
-                        fontSize: 10,
-                        letterSpacing: "0.22em",
-                        textTransform: "uppercase",
-                        marginTop: 6,
-                      }}
-                    >
-                      {l}
-                    </div>
-                    <div
-                      className="font-mono ink-faint"
-                      style={{
-                        fontSize: 10,
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        marginTop: 4,
-                      }}
-                    >
-                      {s}
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>

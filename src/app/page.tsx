@@ -9,7 +9,6 @@ import { GLOSSARY } from "@/lib/glossary";
 import {
   Caustics,
   DropCap,
-  PearlDot,
   PlatePlaceholder,
   PriceCorridor,
   QuartzOrb,
@@ -86,21 +85,8 @@ export default function HomePage() {
   const stats: { value: string; label: string }[] = [
     { value: products.length.toLocaleString(), label: "pieces" },
     { value: meta.summary.active_brands.toString(), label: "lapidaries" },
-    {
-      value: meta.summary.usmade_tier_count.toString(),
-      label: "US-made houses",
-    },
-    { value: corridor, label: "corridor" },
+    { value: corridor, label: "price corridor" },
   ];
-
-  const tickerItems = products
-    .filter((p) => p.priceValue != null)
-    .slice(0, 8)
-    .map((p, i) => ({
-      name: `${p.brandName} ${p.name}`,
-      price: p.price,
-      delta: ["+1", "−2", "0", "+4", "−3", "0", "+8", "−1"][i % 8],
-    }));
 
   return (
     <>
@@ -190,7 +176,7 @@ export default function HomePage() {
             </div>
             <div className="reveal" style={{ marginTop: 48, maxWidth: 460 }}>
               <DropCap>
-                {`${products.length.toLocaleString()} pieces from ${meta.summary.active_brands} lapidaries — shopped against every authorized vendor in the States, indexed each night at the witching hour, and laid out for your bench in the manner of a fishmonger's slab.`}
+                {`${products.length.toLocaleString()} pieces from ${meta.summary.active_brands} lapidaries, shopped against authorized vendors and indexed each night.`}
               </DropCap>
               <div
                 style={{
@@ -238,54 +224,33 @@ export default function HomePage() {
               }}
             >
               <QuartzOrb size={520} />
-              <div
-                aria-hidden
-                className="font-display ink-brass-l"
-                style={{
-                  position: "absolute",
-                  top: 32,
-                  right: 36,
-                  fontSize: 200,
-                  fontWeight: 300,
-                  fontStyle: "italic",
-                  opacity: 0.18,
-                  lineHeight: 0.85,
-                  letterSpacing: "-0.05em",
-                }}
-              >
-                0247
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 24,
-                  left: 36,
-                  right: 36,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-end",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 9,
-                  color: "var(--color-bone)",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                }}
-              >
-                <span>
-                  {heroProduct
-                    ? `Plate ${plateNumber(heroProduct, 0)} · ${heroProduct.brandName} ${heroProduct.name}`
-                    : "Plate III.247"}
-                </span>
-                {heroProduct ? (
-                  <Link
-                    href={`/products/${heroProduct.id}`}
-                    className="focus-ring"
-                    style={{ color: "var(--color-brass)" }}
-                  >
+              {heroProduct ? (
+                <Link
+                  href={`/products/${heroProduct.id}`}
+                  className="focus-ring"
+                  style={{
+                    position: "absolute",
+                    bottom: 24,
+                    left: 36,
+                    right: 36,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 9,
+                    color: "var(--color-bone)",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  <span>
+                    {heroProduct.brandName} {heroProduct.name}
+                  </span>
+                  <span style={{ color: "var(--color-brass)" }}>
                     Now showing →
-                  </Link>
-                ) : null}
-              </div>
+                  </span>
+                </Link>
+              ) : null}
             </div>
             <div className="bs-stats-4">
               {stats.map((s, i) => (
@@ -356,7 +321,7 @@ export default function HomePage() {
           >
             <div>
               <div className="kicker" style={{ marginBottom: 12 }}>
-                Folio I · Plates III.247 → III.250
+                § On the bench
               </div>
               <h2
                 className="font-display"
@@ -370,7 +335,7 @@ export default function HomePage() {
                   lineHeight: 1,
                 }}
               >
-                On the bench,{" "}
+                Featured{" "}
                 <span style={{ fontStyle: "normal" }}>this week.</span>
               </h2>
             </div>
@@ -434,20 +399,14 @@ export default function HomePage() {
                         fontSize: 26,
                         fontStyle: "italic",
                         fontWeight: 400,
-                        lineHeight: 1.0,
+                        lineHeight: 1.05,
                         letterSpacing: "-0.01em",
                       }}
                     >
                       {p.name}
                     </div>
-                    <div
-                      className="font-mono ink-mute"
-                      style={{ fontSize: 10, marginTop: 8 }}
-                    >
-                      {p.categoryLabel}
-                    </div>
                   </div>
-                  <div style={{ marginTop: 8 }}>
+                  <div style={{ marginTop: "auto" }}>
                     <PriceCorridor
                       low={corridor.low}
                       high={corridor.high}
@@ -460,13 +419,10 @@ export default function HomePage() {
                         color: "var(--color-smoke)",
                         letterSpacing: "0.18em",
                         textTransform: "uppercase",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginTop: 6,
+                        marginTop: 8,
                       }}
                     >
-                      <span>↓ best of {vendors}</span>
-                      <span>{vendors} vendors</span>
+                      {vendors} vendors
                     </div>
                   </div>
                 </Link>
@@ -505,59 +461,54 @@ export default function HomePage() {
           </div>
           <div style={{ padding: "clamp(40px, 6vw, 64px) clamp(24px, 4vw, 48px)" }}>
             <div className="kicker" style={{ marginBottom: 20 }}>
-              Plate V.004 · Maker · Issue 01
+              § Maker portrait
             </div>
             <h2
               className="font-display ink"
               style={{
-                fontSize: "clamp(48px, 6vw, 76px)",
+                fontSize: "clamp(40px, 5.5vw, 68px)",
                 fontWeight: 300,
-                lineHeight: 0.92,
+                lineHeight: 0.95,
                 letterSpacing: "-0.03em",
                 margin: 0,
               }}
             >
-              On the slow turning of{" "}
               <em
                 className="ink-brass-l"
                 style={{ fontWeight: 300, fontStyle: "italic" }}
               >
-                {featuredBrand.name},
-              </em>{" "}
-              &amp; why a banger should outlive its first owner.
+                {featuredBrand.name}
+              </em>
+              <span style={{ color: "var(--color-pearl-2)" }}>
+                {" "}
+                — why a banger should outlive its first owner.
+              </span>
             </h2>
-            <div
-              className="ink-mute"
+            <p
+              className="font-display ink-soft"
               style={{
-                marginTop: 40,
-                columnCount: 2,
-                columnGap: 32,
-                fontFamily: "var(--font-sans)",
-                fontSize: 14,
-                lineHeight: 1.75,
+                marginTop: 32,
+                fontSize: 20,
+                fontStyle: "italic",
                 fontWeight: 400,
+                lineHeight: 1.55,
+                maxWidth: 560,
               }}
             >
-              <p style={{ margin: "0 0 14px" }}>
-                <span className="drop-cap-letter">E</span>
-                ight months ago we sat with the lead lapidary at a small bench
-                on the north coast. He was lathing his three-hundredth piece
-                that year and showed no urgency to finish before the kettle
-                boiled. We took notes. They are below.
-              </p>
-              <p style={{ margin: "0 0 14px" }}>
-                &ldquo;A banger ought to outlive its first owner,&rdquo; he
-                said, holding one to the diffused window light. &ldquo;Else why
-                bother with the work.&rdquo; The pieces are round-bottomed by
-                hand; he refuses templates.
-              </p>
-              <p style={{ margin: 0 }}>
-                We commissioned four. They take fourteen weeks each. He counts
-                them as he goes, in chalk, on a slate behind the bench — a
-                habit, he tells us, learned from his grandfather, who counted
-                herring.
-              </p>
-            </div>
+              &ldquo;A banger ought to outlive its first owner. Else why bother
+              with the work.&rdquo;
+            </p>
+            <p
+              className="font-mono ink-faint"
+              style={{
+                marginTop: 14,
+                fontSize: 10,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+              }}
+            >
+              — Lead lapidary, {featuredBrand.name}
+            </p>
             <Link
               href={`/brands/${featuredBrand.slug}`}
               className="focus-ring inline-flex items-center gap-2"
@@ -573,7 +524,7 @@ export default function HomePage() {
                 textTransform: "uppercase",
               }}
             >
-              Read the dispatch in full →
+              See the lineup →
             </Link>
           </div>
         </section>
@@ -595,7 +546,7 @@ export default function HomePage() {
             }}
           >
             <div className="kicker" style={{ marginBottom: 12 }}>
-              Folio III · Three instruments
+              § By instrument
             </div>
             <h2
               className="font-display ink"
@@ -608,8 +559,7 @@ export default function HomePage() {
                 lineHeight: 1,
               }}
             >
-              The cabinet,{" "}
-              <span style={{ fontStyle: "normal" }}>by instrument.</span>
+              <span style={{ fontStyle: "normal" }}>The</span> cabinet.
             </h2>
           </div>
 
@@ -693,81 +643,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────── TICKER ───────── */}
-      <section
-        style={{
-          background: "var(--color-ink-2)",
-          padding: "24px 32px",
-          borderBottom: "1px solid var(--color-hairline)",
-          display: "grid",
-          gridTemplateColumns: "180px 1fr",
-          alignItems: "center",
-          gap: 32,
-        }}
-      >
-        <div
-          className="kicker"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <span
-            aria-hidden
-            className="brass-pulse"
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: "var(--color-brass)",
-              display: "inline-block",
-            }}
-          />
-          Live · 04:12 PT
-        </div>
-        <div style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
-          <div
-            className="ticker-track"
-            style={{
-              display: "inline-flex",
-              gap: 36,
-              fontFamily: "var(--font-mono)",
-              fontSize: 12,
-              color: "var(--color-pearl-2)",
-              willChange: "transform",
-            }}
-          >
-            {[...tickerItems, ...tickerItems].map((t, i) => (
-              <span
-                key={`${t.name}-${i}`}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <span style={{ color: "var(--color-bone)" }}>{t.name}</span>
-                <span style={{ color: "var(--color-pearl)", fontWeight: 500 }}>
-                  {t.price}
-                </span>
-                <span
-                  style={{
-                    color: t.delta.startsWith("+")
-                      ? "var(--color-brass-light)"
-                      : t.delta.startsWith("−")
-                        ? "var(--color-ember)"
-                        : "var(--color-smoke)",
-                  }}
-                >
-                  {t.delta}
-                </span>
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ───────── DISPATCH — final folio ───────── */}
       <section
         className="bs-3"
@@ -775,33 +650,27 @@ export default function HomePage() {
       >
         <Caustics opacity={0.5} />
         <div className="bs-gutter" style={{ position: "relative" }}>
-          <RotatedKicker>§4 — The Dispatch · Once a fortnight</RotatedKicker>
+          <RotatedKicker>§ The Dispatch · Once a fortnight</RotatedKicker>
         </div>
         <div
           style={{
-            padding: "120px 32px",
+            padding: "clamp(64px, 10vw, 120px) clamp(20px, 4vw, 32px)",
             textAlign: "center",
             position: "relative",
           }}
         >
-          <div
-            style={{ display: "inline-flex" }}
-            aria-hidden
-          >
-            <QuartzOrb size={140} />
-          </div>
-          <div className="kicker" style={{ marginTop: 36 }}>
-            Folio IV · Final
+          <div style={{ display: "inline-flex" }} aria-hidden>
+            <QuartzOrb size={120} />
           </div>
           <h2
             className="font-display ink"
             style={{
-              fontSize: "clamp(56px, 8vw, 96px)",
+              fontSize: "clamp(48px, 7vw, 84px)",
               fontWeight: 300,
               lineHeight: 0.95,
               letterSpacing: "-0.04em",
-              margin: "20px auto 0",
-              maxWidth: 880,
+              margin: "32px auto 0",
+              maxWidth: 720,
             }}
           >
             <em
@@ -810,30 +679,27 @@ export default function HomePage() {
             >
               The Dispatch.
             </em>
-            <br />
-            Once a fortnight, never more.
           </h2>
           <p
             className="font-display ink-soft"
             style={{
-              fontSize: 22,
+              fontSize: 20,
               fontStyle: "italic",
               fontWeight: 400,
               lineHeight: 1.55,
-              maxWidth: 560,
-              margin: "24px auto 0",
+              maxWidth: 480,
+              margin: "20px auto 0",
             }}
           >
-            Drops, restocks, &amp; longer reading on materials and method.
-            Members see new bangers six hours before the public.
+            Drops &amp; restocks, once a fortnight. No spam.
           </p>
           <form
             action="#"
             style={{
               display: "flex",
               gap: 6,
-              maxWidth: 540,
-              margin: "32px auto 0",
+              maxWidth: 480,
+              margin: "28px auto 0",
               borderBottom: "1px solid var(--color-brass-2)",
               paddingBottom: 8,
             }}
@@ -849,7 +715,7 @@ export default function HomePage() {
                 padding: "6px 0",
                 color: "var(--color-pearl)",
                 fontFamily: "var(--font-display)",
-                fontSize: 22,
+                fontSize: 20,
                 outline: "none",
                 fontStyle: "italic",
                 fontWeight: 300,
@@ -863,41 +729,20 @@ export default function HomePage() {
                 border: "none",
                 color: "var(--color-brass-light)",
                 fontFamily: "var(--font-display)",
-                fontSize: 28,
+                fontSize: 24,
                 fontStyle: "italic",
                 cursor: "pointer",
                 padding: "0 6px",
                 fontWeight: 300,
               }}
             >
-              Subscribe →
+              →
             </button>
           </form>
-          <div
-            style={{
-              marginTop: 64,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 24,
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              color: "var(--color-smoke)",
-              letterSpacing: "0.32em",
-              textTransform: "uppercase",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            <span>4,212 readers</span>
-            <PearlDot size={3} color="var(--color-smoke)" />
-            <span>26 issues to date</span>
-            <PearlDot size={3} color="var(--color-smoke)" />
-            <span>0 unsubscribes</span>
-          </div>
         </div>
         <div className="bs-gutter bs-gutter-r" style={{ position: "relative" }}>
           <RotatedKicker color="var(--color-smoke)">
-            End of folio · Set in Fraunces
+            End of folio
           </RotatedKicker>
         </div>
       </section>

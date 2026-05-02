@@ -426,7 +426,7 @@ input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.30); }
   }
   .bs-stats-4 {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
   .bs-cabinet-row {
     display: grid;
@@ -448,9 +448,7 @@ input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.30); }
     .bs-feat {
       grid-template-columns: var(--bs-gutter) minmax(0, 2fr) minmax(0, 3fr) var(--bs-gutter);
     }
-    .bs-stats-4 {
-      grid-template-columns: repeat(4, 1fr);
-    }
+    /* bs-stats-4 already auto-fits via mobile-first rule */
     .bs-cabinet-row {
       grid-template-columns: 60px 240px 1fr 240px 60px;
       gap: 16px;

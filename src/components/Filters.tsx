@@ -34,10 +34,6 @@ const SORT_OPTIONS: {
   { value: "price-desc", label: "Price ↓" },
 ];
 
-const AVAILABILITY_OPTIONS: { id: string; label: string; value: boolean }[] = [
-  { id: "any", label: "In stock — any", value: false },
-  { id: "active", label: "In stock — active brand", value: true },
-];
 
 const PAGE_SIZE = 9;
 
@@ -177,13 +173,6 @@ export default function Filters({ products, initialCategory }: Props) {
     );
   }, [products]);
   const visibleMakers = showAllMakers ? allMakers : allMakers.slice(0, 5);
-
-  // priceVals for slider visualization
-  const priceVals = products
-    .map((p) => p.priceValue)
-    .filter((v): v is number => v != null);
-  const priceLo = priceVals.length ? Math.min(...priceVals) : 0;
-  const priceHi = priceVals.length ? Math.max(...priceVals) : 1;
 
   // active filter chips
   type Chip = { id: string; label: string; clear: () => void };
@@ -398,96 +387,16 @@ export default function Filters({ products, initialCategory }: Props) {
           )}
         </FilterGroup>
 
-        {/* Price slider — visualization only */}
-        <div
-          style={{
-            borderBottom: "1px solid var(--color-hairline)",
-            padding: "18px 0",
-          }}
-        >
-          <div
-            className="kicker kicker-light"
-            style={{ marginBottom: 16 }}
-          >
-            Price · USD
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              color: "var(--color-pearl)",
-              marginBottom: 12,
-            }}
-          >
-            <span>${priceLo}</span>
-            <span>${priceHi}</span>
-          </div>
-          <div
-            aria-hidden
-            style={{
-              height: 4,
-              background: "var(--color-ink-4)",
-              position: "relative",
-              borderRadius: 999,
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                background:
-                  "linear-gradient(90deg, var(--color-brass-light), var(--color-brass))",
-                borderRadius: 999,
-                boxShadow: "0 0 8px var(--color-brass)",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                left: 0,
-                top: -4,
-                width: 12,
-                height: 12,
-                background: "var(--color-pearl)",
-                borderRadius: "50%",
-                transform: "translateX(-50%)",
-                boxShadow: "0 0 0 1px var(--color-brass)",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: 0,
-                top: -4,
-                width: 12,
-                height: 12,
-                background: "var(--color-pearl)",
-                borderRadius: "50%",
-                transform: "translateX(50%)",
-                boxShadow: "0 0 0 1px var(--color-brass)",
-              }}
-            />
-          </div>
-        </div>
-
         {/* Availability */}
         <FilterGroup label="Availability">
-          {AVAILABILITY_OPTIONS.map((o) => (
-            <CheckRow
-              key={o.id}
-              label={o.label}
-              active={inStock === o.value}
-              onClick={() => {
-                setInStock(o.value);
-                setPage(1);
-              }}
-            />
-          ))}
+          <CheckRow
+            label="In stock only"
+            active={inStock}
+            onClick={() => {
+              setInStock(!inStock);
+              setPage(1);
+            }}
+          />
         </FilterGroup>
       </aside>
 

@@ -1,46 +1,21 @@
 import Link from "next/link";
 import { getMetadata } from "@/lib/catalog";
-import { toRoman } from "@/lib/roman";
 
-const COLS: { h: string; items: { label: string; href?: string }[] }[] = [
+const COLS: { h: string; items: { label: string; href: string }[] }[] = [
   {
-    h: "§1 Marketplace",
+    h: "§ Index",
     items: [
-      { label: "All Quartz", href: "/shop" },
-      { label: "New This Week", href: "/shop" },
-      { label: "By Category", href: "/shop" },
-      { label: "By Maker", href: "/brands" },
-      { label: "API", href: "/api/products" },
+      { label: "Bangers", href: "/shop" },
+      { label: "Makers", href: "/brands" },
+      { label: "Bench", href: "/wishlist" },
     ],
   },
   {
-    h: "§2 Knowledge",
+    h: "§ Knowledge",
     items: [
-      { label: "Quartz Index", href: "/glossary" },
       { label: "Glossary", href: "/glossary" },
-      { label: "Heat & Timing", href: "/glossary" },
-      { label: "Authentication" },
-      { label: "Care" },
-    ],
-  },
-  {
-    h: "§3 Bench",
-    items: [
-      { label: "My Bench", href: "/wishlist" },
-      { label: "Saved", href: "/wishlist" },
-      { label: "Concierge" },
-      { label: "Trade-In" },
-      { label: "Orders" },
-    ],
-  },
-  {
-    h: "§4 House",
-    items: [
-      { label: "About", href: "/about" },
-      { label: "Editorial" },
-      { label: "Press" },
-      { label: "Contact" },
-      { label: "Disclosures" },
+      { label: "House", href: "/about" },
+      { label: "JSON API", href: "/api/products" },
     ],
   },
 ];
@@ -134,12 +109,11 @@ export default function Footer() {
                 fontWeight: 400,
                 fontStyle: "italic",
                 lineHeight: 1.6,
-                maxWidth: 560,
+                maxWidth: 480,
               }}
             >
-              &ldquo;Set in Fraunces and Geist. Printed in dark mode. Indexed
-              nightly against the eighteen authorized vendors of these United
-              States. Issued every other Thursday to those who keep a bench.&rdquo;
+              &ldquo;Curated by craft, indexed by price. Independent —
+              affiliate-supported, never sponsored.&rdquo;
             </p>
 
             <div className="md:text-right">
@@ -184,7 +158,7 @@ export default function Footer() {
 
         {/* link grid */}
         <div
-          className="grid grid-cols-2 gap-8 py-8 md:grid-cols-4"
+          className="grid grid-cols-2 gap-8 py-8"
           style={{
             borderBottom: "1px solid var(--color-hairline)",
           }}
@@ -203,30 +177,20 @@ export default function Footer() {
                 {col.h}
               </div>
               <ul className="flex flex-col gap-2">
-                {col.items.map((item) =>
-                  item.href ? (
-                    <li key={item.label}>
-                      <Link
-                        href={item.href}
-                        className="focus-ring ink-soft hover:ink-brass-l transition-colors"
-                        style={{
-                          fontFamily: "var(--font-sans)",
-                          fontSize: 13,
-                        }}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ) : (
-                    <li
-                      key={item.label}
-                      className="ink-soft"
-                      style={{ fontFamily: "var(--font-sans)", fontSize: 13 }}
+                {col.items.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className="focus-ring ink-soft transition-colors"
+                      style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: 13,
+                      }}
                     >
                       {item.label}
-                    </li>
-                  ),
-                )}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
@@ -243,9 +207,8 @@ export default function Footer() {
             textTransform: "uppercase",
           }}
         >
-          <span>© {toRoman(year)} · Vol. 01 · No. 0247</span>
-          <span className="md:text-center">{meta.disclaimer}</span>
-          <span className="md:text-right">Privacy / Terms / A11y</span>
+          <span>© {year} Pillar &amp; Pearl</span>
+          <span className="md:text-right">{meta.disclaimer}</span>
         </div>
       </div>
     </footer>
