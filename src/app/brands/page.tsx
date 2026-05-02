@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { getBrandSummaries, getMetadata } from "@/lib/catalog";
 import BrandCard from "@/components/BrandCard";
+import { Caustics, RotatedKicker } from "@/components/editorial";
 
 export const metadata: Metadata = {
-  title: "Brands · Glass houses & artisans",
+  title: "Makers · Glass houses & lapidaries",
   description:
-    "Every banger brand we track — import, US-made, active, dormant. Curated, ranked by craft.",
+    "Every banger maker we track — import, US-made, active, dormant. Curated by craft, not algorithm.",
 };
 
 export default function BrandsPage() {
@@ -15,47 +16,175 @@ export default function BrandsPage() {
   const imports = brands.filter((b) => b.tier === "import");
 
   return (
-    <div className="container-wide section-y-lg">
-      <p className="eyebrow">Directory</p>
-      <div className="rule mt-2" />
-      <h1 className="font-display mt-6 text-4xl md:text-5xl">
-        {meta.summary.total_brands} brands tracked
-      </h1>
-      <p className="prose-measure ink-soft mt-6 text-lg">
-        {meta.summary.active_brands} actively shipping ·{" "}
-        {meta.summary.usmade_tier_count} US-made artisans ·{" "}
-        {meta.summary.import_tier_count} import-tier value picks.
-      </p>
-
-      <section className="mt-24">
-        <div className="flex items-baseline justify-between border-b border-[var(--color-line)] pb-4">
-          <h2 className="font-display text-3xl">US-Made</h2>
-          <span className="font-mono ink-mute text-xs uppercase tracking-[0.04em]">
-            {meta.tiers.usmade.price_range}
-          </span>
+    <>
+      {/* HERO */}
+      <section style={{ position: "relative", overflow: "hidden" }}>
+        <Caustics opacity={0.5} />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
+            borderBottom: "1px solid var(--color-hairline)",
+          }}
+        >
+          <div className="bs-gutter">
+            <RotatedKicker>
+              § Makers · {meta.summary.total_brands} houses on file
+            </RotatedKicker>
+          </div>
+          <div style={{ padding: "80px 32px 56px", position: "relative" }}>
+            <div className="kicker" style={{ marginBottom: 16 }}>
+              Folio II · The Lapidaries · Indexed nightly
+            </div>
+            <h1
+              className="font-display ink"
+              style={{
+                fontSize: "clamp(64px, 9vw, 132px)",
+                fontWeight: 200,
+                lineHeight: 0.9,
+                letterSpacing: "-0.04em",
+                margin: 0,
+              }}
+            >
+              {meta.summary.total_brands}{" "}
+              <em
+                className="ink-brass-l"
+                style={{ fontStyle: "italic", fontWeight: 300 }}
+              >
+                lapidaries,
+              </em>
+              <br />
+              one bench.
+            </h1>
+            <p
+              className="font-display ink-soft"
+              style={{
+                fontSize: 22,
+                fontStyle: "italic",
+                fontWeight: 400,
+                lineHeight: 1.5,
+                marginTop: 28,
+                maxWidth: 640,
+              }}
+            >
+              {meta.summary.active_brands} actively shipping ·{" "}
+              {meta.summary.usmade_tier_count} US-made artisans ·{" "}
+              {meta.summary.import_tier_count} import-tier value picks. Curated
+              by craft, not algorithm.
+            </p>
+          </div>
+          <div className="bs-gutter bs-gutter-r">
+            <RotatedKicker color="var(--color-smoke)">
+              Two tiers · One standard
+            </RotatedKicker>
+          </div>
         </div>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      </section>
+
+      {/* US-MADE */}
+      <Section
+        sectionLabel="§1 — US-Made · Heritage glass houses"
+        gutterRight="Hand-lathed in the States"
+        kicker={`Folio · ${usmade.length} US-made houses · ${meta.tiers.usmade.price_range}`}
+        title="US-Made,"
+        titleEm="hand-lathed."
+      >
+        <div
+          className="grid gap-3"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          }}
+        >
           {usmade.map((b) => (
             <BrandCard key={b.slug} brand={b} />
           ))}
         </div>
-      </section>
+      </Section>
 
-      <div className="rule my-24" />
-
-      <section>
-        <div className="flex items-baseline justify-between border-b border-[var(--color-line)] pb-4">
-          <h2 className="font-display text-3xl">Import</h2>
-          <span className="font-mono ink-mute text-xs uppercase tracking-[0.04em]">
-            {meta.tiers.import.price_range}
-          </span>
-        </div>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* IMPORT */}
+      <Section
+        sectionLabel="§2 — Import · Value-tier workhorses"
+        gutterRight="Curated import · vetted at the dock"
+        kicker={`Folio · ${imports.length} import houses · ${meta.tiers.import.price_range}`}
+        title="Import,"
+        titleEm="curated."
+      >
+        <div
+          className="grid gap-3"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          }}
+        >
           {imports.map((b) => (
             <BrandCard key={b.slug} brand={b} />
           ))}
         </div>
-      </section>
-    </div>
+      </Section>
+    </>
+  );
+}
+
+function Section({
+  sectionLabel,
+  gutterRight,
+  kicker,
+  title,
+  titleEm,
+  children,
+}: {
+  sectionLabel: string;
+  gutterRight: string;
+  kicker: string;
+  title: string;
+  titleEm: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      style={{
+        display: "grid",
+        gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
+        borderBottom: "1px solid var(--color-hairline)",
+      }}
+    >
+      <div className="bs-gutter">
+        <RotatedKicker>{sectionLabel}</RotatedKicker>
+      </div>
+      <div>
+        <div
+          style={{
+            padding: "40px 32px 28px",
+            borderBottom: "1px solid var(--color-hairline)",
+          }}
+        >
+          <div className="kicker" style={{ marginBottom: 12 }}>
+            {kicker}
+          </div>
+          <h2
+            className="font-display ink"
+            style={{
+              fontSize: "clamp(40px, 6vw, 64px)",
+              fontWeight: 300,
+              fontStyle: "italic",
+              margin: 0,
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+            }}
+          >
+            <span style={{ fontStyle: "normal" }}>{title}</span>{" "}
+            <em
+              className="ink-brass-l"
+              style={{ fontStyle: "italic", fontWeight: 300 }}
+            >
+              {titleEm}
+            </em>
+          </h2>
+        </div>
+        <div style={{ padding: 32 }}>{children}</div>
+      </div>
+      <div className="bs-gutter bs-gutter-r">
+        <RotatedKicker color="var(--color-smoke)">{gutterRight}</RotatedKicker>
+      </div>
+    </section>
   );
 }

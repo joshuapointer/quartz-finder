@@ -1,26 +1,73 @@
 import type { Metadata } from "next";
 import WishlistView from "./WishlistView";
 import { getAllProducts } from "@/lib/catalog";
+import { Caustics, RotatedKicker } from "@/components/editorial";
 
 export const metadata: Metadata = {
-  title: "Wishlist",
+  title: "Bench",
   description: "Your saved quartz pieces, all in one place.",
 };
 
 export default function WishlistPage() {
   const products = getAllProducts();
   return (
-    <div className="container-base section-y-lg">
-      <p className="eyebrow">Saved</p>
-      <div className="rule mt-2" />
-      <h1 className="font-display mt-6 text-4xl md:text-5xl">Your wishlist</h1>
-      <p className="font-mono ink-mute mt-4 text-xs">
-        Stored locally on this device. Clear cache and it&apos;s gone — no
-        account, no tracking.
-      </p>
-      <div className="mt-12">
-        <WishlistView products={products} />
+    <section
+      style={{
+        display: "grid",
+        gridTemplateColumns: "var(--bs-gutter) 1fr var(--bs-gutter)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <Caustics opacity={0.45} />
+      <div className="bs-gutter">
+        <RotatedKicker>§ Bench · Saved on this device</RotatedKicker>
       </div>
-    </div>
+      <div style={{ padding: "80px 32px 96px", position: "relative" }}>
+        <div className="kicker" style={{ marginBottom: 16 }}>
+          Folio · The Bench · Local to this device
+        </div>
+        <h1
+          className="font-display ink"
+          style={{
+            fontSize: "clamp(64px, 10vw, 132px)",
+            fontWeight: 200,
+            lineHeight: 0.9,
+            letterSpacing: "-0.045em",
+            margin: 0,
+          }}
+        >
+          The{" "}
+          <em
+            className="ink-brass-l"
+            style={{ fontStyle: "italic", fontWeight: 300 }}
+          >
+            Bench.
+          </em>
+        </h1>
+        <p
+          className="font-display ink-soft"
+          style={{
+            fontSize: 22,
+            fontStyle: "italic",
+            fontWeight: 400,
+            lineHeight: 1.5,
+            marginTop: 24,
+            maxWidth: 640,
+          }}
+        >
+          Stored locally on this device. Clear cache and it&apos;s gone — no
+          account, no tracking.
+        </p>
+        <div style={{ marginTop: 56 }}>
+          <WishlistView products={products} />
+        </div>
+      </div>
+      <div className="bs-gutter bs-gutter-r">
+        <RotatedKicker color="var(--color-smoke)">
+          Local · No account · No tracking
+        </RotatedKicker>
+      </div>
+    </section>
   );
 }

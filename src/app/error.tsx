@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Caustics, QuartzOrb } from "@/components/editorial";
 
 export default function GlobalError({
   error,
@@ -16,32 +17,93 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="container-narrow section-y-lg flex min-h-[60vh] flex-col items-center justify-center text-center">
-      <p className="eyebrow eyebrow-mute">Cracked quartz</p>
-      <h1 className="font-display mt-4 text-4xl md:text-5xl">
-        Something fractured.
-      </h1>
-      <p className="prose-measure ink-soft mx-auto mt-4 max-w-md text-base">
-        An unexpected error tripped this page. We&apos;ve been notified — try
-        again, or head back to the catalog.
-      </p>
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <button
-          type="button"
-          onClick={reset}
-          className="btn btn-primary focus-ring"
+    <section
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        minHeight: "70vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "96px 32px",
+        textAlign: "center",
+      }}
+    >
+      <Caustics opacity={0.55} />
+      <div style={{ position: "relative", maxWidth: 720 }}>
+        <div style={{ display: "inline-flex" }} aria-hidden>
+          <QuartzOrb size={140} intensity={0.85} />
+        </div>
+        <div className="kicker" style={{ marginTop: 28, marginBottom: 16 }}>
+          № 500 · Cracked quartz
+        </div>
+        <h1
+          className="font-display ink"
+          style={{
+            fontSize: "clamp(56px, 8vw, 96px)",
+            fontWeight: 200,
+            lineHeight: 0.95,
+            letterSpacing: "-0.04em",
+            margin: 0,
+          }}
         >
-          Try again
-        </button>
-        <a href="/shop" className="btn btn-ghost focus-ring">
-          Back to catalog
-        </a>
-      </div>
-      {error.digest ? (
-        <p className="ink-mute font-mono mt-6 text-2xs uppercase tracking-[0.04em]">
-          ref · {error.digest}
+          Something{" "}
+          <em
+            className="ink-brass-l"
+            style={{ fontStyle: "italic", fontWeight: 300 }}
+          >
+            fractured.
+          </em>
+        </h1>
+        <p
+          className="font-display ink-soft"
+          style={{
+            fontSize: 22,
+            fontStyle: "italic",
+            fontWeight: 400,
+            lineHeight: 1.55,
+            marginTop: 20,
+            maxWidth: 560,
+            marginInline: "auto",
+          }}
+        >
+          An unexpected error tripped the page. The bench is still there — try
+          again, or head back to the index.
         </p>
-      ) : null}
-    </div>
+        <div
+          style={{
+            marginTop: 32,
+            display: "flex",
+            justifyContent: "center",
+            gap: 8,
+            flexWrap: "wrap",
+          }}
+        >
+          <button
+            type="button"
+            onClick={reset}
+            className="btn btn-primary focus-ring"
+          >
+            Try again
+          </button>
+          <a href="/shop" className="btn btn-ghost focus-ring">
+            Back to the index
+          </a>
+        </div>
+        {error.digest ? (
+          <p
+            className="font-mono ink-faint"
+            style={{
+              marginTop: 28,
+              fontSize: 9,
+              letterSpacing: "0.32em",
+              textTransform: "uppercase",
+            }}
+          >
+            ref · {error.digest}
+          </p>
+        ) : null}
+      </div>
+    </section>
   );
 }
