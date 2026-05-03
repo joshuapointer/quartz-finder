@@ -68,7 +68,11 @@ function extractProductFromHtml(html: string, url: string): ScrapedProduct | nul
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) blocks.push(...parsed);
       else blocks.push(parsed);
-    } catch {}
+    } catch (e) {
+      if (process.env.NODE_ENV !== "test") {
+        console.warn(`[jsonld] parse failed for ${url}: ${String(e)}`);
+      }
+    }
   });
   const product = findProductNode(blocks);
   if (!product) return null;

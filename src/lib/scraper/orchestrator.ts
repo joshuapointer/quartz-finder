@@ -157,106 +157,127 @@ async function scrapeOneBrand(
 
   if (!fetchFailed && strategy !== "manual" && scraped.length === 0) {
     recordFailure(runId, brand.slug, strategy, "extract", "0 products extracted");
+    bumpFailure(brand.slug);
   }
 
   const now = Date.now();
   const seenIds = new Set<string>();
   let added = 0;
   let updated = 0;
+  let disappeared = 0;
 
+  // Resolve images first (async work outside the sync transaction).
+  const prepared: Array<{ p: ScrapedProduct; id: string; imageHash: string | null }> = [];
   for (const p of scraped) {
     if (!p.category) continue;
     const id = `${brand.slug}--${p.handle}`;
     seenIds.add(id);
     let imageHash: string | null = null;
     if (imageBudget.remaining > 0) {
-      imageHash = await cacheImage(p.imageUrl);
-      if (imageHash) {
-        const sz = db
-          .prepare("SELECT bytes FROM images WHERE hash = ?")
-          .get(imageHash) as { bytes: number } | undefined;
-        imageBudget.remaining -= sz?.bytes ?? 0;
+      const result = await cacheImage(p.imageUrl);
+      if (result) {
+        imageHash = result.hash;
+        if (!result.cached) {
+          const sz = db
+            .prepare("SELECT bytes FROM images WHERE hash = ?")
+            .get(imageHash) as { bytes: number } | undefined;
+          imageBudget.remaining -= sz?.bytes ?? 0;
+        }
       }
     }
-    const existing = db
-      .prepare("SELECT id FROM products WHERE id = ?")
-      .get(id) as { id: string } | undefined;
-    if (existing) {
-      db.prepare(
-        `UPDATE products SET name = ?, price = ?, original_price = ?, sold_out = ?,
-         link = ?, image_hash = COALESCE(?, image_hash), external_id = ?, handle = ?,
-         category = ?, available = 1, last_seen_at = ?, updated_at = ? WHERE id = ?`,
-      ).run(
-        p.name,
-        p.price,
-        p.originalPrice,
-        p.soldOut ? 1 : 0,
-        p.link,
-        imageHash,
-        p.externalId,
-        p.handle,
-        p.category,
-        now,
-        now,
-        id,
-      );
-      updated++;
-    } else {
-      db.prepare(
-        `INSERT INTO products (id, brand_slug, category, name, price, original_price, sold_out, available, link, image_hash, external_id, handle, first_seen_at, last_seen_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?)`,
-      ).run(
-        id,
-        brand.slug,
-        p.category,
-        p.name,
-        p.price,
-        p.originalPrice,
-        p.soldOut ? 1 : 0,
-        p.link,
-        imageHash,
-        p.externalId,
-        p.handle,
-        now,
-        now,
-        now,
-      );
-      added++;
-    }
+    prepared.push({ p, id, imageHash });
   }
 
-  let disappeared = 0;
-  // Sweep only when we have a credible inventory fetch (>0 scraped products).
-  // 0-product successes are already recorded as failures and skip the sweep.
-  if (strategy !== "manual" && scraped.length > 0) {
-    // Purge legacy seeded rows (id ends with '--{category}') once a brand has
-    // a real scrape — they were placeholders and would otherwise hang around
-    // marked unavailable.
-    db.prepare(
-      `DELETE FROM products
-       WHERE brand_slug = ?
-       AND (id = brand_slug || '--control_tower'
-            OR id = brand_slug || '--terp_slurper'
-            OR id = brand_slug || '--dunking_station')`,
-    ).run(brand.slug);
-
-    const placeholders = Array.from(seenIds).map(() => "?").join(",");
-    const oldRows = db
-      .prepare(
-        `SELECT id FROM products WHERE brand_slug = ? AND available = 1 AND id NOT IN (${placeholders})`,
-      )
-      .all(brand.slug, ...Array.from(seenIds)) as { id: string }[];
-    for (const r of oldRows) {
-      db.prepare(
-        "UPDATE products SET available = 0, sold_out = 1, updated_at = ? WHERE id = ?",
-      ).run(now, r.id);
-      disappeared++;
-    }
-  }
-
-  db.prepare(
+  const updateProduct = db.prepare(
+    `UPDATE products SET name = ?, price = ?, original_price = ?, sold_out = ?,
+     link = ?, image_hash = COALESCE(?, image_hash), external_id = ?, handle = ?,
+     category = ?, available = 1, last_seen_at = ?, updated_at = ? WHERE id = ?`,
+  );
+  const insertProduct = db.prepare(
+    `INSERT INTO products (id, brand_slug, category, name, price, original_price, sold_out, available, link, image_hash, external_id, handle, first_seen_at, last_seen_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?)`,
+  );
+  const selectProductId = db.prepare("SELECT id FROM products WHERE id = ?");
+  const purgeLegacy = db.prepare(
+    `DELETE FROM products
+     WHERE brand_slug = ?
+     AND (id = brand_slug || '--control_tower'
+          OR id = brand_slug || '--terp_slurper'
+          OR id = brand_slug || '--dunking_station')`,
+  );
+  const markUnavailable = db.prepare(
+    "UPDATE products SET available = 0, sold_out = 1, updated_at = ? WHERE id = ?",
+  );
+  const updateBrandSuccess = db.prepare(
     `UPDATE brands SET scrape_strategy = ?, last_fetched_ok_at = ?, consecutive_failures = 0, dormant = 0, dormant_at = NULL, updated_at = ? WHERE slug = ?`,
-  ).run(strategy, now, now, brand.slug);
+  );
+  const updateBrandStrategyOnly = db.prepare(
+    `UPDATE brands SET scrape_strategy = ?, updated_at = ? WHERE slug = ?`,
+  );
+  const credible = strategy === "manual" || scraped.length > 0;
+
+  const tx = db.transaction(() => {
+    for (const { p, id, imageHash } of prepared) {
+      const existing = selectProductId.get(id) as { id: string } | undefined;
+      if (existing) {
+        updateProduct.run(
+          p.name,
+          p.price,
+          p.originalPrice,
+          p.soldOut ? 1 : 0,
+          p.link,
+          imageHash,
+          p.externalId,
+          p.handle,
+          p.category,
+          now,
+          now,
+          id,
+        );
+        updated++;
+      } else {
+        insertProduct.run(
+          id,
+          brand.slug,
+          p.category,
+          p.name,
+          p.price,
+          p.originalPrice,
+          p.soldOut ? 1 : 0,
+          p.link,
+          imageHash,
+          p.externalId,
+          p.handle,
+          now,
+          now,
+          now,
+        );
+        added++;
+      }
+    }
+
+    // Sweep only on credible fetches (>0 scraped products).
+    if (strategy !== "manual" && scraped.length > 0) {
+      purgeLegacy.run(brand.slug);
+      const placeholders = Array.from(seenIds).map(() => "?").join(",");
+      const oldRows = db
+        .prepare(
+          `SELECT id FROM products WHERE brand_slug = ? AND available = 1 AND id NOT IN (${placeholders})`,
+        )
+        .all(brand.slug, ...Array.from(seenIds)) as { id: string }[];
+      for (const r of oldRows) {
+        markUnavailable.run(now, r.id);
+        disappeared++;
+      }
+    }
+
+    if (credible) {
+      updateBrandSuccess.run(strategy, now, now, brand.slug);
+    } else {
+      updateBrandStrategyOnly.run(strategy, now, brand.slug);
+    }
+  });
+  tx.immediate();
 
   await sleep(PER_HOST_DELAY_MS);
   return { added, updated, disappeared };

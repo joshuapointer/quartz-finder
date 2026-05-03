@@ -1,9 +1,5 @@
 import { lookup } from "node:dns/promises";
 
-const V4_PRIVATE: Array<[number, number, number]> = [
-  // [first-octet, mask-octet, mask-second]
-];
-
 const V4_PATTERNS: RegExp[] = [
   /^10\./,
   /^127\./,

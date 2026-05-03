@@ -4,13 +4,21 @@ import { join } from "node:path";
 import { getDb } from "../db";
 import { fetchWithRetry } from "./http";
 
-const IMAGE_DIR = process.env.PILLARPEARL_IMAGE_DIR ?? "/data/images";
+const IMAGE_DIR =
+  process.env.PILLARPEARL_IMAGE_DIR ??
+  (process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build"
+    ? "/data/images"
+    : "./data/images");
 
 export function imageDir(): string {
   return IMAGE_DIR;
 }
 
-export async function cacheImage(srcUrl: string | null): Promise<string | null> {
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+
+export async function cacheImage(
+  srcUrl: string | null,
+): Promise<{ hash: string; cached: boolean } | null> {
   if (!srcUrl) return null;
   const safe = normalizeUrl(srcUrl);
   if (!safe) return null;
@@ -18,14 +26,17 @@ export async function cacheImage(srcUrl: string | null): Promise<string | null> 
   const existing = db
     .prepare("SELECT hash, ext FROM images WHERE source_url = ?")
     .get(safe) as { hash: string; ext: string } | undefined;
-  if (existing) return existing.hash;
+  if (existing) return { hash: existing.hash, cached: true };
 
   try {
-    const res = await fetchWithRetry(safe, { timeoutMs: 20_000, retries: 1 });
+    const res = await fetchWithRetry(safe, {
+      timeoutMs: 20_000,
+      retries: 1,
+      maxBytes: MAX_IMAGE_BYTES,
+    });
     if (!res.ok) return null;
-    // ext determined from sniffed magic bytes below
     const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.byteLength === 0 || buf.byteLength > 8 * 1024 * 1024) return null;
+    if (buf.byteLength === 0 || buf.byteLength > MAX_IMAGE_BYTES) return null;
     const detected = detectExtFromBytes(buf);
     if (!detected) return null;
     const hash = createHash("sha1").update(buf).digest("hex");
@@ -35,7 +46,7 @@ export async function cacheImage(srcUrl: string | null): Promise<string | null> 
     db.prepare(
       `INSERT OR REPLACE INTO images (hash, ext, source_url, bytes) VALUES (?, ?, ?, ?)`,
     ).run(hash, detected, safe, buf.byteLength);
-    return hash;
+    return { hash, cached: false };
   } catch (e) {
     if (process.env.NODE_ENV !== "test") {
       console.warn(`[images] cache failed ${srcUrl}:`, String(e));
