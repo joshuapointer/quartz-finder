@@ -2,7 +2,11 @@ import Database from "better-sqlite3";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
-const DB_PATH = process.env.PILLARPEARL_DB ?? "/data/pillarpearl.db";
+const DB_PATH =
+  process.env.PILLARPEARL_DB ??
+  (process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build"
+    ? "/data/pillarpearl.db"
+    : "./data/pillarpearl.db");
 
 let _db: Database.Database | null = null;
 

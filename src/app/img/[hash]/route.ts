@@ -8,7 +8,12 @@ import { getImageMeta } from "@/lib/scraper/images";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const IMAGE_DIR = resolve(process.env.PILLARPEARL_IMAGE_DIR ?? "/data/images");
+const IMAGE_DIR = resolve(
+  process.env.PILLARPEARL_IMAGE_DIR ??
+    (process.env.NODE_ENV === "production"
+      ? "/data/images"
+      : "./data/images"),
+);
 const HASH_RE = /^[a-f0-9]{40}$/;
 
 const MIME: Record<string, string> = {
