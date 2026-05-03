@@ -6,36 +6,79 @@ interface Props {
   soldOut?: boolean;
 }
 
+const pillBase: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  fontFamily: "var(--font-mono)",
+  fontSize: 10,
+  letterSpacing: "0.22em",
+  textTransform: "uppercase",
+  borderRadius: 2,
+  padding: "3px 8px",
+  background: "transparent",
+};
+
 export default function StatusBadge({ status, label, soldOut }: Props) {
   if (soldOut) {
     return (
       <span
-        className="inline-flex items-center gap-1.5 rounded-[2px] border border-[var(--color-rose)]/60 bg-transparent px-2 py-[3px] text-[10px] uppercase tracking-[0.22em] font-medium text-[var(--color-rose)]"
+        style={{
+          ...pillBase,
+          color: "var(--color-rose)",
+          border: "1px solid var(--color-rose)",
+        }}
         aria-label="Sold out"
       >
-        {/* 6px square dot — non-color affordance */}
-        <span role="img" aria-label="Out of stock" className="block h-1.5 w-1.5 bg-[var(--color-rose)]" />
+        <span
+          aria-hidden
+          style={{
+            display: "block",
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: "var(--color-rose)",
+          }}
+        />
         Sold Out
       </span>
     );
   }
+
   if (status === "dead") {
     return (
       <span
-        className="inline-flex items-center gap-1.5 rounded-[2px] border border-[var(--color-line-strong)] bg-transparent px-2 py-[3px] text-[10px] uppercase tracking-[0.22em] font-medium text-[var(--color-ink-mute)]"
-        aria-label={label ?? "Inactive"}
+        style={{
+          ...pillBase,
+          color: "var(--color-muted)",
+          border: "1px solid var(--color-line-strong)",
+        }}
+        aria-label={label ?? "Dormant"}
       >
-        {label ?? "Inactive"}
+        {label ?? "Dormant"}
       </span>
     );
   }
+
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-[2px] border border-[var(--color-sage)] bg-transparent px-2 py-[3px] text-[10px] uppercase tracking-[0.22em] font-medium text-[var(--color-sage-soft)]"
-      aria-label="Brand active"
+      style={{
+        ...pillBase,
+        color: "var(--color-good)",
+        border: "1px solid var(--color-good)",
+      }}
+      aria-label="Active"
     >
-      {/* 6px square dot — non-color affordance */}
-      <span role="img" aria-label="In stock" className="block h-1.5 w-1.5 bg-[var(--color-sage-soft)]" />
+      <span
+        aria-hidden
+        style={{
+          display: "block",
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: "var(--color-good)",
+        }}
+      />
       Active
     </span>
   );

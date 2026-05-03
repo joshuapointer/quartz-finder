@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import { useWishlist } from "@/store/wishlist";
 
 interface Props {
@@ -21,9 +21,8 @@ export default function WishlistButton({ productId, size = "sm" }: Props) {
     [],
   );
 
-  const dim = size === "md" ? "h-10 w-10" : "h-8 w-8";
-
-  const activeState = hydrated && has;
+  const inWishlist = hydrated && has;
+  const dim = size === "md" ? 40 : 30;
 
   function handleClick(e: React.MouseEvent) {
     e.preventDefault();
@@ -41,22 +40,30 @@ export default function WishlistButton({ productId, size = "sm" }: Props) {
       type="button"
       onClick={handleClick}
       aria-pressed={hydrated ? has : false}
-      aria-label={has ? "Remove from wishlist" : "Add to wishlist"}
-      className={`${dim} focus-ring inline-flex items-center justify-center rounded-full border backdrop-blur-md transition-all
-        ${bumping ? "scale-[1.05]" : ""}
-        ${
-          activeState
-            ? "border-[var(--color-amber)]/60 text-[var(--color-amber)]"
-            : "border-[var(--color-line-strong)] text-[var(--color-ink-mute)] hover:border-[var(--color-amber)] hover:text-[var(--color-amber-soft)]"
-        }
-      `}
-      style={{ backgroundColor: "rgba(10,9,8,0.65)" }}
+      aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+      style={{
+        width: dim,
+        height: dim,
+        borderRadius: "50%",
+        border: `1px solid ${inWishlist ? "var(--color-gold)" : "var(--color-line-strong)"}`,
+        background: "rgba(10,9,8,0.65)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        transition: "border-color 0.2s, transform 0.15s",
+        transform: bumping ? "scale(1.12)" : "scale(1)",
+        color: inWishlist ? "var(--color-gold-light)" : "var(--color-muted)",
+        flexShrink: 0,
+      }}
     >
       <svg
-        width="16"
-        height="16"
+        width={size === "md" ? 18 : 14}
+        height={size === "md" ? 18 : 14}
         viewBox="0 0 24 24"
-        fill={activeState ? "currentColor" : "none"}
+        fill={inWishlist ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth="1.6"
         strokeLinecap="round"

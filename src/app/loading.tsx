@@ -2,34 +2,47 @@ export default function Loading() {
   return (
     <>
       <style>{`
-        .loading-ring {
-          width: 24px;
-          height: 24px;
+        .pp-loading-ring {
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
-          border: 1px solid var(--color-line-strong);
-          background: conic-gradient(from 0deg, transparent 0%, var(--color-amber) 70%, transparent 100%);
-          -webkit-mask: radial-gradient(circle, transparent 9px, black 10px);
-          mask: radial-gradient(circle, transparent 9px, black 10px);
-          animation: loading-ring-spin 1200ms linear infinite;
-          opacity: 0.6;
+          border: 1.5px solid rgba(255,255,255,0.08);
+          border-top-color: var(--color-gold-light);
+          animation: pp-loading-spin 900ms linear infinite;
           display: block;
         }
-        @keyframes loading-ring-spin { to { transform: rotate(360deg); } }
+        @keyframes pp-loading-spin {
+          to { transform: rotate(360deg); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .loading-ring {
+          .pp-loading-ring {
             animation: none;
-            background: none;
-            border-color: var(--color-line);
+            border-top-color: var(--color-line-gold-2);
           }
         }
       `}</style>
-      <div className="container-base flex min-h-[40vh] items-center justify-center">
-        <div className="ink-mute flex flex-col items-center gap-4">
-          <span className="loading-ring" aria-hidden="true" />
-          <span className="font-mono text-2xs uppercase tracking-[0.04em]">
-            Loading…
-          </span>
-        </div>
+      <div
+        style={{
+          minHeight: "40vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: 16,
+        }}
+      >
+        <span className="pp-loading-ring" aria-hidden="true" />
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 10,
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            color: "var(--color-muted)",
+          }}
+        >
+          Loading…
+        </span>
       </div>
     </>
   );

@@ -18,15 +18,16 @@ export default function WishlistView({
   if (!hydrated) {
     return (
       <div
-        className="font-mono ink-mute"
         style={{
           padding: "64px 0",
           textAlign: "center",
-          fontSize: 12,
+          fontFamily: "var(--font-sans)",
+          fontSize: 11,
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          borderTop: "1px solid var(--color-hairline)",
-          borderBottom: "1px solid var(--color-hairline)",
+          color: "var(--color-muted)",
+          borderTop: "1px solid var(--color-line)",
+          borderBottom: "1px solid var(--color-line)",
         }}
       >
         Loading bench…
@@ -40,10 +41,10 @@ export default function WishlistView({
     return (
       <EmptyState
         title="Nothing on the bench yet"
-        body="Tap the heart on any piece to start a list. Stored locally — no account, no tracking."
+        body="Tap the heart on any piece to start a list."
         action={
-          <Link href="/shop" className="btn btn-ghost focus-ring">
-            Browse the index →
+          <Link href="/shop" className="btn btn-ghost">
+            Browse the bench →
           </Link>
         }
       />
@@ -60,15 +61,16 @@ export default function WishlistView({
           gap: 16,
           marginBottom: 32,
           paddingBottom: 24,
-          borderBottom: "1px solid var(--color-hairline)",
+          borderBottom: "1px solid var(--color-line)",
         }}
       >
         <span
-          className="font-mono ink-mute"
           style={{
+            fontFamily: "var(--font-sans)",
             fontSize: 11,
             letterSpacing: "0.22em",
             textTransform: "uppercase",
+            color: "var(--color-muted)",
           }}
         >
           {items.length} on the bench
@@ -78,16 +80,17 @@ export default function WishlistView({
           onClick={() => {
             if (confirm("Clear all bench items?")) clear();
           }}
-          className="btn btn-ghost focus-ring"
+          className="btn btn-ghost"
           style={{ fontSize: 11, padding: "10px 18px" }}
         >
           Clear all
         </button>
       </div>
       <div
-        className="grid gap-3"
         style={{
+          display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "20px",
         }}
       >
         {items.map((p) => (

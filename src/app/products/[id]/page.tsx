@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getAllProducts,
@@ -9,14 +10,7 @@ import {
 } from "@/lib/catalog";
 import WishlistButton from "@/components/WishlistButton";
 import AffiliateCTA from "@/components/AffiliateCTA";
-import {
-  Caustics,
-  PearlDot,
-  PlatePlaceholder,
-  PriceCorridor,
-  SectionRule,
-} from "@/components/editorial";
-import type { NormalizedProduct } from "@/types";
+import ProductCard from "@/components/ProductCard";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -33,948 +27,390 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = getProductById(id);
   if (!product) return { title: "Product not found" };
   return {
-    title: `${product.name} — ${product.brandName}`,
+    title: `${product.name} — ${product.brandName} | Pillar & Pearl`,
     description: `${product.name} from ${product.brandName}. ${product.categoryLabel} catalogued by Pillar & Pearl.`,
   };
-}
-
-const VENDOR_POOL = [
-  { name: "Aqua Lab", loc: "Portland, OR" },
-  { name: "Smoke Cartel", loc: "Savannah, GA" },
-  { name: "DopeBoo", loc: "Los Angeles, CA" },
-  { name: "BadassGlass", loc: "Eugene, OR" },
-  { name: "Errlyb Supply", loc: "Denver, CO" },
-  { name: "Higher Standard", loc: "Brooklyn, NY" },
-  { name: "Dispensary Direct", loc: "Phoenix, AZ" },
-  { name: "Daily High Club", loc: "Los Angeles, CA" },
-  { name: "Hemper Tech", loc: "Las Vegas, NV" },
-];
-
-interface Vendor {
-  name: string;
-  loc: string;
-  price: number;
-  ship: string;
-  stock: string;
-  eta: string;
-  rating: number;
-  reviews: number;
-  best?: boolean;
-  signed?: boolean;
-  href?: string | null;
-}
-
-function buildVendors(product: NormalizedProduct): Vendor[] {
-  const seedStr = product.id;
-  let seed = 0;
-  for (let i = 0; i < seedStr.length; i++)
-    seed = (seed * 31 + seedStr.charCodeAt(i)) >>> 0;
-
-  const rand = () => {
-    seed = (seed * 1664525 + 1013904223) >>> 0;
-    return seed / 0xffffffff;
-  };
-
-  const base = product.priceValue ?? 100;
-  const count = 5 + Math.floor(rand() * 4); // 5-8 vendors
-
-  const stockOptions = [
-    "In stock · 1",
-    "In stock · 2",
-    "In stock · 4",
-    "In stock · 6",
-    "In stock · 12",
-    "Pre-order",
-    "Made-to-order",
-  ];
-  const etaOptions = [
-    "Same-day",
-    "2–3 days",
-    "3 days",
-    "3–5 days",
-    "4–6 days",
-    "Ships next week",
-    "10–14 days",
-  ];
-
-  const picks = VENDOR_POOL.slice()
-    .sort(() => rand() - 0.5)
-    .slice(0, count);
-
-  const vendors: Vendor[] = picks.map((p, i) => {
-    const offset = (rand() - 0.3) * 0.2; // -6% .. +14%
-    const price = Math.max(8, Math.round(base * (1 + offset)));
-    const shipFree = rand() > 0.45;
-    return {
-      name: p.name,
-      loc: p.loc,
-      price,
-      ship: shipFree ? "$0" : `$${Math.round(rand() * 12) + 4}`,
-      stock: stockOptions[Math.floor(rand() * stockOptions.length)],
-      eta: etaOptions[Math.floor(rand() * etaOptions.length)],
-      rating: Math.round((4.4 + rand() * 0.55) * 10) / 10,
-      reviews: 80 + Math.floor(rand() * 2400),
-      signed: i === count - 1,
-    };
-  });
-
-  // Always insert maker-direct as a vendor too if there's a real link
-  if (product.link) {
-    const makerOffset = (rand() - 0.4) * 0.15;
-    vendors.push({
-      name: `${product.brandName} Direct`,
-      loc: "Maker · direct",
-      price: Math.round(base * (1 + makerOffset)),
-      ship: "$12",
-      stock: "Made-to-order",
-      eta: "10–14 days",
-      rating: 4.95,
-      reviews: 184,
-      signed: true,
-      href: product.link,
-    });
-  }
-
-  vendors.sort((a, b) => a.price + parseShip(a.ship) - (b.price + parseShip(b.ship)));
-  if (vendors[0]) vendors[0].best = true;
-  return vendors;
-}
-
-function parseShip(s: string): number {
-  if (s === "$0" || s.toLowerCase() === "free") return 0;
-  const m = s.match(/\$(\d+)/);
-  return m ? Number(m[1]) : 0;
 }
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const product = getProductById(id);
   if (!product) notFound();
+
   const related = getRelatedProducts(id);
   const brand = getBrandBySlug(product.brandSlug);
-  const vendors = buildVendors(product);
-  const best = vendors.find((v) => v.best) ?? vendors[0];
-  const high = vendors.reduce((acc, v) => Math.max(acc, v.price), 0);
-  const corridor = {
-    low: best?.price ?? product.priceValue ?? 0,
-    high: high || (product.priceValue ?? 0),
-    points: vendors.map((v) => v.price),
-  };
 
   const heroImage = product.imageHash ? `/img/${product.imageHash}` : null;
-  const indexedLabel = product.brandLastFetchedOkAt
-    ? new Date(product.brandLastFetchedOkAt).toUTCString()
-    : "Indexed 04:12 PT";
+  const isUsMade = brand?.tier === "usmade";
+
+  const fetchedDate = product.brandLastFetchedOkAt
+    ? new Date(product.brandLastFetchedOkAt).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "recently";
+
+  // Split product name: first word + rest
+  const nameParts = product.name.trim().split(/\s+/);
+  const nameFirst = nameParts[0];
+  const nameRest = nameParts.slice(1).join(" ");
 
   return (
-    <article>
-      {/* breadcrumb strip */}
-      <section
-        style={{
-          padding: "20px 40px",
-          borderBottom: "1px solid var(--color-hairline)",
-        }}
-      >
-        <nav
-          aria-label="Breadcrumb"
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 10,
-            color: "var(--color-smoke)",
-            letterSpacing: "0.22em",
-            textTransform: "uppercase",
-          }}
-        >
-          <Link
-            href="/shop"
-            className="focus-ring"
-            style={{ color: "var(--color-smoke)" }}
-          >
-            The Index
-          </Link>{" "}
-          <span style={{ color: "var(--color-brass-light)" }}>/</span>{" "}
-          <Link
-            href={`/shop?category=${product.category}`}
-            className="focus-ring"
-            style={{ color: "var(--color-smoke)" }}
-          >
-            {product.categoryLabel}
-          </Link>{" "}
-          <span style={{ color: "var(--color-brass-light)" }}>/</span>{" "}
-          <Link
-            href={`/brands/${product.brandSlug}`}
-            className="focus-ring"
-            style={{ color: "var(--color-smoke)" }}
-          >
-            {product.brandName}
-          </Link>{" "}
-          <span style={{ color: "var(--color-brass-light)" }}>/</span>{" "}
-          <span style={{ color: "var(--color-pearl)" }}>{product.name}</span>
+    <>
+      <style>{`
+        .product-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; padding: 24px 0 80px; align-items: start; }
+        .gallery { position: relative; }
+        .gallery::before { content: ""; position: absolute; inset: -6% -6% auto -6%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(ellipse at 50% 50%, var(--color-c-violet) 0%, transparent 60%); filter: blur(80px); opacity: 0.45; z-index: 0; pointer-events: none; }
+        .gallery .stage { position: relative; z-index: 1; aspect-ratio: 1; border-radius: 36px; background: radial-gradient(120% 100% at 50% 6%, rgba(255,255,255,0.06), rgba(255,255,255,0.012) 60%, transparent 100%); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0,0,0,0.7); }
+        .gallery .stage::after { content: ""; position: absolute; top: 4%; left: 14%; right: 14%; height: 14%; border-radius: 50%; background: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.22), transparent 70%); filter: blur(3px); pointer-events: none; z-index: 3; }
+        .gallery .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 56px; z-index: 1; filter: drop-shadow(2px 0 0 rgba(255,143,233,0.18)) drop-shadow(-2px 0 0 rgba(116,229,255,0.18)) drop-shadow(0 30px 40px rgba(0,0,0,0.7)); }
+        .gallery .stage .empty-state { position: absolute; inset: 0; display: grid; place-items: center; color: var(--color-dim); font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; z-index: 1; }
+        .gallery .badge { position: absolute; top: 18px; left: 18px; z-index: 4; display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold)); color: #000; font-family: var(--font-sans); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 14px rgba(232,184,90,0.30); }
+        .gallery .save-btn { position: absolute; top: 18px; right: 18px; z-index: 4; }
+        .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+        .thumb { position: relative; aspect-ratio: 1; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--color-line); overflow: hidden; }
+        .thumb.on { border-color: var(--color-line-gold-2); box-shadow: 0 0 0 1px var(--color-line-gold-2); }
+        .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .thumb .ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--color-dim); font-family: var(--font-sans); font-size: 10px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+        .thumb .ph::before { content: ""; position: absolute; inset: 14%; border-radius: 50%; background: radial-gradient(circle, var(--color-c-violet), transparent 65%); filter: blur(20px); opacity: 0.4; }
+        .thumb.t-cyan .ph::before { background: radial-gradient(circle, var(--color-c-cyan), transparent 65%); }
+        .thumb.t-gold .ph::before { background: radial-gradient(circle, var(--color-c-gold), transparent 65%); }
+        .info { padding-top: 8px; }
+        .info .brand-line { font-family: var(--font-sans); font-size: 11px; color: var(--color-muted); font-weight: 600; letter-spacing: 0.22em; margin-bottom: 14px; text-transform: uppercase; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .info .brand-line .maker { color: var(--color-fg); }
+        .info .brand-line .us-made { display: inline-flex; align-items: center; gap: 6px; color: var(--color-gold-light); }
+        .info .brand-line .us-made::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--color-gold-light); box-shadow: 0 0 6px rgba(244,216,154,0.7); }
+        .info h1 { font-family: var(--font-serif); font-size: clamp(40px, 4.6vw, 64px); font-weight: 500; letter-spacing: -0.034em; line-height: 1.0; margin-bottom: 14px; }
+        .info h1 em { font-style: italic; font-weight: 400; background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .info .tagline { font-family: var(--font-serif); font-size: 18px; color: var(--color-muted); line-height: 1.45; margin-bottom: 24px; max-width: 38ch; font-style: italic; font-weight: 400; }
+        .price-block { display: flex; align-items: baseline; gap: 14px; padding: 20px 0; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); margin-bottom: 28px; }
+        .price-block .price { font-family: var(--font-serif); font-weight: 600; font-size: 44px; letter-spacing: -0.034em; font-variant-numeric: tabular-nums; background: linear-gradient(180deg, var(--color-gold-light), var(--color-gold)); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+        .price-block .meta-pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-sans); font-size: 11px; color: var(--color-gold-light); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; padding: 4px 10px; border: 1px solid var(--color-line-gold); border-radius: 999px; }
+        .price-block .meta-pill.in-stock::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--color-good); box-shadow: 0 0 8px var(--color-good); }
+        .price-block .meta-pill.sold-out { color: var(--color-muted); }
+        .cta-row { display: flex; gap: 10px; margin-bottom: 22px; }
+        .ship-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
+        .ship-card { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border: 1px solid var(--color-line); border-radius: 12px; background: rgba(255,255,255,0.02); }
+        .ship-card .ship-icon { width: 16px; height: 16px; color: var(--color-gold-light); flex-shrink: 0; margin-top: 1px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+        .ship-card .text { font-family: var(--font-sans); font-size: 11px; line-height: 1.45; }
+        .ship-card .text b { display: block; color: var(--color-fg); font-weight: 600; margin-bottom: 2px; letter-spacing: 0.02em; }
+        .ship-card .text span { color: var(--color-muted); }
+        .accordion { border-top: 1px solid var(--color-line); }
+        .accordion details { border-bottom: 1px solid var(--color-line); padding: 16px 0; }
+        .accordion summary { display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; font-family: var(--font-sans); font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-fg); }
+        .accordion summary::-webkit-details-marker { display: none; }
+        .accordion summary::after { content: "+"; color: var(--color-gold-light); font-weight: 400; font-size: 18px; font-family: var(--font-serif); }
+        .accordion details[open] summary::after { content: "−"; }
+        .accordion .body { padding: 14px 0 6px; font-family: var(--font-sans); font-size: 13px; color: var(--color-muted); line-height: 1.65; max-width: 56ch; }
+        .accordion .body p + p { margin-top: 10px; }
+        .specs-section { padding: 64px 0; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
+        .specs-section h2 { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--color-gold-light); margin-bottom: 24px; }
+        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 32px; }
+        .spec dt { font-family: var(--font-sans); font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 8px; }
+        .spec dd { font-family: var(--font-serif); font-size: 22px; font-weight: 500; letter-spacing: -0.018em; line-height: 1.15; }
+        .spec dd em { font-style: italic; color: var(--color-gold-light); font-weight: 400; }
+        .about-piece { padding: 80px 0 64px; display: grid; grid-template-columns: 0.6fr 1fr; gap: 64px; }
+        .about-piece h2 { font-family: var(--font-serif); font-size: clamp(32px, 4vw, 52px); font-weight: 500; letter-spacing: -0.028em; line-height: 1; }
+        .about-piece h2 em { font-style: italic; color: var(--color-gold-light); }
+        .about-piece .body p { font-family: var(--font-serif); font-size: 17px; color: var(--color-fg); line-height: 1.65; max-width: 56ch; }
+        .about-piece .body p + p { margin-top: 18px; }
+        .about-piece .body .lead { font-size: 22px; line-height: 1.5; color: var(--color-gold-light); font-style: italic; font-weight: 400; margin-bottom: 28px; }
+        .maker-card { margin-top: 32px; padding: 24px; border: 1px solid var(--color-line-gold); border-radius: 18px; background: rgba(232,184,90,0.04); display: flex; gap: 18px; align-items: center; max-width: 56ch; }
+        .maker-card .av { width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 32% 30%, var(--color-gold-light) 0%, var(--color-gold) 50%, var(--color-gold-deep) 100%); flex-shrink: 0; box-shadow: inset -2px -3px 6px rgba(0,0,0,0.4), inset 2px 2px 4px rgba(255,255,255,0.4); }
+        .maker-card .who { font-family: var(--font-sans); font-size: 13px; color: var(--color-muted); line-height: 1.5; }
+        .maker-card .who b { color: var(--color-fg); font-weight: 600; display: block; margin-bottom: 2px; font-size: 14px; }
+        .related-section { padding: 80px 0 60px; border-top: 1px solid var(--color-line); }
+        .related-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .related-head h2 { font-family: var(--font-serif); font-size: clamp(28px, 3.4vw, 40px); font-weight: 500; letter-spacing: -0.028em; line-height: 1; }
+        .related-head h2 em { font-style: italic; color: var(--color-gold-light); }
+        .related-head a { font-family: var(--font-sans); font-size: 12px; color: var(--color-gold-light); border-bottom: 1px solid var(--color-line-gold-2); padding-bottom: 3px; letter-spacing: 0.04em; transition: color 0.25s; }
+        .related-head a:hover { color: var(--color-fg); }
+        .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        @media (max-width: 1080px) {
+          .product-hero { grid-template-columns: 1fr; gap: 40px; }
+          .ship-strip { grid-template-columns: 1fr; }
+          .specs-grid { grid-template-columns: repeat(2, 1fr); }
+          .about-piece { grid-template-columns: 1fr; gap: 24px; }
+          .related-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 720px) {
+          .gallery .stage img { padding: 32px; }
+          .specs-grid { grid-template-columns: 1fr 1fr; gap: 20px 16px; }
+          .info h1 { font-size: 38px; }
+          .price-block .price { font-size: 36px; }
+        }
+      `}</style>
+
+      <article className="pp-shell">
+        {/* Breadcrumbs */}
+        <nav className="crumbs" aria-label="Breadcrumb">
+          <Link href="/shop">Shop</Link>
+          <span className="sep">/</span>
+          <Link href={`/shop?category=${product.category}`}>{product.categoryLabel}</Link>
+          <span className="sep">/</span>
+          <Link href={`/brands/${product.brandSlug}`}>{product.brandName}</Link>
+          <span className="sep">/</span>
+          <b>{product.name}</b>
         </nav>
-      </section>
 
-      {/* HERO */}
-      <section
-        style={{
-          display: "grid",
-          gap: "clamp(24px, 4vw, 40px)",
-          padding: "clamp(20px, 4vw, 40px)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-        className="md:[grid-template-columns:1.2fr_1fr]"
-      >
-        <Caustics opacity={0.6} />
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            position: "relative",
-          }}
-        >
-          <div
-            className="heavy-glass"
-            style={{ borderRadius: 8, padding: 14, position: "relative" }}
-          >
-            <div className="absolute right-7 top-7 z-10">
+        {/* Product hero */}
+        <section className="product-hero">
+          {/* Gallery */}
+          <div className="gallery">
+            {isUsMade && <span className="badge">US-Made</span>}
+            <div className="save-btn">
               <WishlistButton productId={product.id} size="md" />
             </div>
-            <PlatePlaceholder
-              label={`${product.brandName} · ${product.name}`}
-              sublabel="3/4 view"
-              height="clamp(360px, 60vw, 620px)"
-              hero
-              imageSrc={heroImage}
-              imageAlt={product.name}
-            />
-          </div>
-        </div>
-
-        <div
-          className="heavy-glass md:sticky md:top-[100px] md:self-start"
-          style={{
-            borderRadius: 10,
-            padding: "clamp(24px, 4vw, 40px)",
-            overflow: "hidden",
-          }}
-        >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute"
-            style={{
-              top: -100,
-              right: -100,
-              width: 280,
-              height: 280,
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle, var(--color-brass) 0%, transparent 70%)",
-              opacity: 0.18,
-              filter: "blur(28px)",
-            }}
-          />
-          <div style={{ position: "relative" }}>
-            <div
-              className="kicker kicker-light"
-              style={{
-                marginBottom: 18,
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-              }}
-            >
-              <PearlDot size={6} />
-              {product.brandName}
-              <span
-                aria-hidden
-                style={{
-                  width: 20,
-                  height: 1,
-                  background: "var(--color-brass-2)",
-                }}
-              />
-              № {product.id.slice(-4)}
+            <div className="stage">
+              {heroImage ? (
+                <Image
+                  src={heroImage}
+                  alt={product.name}
+                  fill
+                  style={{ objectFit: "contain", padding: "56px" }}
+                />
+              ) : (
+                <div className="empty-state">No image available</div>
+              )}
             </div>
-            <h1
-              className="font-display ink"
-              style={{
-                fontSize: "clamp(48px, 7vw, 76px)",
-                fontWeight: 400,
-                lineHeight: 0.95,
-                letterSpacing: "-0.035em",
-                margin: 0,
-              }}
-            >
-              {product.name}
-            </h1>
-            <p
-              className="font-display ink-soft"
-              style={{
-                fontSize: 22,
-                fontStyle: "italic",
-                marginTop: 14,
-                lineHeight: 1.4,
-                fontWeight: 400,
-              }}
-            >
-              {product.categoryLabel} from{" "}
-              <Link
-                href={`/brands/${product.brandSlug}`}
-                className="focus-ring ink-brass-l"
-                style={{ fontStyle: "italic" }}
-              >
-                {product.brandName}
-              </Link>
-              {brand?.tier === "usmade" ? ", hand-lathed" : ", curated import"}
-              .
-            </p>
-
-            <div
-              style={{
-                marginTop: 28,
-                padding: "20px 0",
-                borderTop: "1px solid var(--color-hairline)",
-                borderBottom: "1px solid var(--color-hairline)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 16,
-                flexWrap: "wrap",
-              }}
-            >
-              <div>
-                <div
-                  className="font-mono ink-faint"
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.24em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Best across {vendors.length} vendors
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: 12,
-                    marginTop: 8,
-                  }}
-                >
-                  <span
-                    className="font-display ink tabular-nums"
-                    style={{
-                      fontSize: 64,
-                      letterSpacing: "-0.035em",
-                      fontWeight: 400,
-                    }}
-                  >
-                    ${best?.price ?? product.price.replace(/[^\d.]/g, "")}
-                  </span>
-                  {high && high !== best?.price ? (
-                    <span
-                      className="font-mono ink-faint"
-                      style={{ fontSize: 12 }}
-                    >
-                      —  ${high} high
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div
-                  className="font-mono ink-brass-l"
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    padding: "5px 12px",
-                    borderRadius: 999,
-                    background:
-                      "linear-gradient(135deg, rgba(212,174,110,0.18), transparent)",
-                    border: "1px solid var(--color-brass-2)",
-                    display: "inline-block",
-                  }}
-                >
-                  {best && product.priceValue
-                    ? `${best.price < product.priceValue ? "−" : "+"}$${Math.abs(best.price - product.priceValue)} vs MSRP`
-                    : "Best price"}
-                </div>
-                <div
-                  className="font-mono ink-faint"
-                  style={{
-                    fontSize: 9,
-                    marginTop: 6,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {indexedLabel}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ marginTop: 24 }}>
-              <PriceCorridor
-                low={corridor.low}
-                high={corridor.high}
-                points={corridor.points}
-                height={36}
-              />
-            </div>
-
-            <div style={{ marginTop: 24 }}>
-              <div
-                className="kicker kicker-light"
-                style={{ marginBottom: 12 }}
-              >
-                Joint
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(4, 1fr)",
-                  gap: 8,
-                }}
-              >
-                {(["10mm M", "14mm M", "14mm F", "18mm M"] as const).map(
-                  (j, i) => (
-                    <span
-                      key={j}
-                      role="img"
-                      aria-label={`Joint option ${j}${i === 1 ? " — recommended" : ""}`}
-                      style={{
-                        background:
-                          i === 1
-                            ? "linear-gradient(135deg, var(--color-glass-strong), var(--color-glass))"
-                            : "transparent",
-                        border: `1px solid ${i === 1 ? "var(--color-brass-light)" : "var(--color-hairline-strong)"}`,
-                        borderRadius: 6,
-                        color:
-                          i === 1
-                            ? "var(--color-pearl)"
-                            : "var(--color-bone)",
-                        padding: "13px 10px",
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 11,
-                        textAlign: "center",
-                        boxShadow:
-                          i === 1
-                            ? "0 0 12px rgba(212,174,110,0.25)"
-                            : "none",
-                        userSelect: "none",
-                      }}
-                    >
-                      {j}
-                    </span>
-                  ),
+            <div className="thumbs" role="tablist" aria-label="Product views">
+              <div className="thumb on" aria-label="Front view">
+                {heroImage ? (
+                  <Image src={heroImage} alt="" fill style={{ objectFit: "cover" }} />
+                ) : (
+                  <span className="ph">Front</span>
                 )}
               </div>
-              <p
-                className="font-mono ink-faint"
-                style={{
-                  fontSize: 10,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  marginTop: 8,
-                }}
-              >
-                Verify joint size on vendor page · catalogue lists primary fitment
-              </p>
+              <div className="thumb t-cyan" aria-label="Side view">
+                <span className="ph">Side</span>
+              </div>
+              <div className="thumb t-gold" aria-label="Top view">
+                <span className="ph">Top</span>
+              </div>
+              <div className="thumb" aria-label="Detail view">
+                <span className="ph">Detail</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Info column */}
+          <div className="info">
+            <div className="brand-line">
+              <span className="maker">{product.brandName}</span>
+              {isUsMade ? (
+                <span className="us-made">US-Made · United States</span>
+              ) : (
+                <span>Imported</span>
+              )}
             </div>
 
-            {product.statusNote ? (
-              <p
-                className="surface-flat ink-soft mt-6"
-                style={{
-                  borderRadius: 4,
-                  padding: "12px 14px",
-                  fontSize: 13,
-                }}
-              >
-                {product.statusNote}
-              </p>
-            ) : null}
+            {nameRest ? (
+              <h1>
+                {nameFirst}{" "}
+                <em>{nameRest}.</em>
+              </h1>
+            ) : (
+              <h1>{nameFirst}.</h1>
+            )}
 
-            <div style={{ marginTop: 24 }}>
+            <p className="tagline">
+              {product.note ??
+                `Catalogued by Pillar & Pearl. Verified pricing as of ${fetchedDate}.`}
+            </p>
+
+            <div className="price-block">
+              <div className="price">{product.price}</div>
+              {product.soldOut ? (
+                <span className="meta-pill sold-out">Sold out</span>
+              ) : (
+                <span className="meta-pill in-stock">In stock</span>
+              )}
+            </div>
+
+            <div className="cta-row">
               <AffiliateCTA
                 href={product.link}
                 brandName={product.brandName}
                 soldOut={product.soldOut}
               />
             </div>
-            <Link
-              href="#vendor-comparison"
-              className="btn btn-ghost focus-ring"
-              style={{ width: "100%", marginTop: 8, borderRadius: 999 }}
-            >
-              Compare {vendors.length} vendors below ↓
-            </Link>
 
-          </div>
-        </div>
-      </section>
-
-      {/* VENDOR COMPARISON */}
-      <section
-        id="vendor-comparison"
-        style={{ padding: "64px 40px" }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            marginBottom: 32,
-            gap: 40,
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <div className="kicker kicker-light" style={{ marginBottom: 14 }}>
-              The Comparison · № {product.id.slice(-4)}
-            </div>
-            <h2
-              className="font-display ink"
-              style={{
-                fontSize: "clamp(48px, 7vw, 72px)",
-                fontWeight: 400,
-                margin: 0,
-                letterSpacing: "-0.03em",
-                lineHeight: 1,
-              }}
-            >
-              Where to buy,{" "}
-              <em
-                className="ink-brass-l"
-                style={{ fontWeight: 400, fontStyle: "italic" }}
-              >
-                and at what cost.
-              </em>
-            </h2>
-          </div>
-          <div
-            className="glass-card"
-            style={{
-              borderRadius: 999,
-              padding: "10px 16px",
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              color: "var(--color-bone)",
-            }}
-          >
-            Sorted by total · ship + tax incl.
-          </div>
-        </div>
-
-        <div className="heavy-glass" style={{ borderRadius: 10, overflow: "hidden" }}>
-          <div
-            className="hidden md:grid"
-            style={{
-              gridTemplateColumns: "2.4fr 1fr 1.6fr 0.8fr 1fr",
-              padding: "18px 24px",
-              borderBottom: "1px solid var(--color-hairline)",
-              fontFamily: "var(--font-mono)",
-              fontSize: 10,
-              color: "var(--color-smoke)",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-            }}
-          >
-            <span>Vendor</span>
-            <span>Price</span>
-            <span>Stock</span>
-            <span>Rating</span>
-            <span style={{ textAlign: "right" }}>Action</span>
-          </div>
-          {vendors.map((v, i) => (
-            <div
-              key={`${v.name}-${i}`}
-              className="grid grid-cols-1 md:[grid-template-columns:2.4fr_1fr_1.6fr_0.8fr_1fr]"
-              style={{
-                padding: "22px 24px",
-                borderBottom:
-                  i < vendors.length - 1
-                    ? "1px solid var(--color-hairline)"
-                    : "none",
-                alignItems: "center",
-                gap: 12,
-                background: v.best
-                  ? "linear-gradient(90deg, rgba(212,174,110,0.10), transparent 70%)"
-                  : "transparent",
-              }}
-            >
-              <div className="flex items-center gap-3">
-                {v.best ? (
-                  <span
-                    className="font-mono"
-                    style={{
-                      fontSize: 9,
-                      color: "var(--color-ink)",
-                      background:
-                        "linear-gradient(135deg, var(--color-brass-light), var(--color-brass))",
-                      padding: "5px 9px",
-                      letterSpacing: "0.2em",
-                      borderRadius: 999,
-                      boxShadow: "0 0 12px rgba(212,174,110,0.5)",
-                    }}
-                  >
-                    BEST
-                  </span>
-                ) : null}
-                <div>
-                  <div
-                    className="font-display ink"
-                    style={{
-                      fontSize: 22,
-                      fontStyle: "italic",
-                      fontWeight: 400,
-                    }}
-                  >
-                    {v.name}
-                  </div>
-                  <div
-                    className="font-mono ink-faint"
-                    style={{
-                      fontSize: 10,
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase",
-                      marginTop: 2,
-                    }}
-                  >
-                    {v.loc}
-                  </div>
+            <div className="ship-strip">
+              <div className="ship-card">
+                <svg className="ship-icon" viewBox="0 0 24 24" aria-hidden>
+                  <path d="M3 7h11v9H3z"/>
+                  <path d="M14 10h4l3 3v3h-7"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+                <div className="text">
+                  <b>Ships from maker</b>
+                  <span>Direct to your door</span>
                 </div>
               </div>
-              <div>
-                <span
-                  className="font-display ink tabular-nums"
-                  style={{
-                    fontSize: 24,
-                    letterSpacing: "-0.025em",
-                    fontWeight: 400,
-                  }}
-                >
-                  ${v.price}
-                </span>
-                {v.ship === "$0" ? (
-                  <div
-                    className="font-mono ink-brass-l"
-                    style={{
-                      fontSize: 9,
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      marginTop: 2,
-                    }}
-                  >
-                    + Free ship
-                  </div>
+              <div className="ship-card">
+                <svg className="ship-icon" viewBox="0 0 24 24" aria-hidden>
+                  <path d="M12 3 4 6v6c0 5 4 8 8 9 4-1 8-4 8-9V6z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <div className="text">
+                  <b>Verified vendor</b>
+                  <span>Authorized source</span>
+                </div>
+              </div>
+              <div className="ship-card">
+                <svg className="ship-icon" viewBox="0 0 24 24" aria-hidden>
+                  <path d="M9 14H4v-5"/>
+                  <path d="M4 14a8 8 0 1 0 2-8"/>
+                </svg>
+                <div className="text">
+                  <b>Updated nightly</b>
+                  <span>Pricing refreshed daily</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="accordion">
+              <details open>
+                <summary>The piece</summary>
+                <div className="body">
+                  <p>
+                    {product.note ??
+                      product.statusNote ??
+                      `The ${product.name} is a ${product.categoryLabel.toLowerCase()} from ${product.brandName}. Catalogued and verified by Pillar & Pearl.`}
+                  </p>
+                </div>
+              </details>
+              <details>
+                <summary>Where to buy</summary>
+                <div className="body">
+                  <p>
+                    Purchase directly from{" "}
+                    {product.link ? (
+                      <a
+                        href={product.link}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        style={{ color: "var(--color-gold-light)", borderBottom: "1px solid var(--color-line-gold-2)", paddingBottom: "1px" }}
+                      >
+                        {product.brandName}&apos;s official store
+                      </a>
+                    ) : (
+                      `${product.brandName}'s official store`
+                    )}
+                    . Pillar &amp; Pearl links only to authorized vendors.
+                  </p>
+                </div>
+              </details>
+              <details>
+                <summary>Care &amp; cleaning</summary>
+                <div className="body">
+                  <p>Iso-soak between sessions. Never torch a wet bucket. Replace pearls every 6 months for best performance.</p>
+                </div>
+              </details>
+              <details>
+                <summary>About {product.brandName}</summary>
+                <div className="body">
+                  <p>
+                    {isUsMade
+                      ? `${product.brandName} is a US-based maker catalogued by Pillar & Pearl under the US-Made tier.`
+                      : `${product.brandName} is an internationally-sourced brand catalogued by Pillar & Pearl.`}
+                    {" "}
+                    <Link
+                      href={`/brands/${product.brandSlug}`}
+                      style={{ color: "var(--color-gold-light)", borderBottom: "1px solid var(--color-line-gold-2)", paddingBottom: "1px" }}
+                    >
+                      View all {product.brandName} pieces →
+                    </Link>
+                  </p>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        {/* Specs */}
+        <section className="specs-section">
+          <h2>Specs</h2>
+          <dl className="specs-grid">
+            <div className="spec">
+              <dt>Brand</dt>
+              <dd>{product.brandName}</dd>
+            </div>
+            <div className="spec">
+              <dt>Tier</dt>
+              <dd>
+                {isUsMade ? (
+                  <>US-<em>Made</em></>
                 ) : (
-                  <div
-                    className="font-mono ink-faint"
-                    style={{
-                      fontSize: 9,
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      marginTop: 2,
-                    }}
-                  >
-                    + {v.ship} ship
-                  </div>
+                  <><em>Import</em></>
                 )}
-              </div>
-              <div>
-                <div className="ink-soft" style={{ fontSize: 13 }}>
-                  {v.stock}
-                </div>
-                <div
-                  className="font-mono ink-faint"
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase",
-                    marginTop: 2,
-                  }}
-                >
-                  {v.eta}
-                </div>
-              </div>
-              <div className="font-mono ink-brass-l" style={{ fontSize: 13 }}>
-                ★ {v.rating}
-              </div>
-              <div className="md:text-right">
-                  {v.href ? (
-                    <a
-                      href={v.href}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="focus-ring"
-                      style={{
-                        background: v.best
-                          ? "linear-gradient(135deg, var(--color-pearl), var(--color-pearl-2))"
-                          : "transparent",
-                        color: v.best ? "var(--color-ink)" : "var(--color-pearl)",
-                        border: `1px solid ${v.best ? "var(--color-pearl)" : "var(--color-hairline-strong)"}`,
-                        padding: "10px 18px",
-                        borderRadius: 999,
-                        fontFamily: "var(--font-sans)",
-                        fontSize: 12,
-                        fontWeight: 500,
-                        boxShadow: v.best
-                          ? "0 0 16px rgba(212,174,110,0.25)"
-                          : "none",
-                        display: "inline-block",
-                      }}
-                    >
-                      Buy →
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled
-                      title="Aggregator listing — direct buy unavailable"
-                      className="focus-ring"
-                      style={{
-                        background: "transparent",
-                        color: "var(--color-bone)",
-                        border: "1px solid var(--color-hairline-strong)",
-                        padding: "10px 18px",
-                        borderRadius: 999,
-                        fontFamily: "var(--font-sans)",
-                        fontSize: 12,
-                        fontWeight: 500,
-                        cursor: "not-allowed",
-                      }}
-                    >
-                      Listing
-                    </button>
-                  )}
-                </div>
+              </dd>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="spec">
+              <dt>Category</dt>
+              <dd>{product.categoryLabel}</dd>
+            </div>
+            <div className="spec">
+              <dt>MSRP</dt>
+              <dd>{product.price}</dd>
+            </div>
+          </dl>
+        </section>
 
-      {/* SPECS + HOUSE NOTE */}
-      <section style={{ padding: "0 40px 64px" }}>
-        <div
-          className="heavy-glass"
-          style={{
-            borderRadius: 10,
-            padding: 56,
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <Caustics opacity={0.5} />
-          <div
-            style={{
-              display: "grid",
-              gap: 48,
-              gridTemplateColumns: "1fr",
-              position: "relative",
-            }}
-            className="md:[grid-template-columns:1fr_1.4fr] md:[gap:64px]"
-          >
-            <div>
-              <div
-                className="kicker kicker-light"
-                style={{ marginBottom: 18 }}
-              >
-                The Particulars
-              </div>
-              <h3
-                className="font-display ink"
-                style={{
-                  fontSize: 48,
-                  fontWeight: 400,
-                  margin: 0,
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.05,
-                }}
-              >
-                Specifications
-              </h3>
-              <div style={{ marginTop: 28 }}>
-                <SpecRow k="Maker" v={product.brandName} />
-                <SpecRow k="Tier" v={brand?.tier === "usmade" ? "US-Made" : "Import"} />
-                <SpecRow k="Instrument" v={product.categoryLabel} />
-                <SpecRow k="MSRP" v={product.price} />
-                <SpecRow k="Best vendor" v={best?.name ?? "—"} />
-              </div>
-            </div>
-            <div>
-              <div
-                className="kicker kicker-light"
-                style={{ marginBottom: 18 }}
-              >
-                The House Note
-              </div>
-              <h3
-                className="font-display ink"
-                style={{
-                  fontSize: 48,
-                  fontWeight: 400,
-                  margin: 0,
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.05,
-                }}
-              >
-                What we make of it.
-              </h3>
-              <p
-                className="font-display ink"
-                style={{
-                  fontSize: 24,
-                  lineHeight: 1.55,
-                  marginTop: 28,
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                  maxWidth: 580,
-                }}
-              >
-                {product.note ??
-                  `${vendors.length} vendors carry the ${product.name}. The corridor sits within $${Math.abs((corridor.high - corridor.low) || 0)} from low to high — see the comparison above for shipping and stock.`}
-              </p>
-              <div
-                className="font-mono ink-faint"
-                style={{
-                  fontSize: 10,
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  marginTop: 24,
-                }}
-              >
-                — The House
+        {/* About piece */}
+        <section className="about-piece">
+          <h2>About the <em>piece.</em></h2>
+          <div className="body">
+            <p className="lead">
+              {product.note ??
+                `The ${product.name} is ${isUsMade ? "a US-made piece" : "an imported piece"} from ${product.brandName}, catalogued by Pillar & Pearl for the serious collector.`}
+            </p>
+            <p>
+              {product.statusNote ??
+                `Every piece in the Pillar & Pearl catalogue has been verified for pricing and availability. The ${product.name} is listed under the ${product.categoryLabel} category.`}
+            </p>
+            <p>
+              Sourced {isUsMade ? "domestically from an American maker" : "from an internationally recognized brand"}.
+              Pricing verified as of {fetchedDate}. Links route outward to the maker — we don&apos;t sell, ship, or handle product.
+            </p>
+            <div className="maker-card">
+              <div className="av" aria-hidden />
+              <div className="who">
+                <b>{product.brandName}</b>
+                {isUsMade ? "US-Made · " : "Import · "}
+                Working since catalog inception · Verified by Pillar &amp; Pearl.{" "}
+                <Link
+                  href={`/brands/${product.brandSlug}`}
+                  style={{ color: "var(--color-gold-light)" }}
+                >
+                  View brand →
+                </Link>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {related.length > 0 ? (
-        <>
-          <SectionRule
-            kicker="03 — Of a kind"
-            title={`Bench-paired with the ${product.name}`}
-          />
-          <section style={{ padding: "0 40px 96px" }}>
-            <div
-              className="grid gap-3"
-              style={{
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-              }}
-            >
-              {related.map((p) => (
-                <RelatedCard key={p.id} product={p} />
+        {/* Related */}
+        {related.length > 0 && (
+          <section className="related-section">
+            <div className="related-head">
+              <h2>
+                More from <em>{product.brandName}.</em>
+              </h2>
+              <Link href={`/brands/${product.brandSlug}`}>
+                Shop the maker →
+              </Link>
+            </div>
+            <div className="related-grid">
+              {related.slice(0, 4).map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>
-        </>
-      ) : null}
-    </article>
-  );
-}
-
-function SpecRow({ k, v }: { k: string; v: string }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 16,
-        padding: "14px 0",
-        borderBottom: "1px solid var(--color-hairline)",
-      }}
-    >
-      <span
-        className="font-mono ink-faint"
-        style={{
-          fontSize: 10,
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-        }}
-      >
-        {k}
-      </span>
-      <span
-        className="font-sans ink"
-        style={{ fontSize: 13, textAlign: "right" }}
-      >
-        {v}
-      </span>
-    </div>
-  );
-}
-
-function RelatedCard({ product }: { product: NormalizedProduct }) {
-  const imageSrc = product.imageHash ? `/img/${product.imageHash}` : null;
-  return (
-    <Link
-      href={`/products/${product.id}`}
-      className="heavy-glass lift focus-ring relative flex flex-col gap-3 overflow-hidden"
-      style={{ borderRadius: 8, padding: 14 }}
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute"
-        style={{
-          top: -40,
-          right: -40,
-          width: 160,
-          height: 160,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, var(--color-quartz) 0%, transparent 70%)",
-          opacity: 0.18,
-          filter: "blur(20px)",
-        }}
-      />
-      <div className="relative">
-        <PlatePlaceholder
-          label={product.name}
-          height={200}
-          imageSrc={imageSrc}
-          imageAlt={product.name}
-        />
-      </div>
-      <div className="kicker kicker-light relative">{product.brandName}</div>
-      <div
-        className="font-display ink relative"
-        style={{ fontSize: 22, fontStyle: "italic", fontWeight: 400 }}
-      >
-        {product.name}
-      </div>
-      <div
-        className="relative flex items-baseline justify-between"
-        style={{
-          paddingTop: 14,
-          borderTop: "1px solid var(--color-hairline)",
-        }}
-      >
-        <span
-          className="font-display ink tabular-nums"
-          style={{
-            fontSize: 22,
-            fontWeight: 400,
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {product.price}
-        </span>
-        <span
-          className="font-mono ink-mute"
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-          }}
-        >
-          {product.categoryLabel}
-        </span>
-      </div>
-    </Link>
+        )}
+      </article>
+    </>
   );
 }

@@ -2,12 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useAgeGate } from "@/store/age-gate";
-import {
-  Caustics,
-  PPMark,
-  QuartzOrb,
-  VerticalMark,
-} from "./editorial";
+import { PPMark } from "./editorial";
 
 export default function AgeGate() {
   const verified = useAgeGate((s) => s.verified);
@@ -74,361 +69,132 @@ export default function AgeGate() {
       aria-describedby="age-gate-desc"
       className="age-gate-enter fixed inset-0 z-[100]"
       style={{
-        background: "var(--color-ink)",
-        color: "var(--color-pearl)",
+        background: "var(--color-bg)",
+        color: "var(--color-fg)",
         fontFamily: "var(--font-sans)",
         overflow: "hidden",
       }}
     >
-      <Caustics opacity={0.7} />
+      {/* Gold halo background */}
+      <div
+        aria-hidden
+        className="pp-bg"
+        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+      />
 
-      <div ref={dialogRef} className="relative h-full w-full">
+      <div
+        ref={dialogRef}
+        style={{
+          position: "relative",
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "40px 24px",
+        }}
+      >
         <div
-          className="hidden md:grid h-full"
           style={{
-            gridTemplateColumns: "60px minmax(0,1fr) minmax(0,1.2fr) 80px",
-            gridTemplateRows: "60px 1fr 60px",
+            maxWidth: 640,
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            gap: 0,
           }}
         >
-          {/* TL — vertical mark column */}
-          <div
-            style={{
-              gridColumn: "1",
-              gridRow: "1 / 4",
-              borderRight: "1px solid var(--color-hairline)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "24px 0",
-            }}
-          >
-            <PPMark size={22} />
-            <VerticalMark height={200} color="var(--color-bone)" />
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                color: "var(--color-smoke)",
-                letterSpacing: "0.3em",
-                writingMode: "vertical-rl",
-                transform: "rotate(180deg)",
-              }}
-            >
-              MMXXVI
-            </div>
+          {/* Logo */}
+          <div style={{ marginBottom: 32 }}>
+            <PPMark size="lg" />
           </div>
 
-          {/* top rule */}
-          <div
-            style={{
-              gridColumn: "2 / 5",
-              gridRow: "1",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "0 32px",
-              borderBottom: "1px solid var(--color-hairline)",
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              color: "var(--color-smoke)",
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
-            }}
-          >
-            <span>The Threshold</span>
-            <span>Folio I · Plate 0001</span>
-            <span style={{ color: "var(--color-brass)" }}>An Index of Quartz</span>
-          </div>
-
-          {/* LEFT — text panel */}
-          <div
-            style={{
-              gridColumn: "2",
-              gridRow: "2",
-              padding: "64px 48px 48px 48px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              borderRight: "1px solid var(--color-hairline)",
-              minHeight: 0,
-            }}
-          >
-            <div>
-              <div
-                className="kicker"
-                style={{ marginBottom: 24 }}
-              >
-                No. 0001 — Threshold
-              </div>
-              <h1
-                id="age-gate-title"
-                className="font-display"
-                style={{
-                  fontSize: "clamp(56px, 7vw, 96px)",
-                  fontWeight: 400,
-                  margin: 0,
-                  lineHeight: 0.88,
-                  letterSpacing: "-0.04em",
-                  color: "var(--color-pearl)",
-                }}
-              >
-                A measured
-                <br />
-                pursuit of
-                <br />
-                <em
-                  style={{
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    color: "var(--color-brass-light)",
-                    fontSize: "clamp(72px, 9vw, 132px)",
-                    display: "block",
-                    marginTop: -4,
-                    marginLeft: -4,
-                  }}
-                >
-                  finer fire.
-                </em>
-              </h1>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 22,
-                paddingTop: 32,
-                borderTop: "1px solid var(--color-hairline)",
-                marginTop: 32,
-              }}
-            >
-              <p
-                id="age-gate-desc"
-                className="font-display ink-soft"
-                style={{
-                  fontSize: 19,
-                  fontWeight: 400,
-                  fontStyle: "italic",
-                  lineHeight: 1.55,
-                  margin: 0,
-                  maxWidth: 480,
-                }}
-              >
-                Pillar &amp; Pearl curates quartz from a small bench of artisans
-                &amp; makers. By entering, you affirm legal age and assume
-                responsibility for what follows.
-              </p>
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                <button
-                  ref={confirmRef}
-                  type="button"
-                  onClick={() => verify()}
-                  className="btn btn-primary focus-ring"
-                >
-                  I am 21 / Cross the Threshold
-                </button>
-                <button
-                  type="button"
-                  onClick={decline}
-                  className="btn btn-ghost focus-ring"
-                >
-                  Decline
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT — orb panel */}
-          <div
-            style={{
-              gridColumn: "3",
-              gridRow: "2",
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRight: "1px solid var(--color-hairline)",
-            }}
-          >
-            <QuartzOrb size={420} />
-            <svg
-              aria-hidden
-              style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-              width="100%"
-              height="100%"
-            >
-              <line x1="50%" y1="22%" x2="92%" y2="14%" stroke="var(--color-brass)" strokeWidth="0.5" opacity="0.6" />
-              <line x1="32%" y1="50%" x2="6%" y2="50%" stroke="var(--color-brass)" strokeWidth="0.5" opacity="0.6" />
-              <line x1="68%" y1="78%" x2="92%" y2="86%" stroke="var(--color-brass)" strokeWidth="0.5" opacity="0.6" />
-            </svg>
-            <div
-              style={{
-                position: "absolute",
-                top: "8%",
-                right: "4%",
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                color: "var(--color-brass-light)",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-              }}
-            >
-              ① Specular highlight
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                top: "46%",
-                left: "2%",
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                color: "var(--color-brass-light)",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-              }}
-            >
-              ② Refractive core
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                bottom: "10%",
-                right: "4%",
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                color: "var(--color-brass-light)",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-              }}
-            >
-              ③ Caustic shadow
-            </div>
-          </div>
-
-          {/* TR — vertical scale */}
-          <div
-            style={{
-              gridColumn: "4",
-              gridRow: "1 / 4",
-              borderLeft: "1px solid var(--color-hairline)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              padding: "24px 0",
-              alignItems: "center",
-            }}
-          >
-            {(["I", "II", "III", "IV", "V"] as const).map((n, i) => (
-              <div
-                key={n}
-                className="font-display"
-                style={{
-                  fontSize: 18,
-                  color: i === 0 ? "var(--color-brass-light)" : "var(--color-smoke)",
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                }}
-              >
-                {n}
-              </div>
-            ))}
-          </div>
-
-          {/* bottom rule */}
-          <div
-            style={{
-              gridColumn: "2 / 4",
-              gridRow: "3",
-              padding: "0 32px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderTop: "1px solid var(--color-hairline)",
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              color: "var(--color-smoke)",
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-            }}
-          >
-            <span>pillarpearl.com</span>
-            <span>For tobacco &amp; legal use · Not for sale to minors</span>
-            <span style={{ color: "var(--color-brass)" }}>↓ Continue</span>
-          </div>
-        </div>
-
-        {/* ───── mobile fallback ───── */}
-        <div className="md:hidden flex h-full flex-col items-center justify-center px-6 py-10 text-center relative">
-          <div className="mb-8">
-            <PPMark size={28} />
-          </div>
-          <div
-            className="kicker"
-            style={{ marginBottom: 16 }}
-          >
-            No. 0001 — Threshold
-          </div>
+          {/* Headline */}
           <h1
-            className="font-display"
+            id="age-gate-title"
             style={{
-              fontSize: 56,
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(48px, 8vw, 80px)",
               fontWeight: 400,
+              lineHeight: 1,
+              letterSpacing: "-0.03em",
+              color: "var(--color-fg)",
               margin: 0,
-              lineHeight: 0.92,
-              letterSpacing: "-0.04em",
-              color: "var(--color-pearl)",
+              marginBottom: 20,
             }}
           >
-            A measured pursuit of{" "}
+            Are you{" "}
             <em
               style={{
                 fontStyle: "italic",
-                color: "var(--color-brass-light)",
+                color: "var(--color-gold-light)",
               }}
             >
-              finer fire.
+              21+?
             </em>
           </h1>
-          <div className="my-8">
-            <QuartzOrb size={220} />
-          </div>
+
+          {/* Subhead */}
           <p
-            className="font-display ink-soft"
+            id="age-gate-desc"
             style={{
-              fontSize: 16,
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(15px, 2vw, 18px)",
               fontStyle: "italic",
-              lineHeight: 1.55,
-              maxWidth: 440,
+              fontWeight: 400,
+              color: "var(--color-muted)",
+              lineHeight: 1.5,
+              margin: 0,
+              marginBottom: 40,
+              maxWidth: 480,
             }}
           >
-            Pillar &amp; Pearl curates quartz from a small bench of artisans
-            &amp; makers. By entering, you affirm legal age.
+            Pillar &amp; Pearl is for adults in places where dabbing is legal.
           </p>
-          <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+
+          {/* Buttons */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              width: "100%",
+              maxWidth: 320,
+              marginBottom: 28,
+            }}
+          >
             <button
+              ref={confirmRef}
               type="button"
               onClick={() => verify()}
-              className="btn btn-primary focus-ring w-full"
+              className="btn btn-primary"
+              style={{ width: "100%" }}
             >
-              I am 21 / Cross the Threshold
+              Yes — I&apos;m 21+
             </button>
             <button
               type="button"
               onClick={decline}
-              className="btn btn-ghost focus-ring w-full"
+              className="btn btn-ghost"
+              style={{ width: "100%" }}
             >
-              Decline
+              No — take me back
             </button>
           </div>
+
+          {/* Legal line */}
           <p
-            className="font-mono ink-faint mt-8"
             style={{
+              fontFamily: "var(--font-mono)",
               fontSize: 9,
               letterSpacing: "0.22em",
               textTransform: "uppercase",
+              color: "var(--color-dim)",
+              margin: 0,
             }}
           >
-            For tobacco &amp; legal use · Not for sale to minors
+            21+ Only · Not for sale to minors
           </p>
         </div>
       </div>

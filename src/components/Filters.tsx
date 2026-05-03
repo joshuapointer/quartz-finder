@@ -12,13 +12,13 @@ import ProductCard from "./ProductCard";
 import EmptyState from "./EmptyState";
 
 const TIER_OPTIONS: { value: Tier | "all"; label: string }[] = [
-  { value: "all", label: "Any tier" },
-  { value: "import", label: "Import" },
+  { value: "all", label: "Any" },
   { value: "usmade", label: "US-Made" },
+  { value: "import", label: "Import" },
 ];
 
 const CATEGORY_OPTIONS: { value: ProductCategory | "all"; label: string }[] = [
-  { value: "all", label: "All instruments" },
+  { value: "all", label: "All Types" },
   { value: "control_tower", label: CATEGORY_META.control_tower.label },
   { value: "terp_slurper", label: CATEGORY_META.terp_slurper.label },
   { value: "dunking_station", label: CATEGORY_META.dunking_station.label },
@@ -34,14 +34,14 @@ const SORT_OPTIONS: {
   { value: "price-desc", label: "Price ↓" },
 ];
 
-
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 12;
 
 interface Props {
   products: NormalizedProduct[];
   initialCategory?: ProductCategory;
 }
 
+/* ── Sidebar filter group ── */
 function FilterGroup({
   label,
   children,
@@ -51,86 +51,90 @@ function FilterGroup({
 }) {
   return (
     <div
-      style={{
-        borderBottom: "1px solid var(--color-hairline)",
-        padding: "18px 0",
-      }}
+      className="filter-group"
+      style={{ padding: "22px 0", borderBottom: "1px solid var(--color-line)" }}
     >
-      <div
-        className="kicker kicker-light"
-        style={{ marginBottom: 14 }}
+      <h4
+        style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: 10,
+          fontWeight: 600,
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+          color: "var(--color-fg)",
+          marginBottom: 14,
+        }}
       >
         {label}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      </h4>
+      <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
         {children}
-      </div>
+      </ul>
     </div>
   );
 }
 
+/* ── Custom checkbox row ── */
 function CheckRow({
   label,
   active,
+  count,
   onClick,
 }: {
   label: string;
   active: boolean;
+  count?: number;
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={active}
-      onClick={onClick}
-      className="focus-ring"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        fontFamily: "var(--font-sans)",
-        fontSize: 13,
-        color: active ? "var(--color-pearl)" : "var(--color-bone)",
-        cursor: "pointer",
-        background: "transparent",
-        border: "none",
-        padding: 0,
-        textAlign: "left",
-        transition: "color var(--duration-fast) var(--ease-standard)",
-      }}
-    >
-      <span
-        aria-hidden
+    <li>
+      <label
         style={{
-          width: 14,
-          height: 14,
-          borderRadius: 3,
-          border: `1px solid ${active ? "var(--color-brass-light)" : "var(--color-hairline-strong)"}`,
-          background: active
-            ? "linear-gradient(135deg, var(--color-brass-light), var(--color-brass))"
-            : "transparent",
-          display: "inline-flex",
+          display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          boxShadow: active ? "0 0 8px rgba(212,174,110,0.5)" : "none",
-          flexShrink: 0,
+          gap: 10,
+          fontFamily: "var(--font-sans)",
+          fontSize: 13,
+          color: active ? "var(--color-fg)" : "var(--color-muted)",
+          cursor: "pointer",
+          transition: "color .2s",
         }}
       >
-        {active ? (
+        <input
+          type="checkbox"
+          checked={active}
+          onChange={onClick}
+          style={{
+            appearance: "none",
+            WebkitAppearance: "none",
+            width: 14,
+            height: 14,
+            borderRadius: 4,
+            border: `1px solid ${active ? "var(--color-gold-light)" : "var(--color-line-strong)"}`,
+            background: active
+              ? "linear-gradient(180deg, var(--color-gold-light), var(--color-gold))"
+              : "rgba(255,255,255,0.04)",
+            flexShrink: 0,
+            transition: "all .2s",
+            cursor: "pointer",
+            position: "relative",
+          }}
+        />
+        {label}
+        {count !== undefined ? (
           <span
             style={{
-              width: 6,
-              height: 6,
-              borderRadius: 1,
-              background: "var(--color-ink)",
-              display: "block",
+              marginLeft: "auto",
+              color: "var(--color-dim)",
+              fontSize: 11,
+              fontVariantNumeric: "tabular-nums",
             }}
-          />
+          >
+            {count}
+          </span>
         ) : null}
-      </span>
-      {label}
-    </button>
+      </label>
+    </li>
   );
 }
 
@@ -177,34 +181,32 @@ export default function Filters({ products, initialCategory }: Props) {
   // active filter chips
   type Chip = { id: string; label: string; clear: () => void };
   const chips: Chip[] = [];
+  if (query.trim()) {
+    chips.push({
+      id: "query",
+      label: `"${query.trim()}"`,
+      clear: () => { setQuery(""); setPage(1); },
+    });
+  }
   if (category !== "all") {
     chips.push({
       id: "cat",
       label: CATEGORY_META[category].label,
-      clear: () => {
-        setCategory("all");
-        setPage(1);
-      },
+      clear: () => { setCategory("all"); setPage(1); },
     });
   }
   if (tier !== "all") {
     chips.push({
       id: "tier",
       label: tier === "usmade" ? "US-Made" : "Import",
-      clear: () => {
-        setTier("all");
-        setPage(1);
-      },
+      clear: () => { setTier("all"); setPage(1); },
     });
   }
   if (inStock) {
     chips.push({
       id: "stock",
-      label: "Active brand only",
-      clear: () => {
-        setInStock(false);
-        setPage(1);
-      },
+      label: "In Stock",
+      clear: () => { setInStock(false); setPage(1); },
     });
   }
   if (makerFilter !== "all") {
@@ -213,22 +215,9 @@ export default function Filters({ products, initialCategory }: Props) {
       chips.push({
         id: "maker",
         label: mk.name,
-        clear: () => {
-          setMakerFilter("all");
-          setPage(1);
-        },
+        clear: () => { setMakerFilter("all"); setPage(1); },
       });
     }
-  }
-  if (query.trim()) {
-    chips.push({
-      id: "query",
-      label: `“${query.trim()}”`,
-      clear: () => {
-        setQuery("");
-        setPage(1);
-      },
-    });
   }
 
   const resetAll = () => {
@@ -245,146 +234,133 @@ export default function Filters({ products, initialCategory }: Props) {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "minmax(0,1fr)",
+        gridTemplateColumns: "240px 1fr",
+        gap: 48,
+        paddingTop: 36,
       }}
-      className="md:[grid-template-columns:280px_minmax(0,1fr)]"
+      className="max-[880px]:[grid-template-columns:1fr]"
     >
-      {/* ── Left rail ── */}
+      {/* ── Sidebar ── */}
       <aside
-        className="md:min-h-[1400px] md:border-r md:border-[var(--color-hairline)]"
-        style={{
-          padding: "28px 24px",
-        }}
+        className="max-[880px]:hidden"
+        style={{ minWidth: 0 }}
       >
-        <div
-          className="kicker kicker-pearl"
+        {/* Refine heading */}
+        <h3
           style={{
-            paddingBottom: 16,
-            borderBottom: "1px solid var(--color-hairline)",
-            display: "flex",
-            justifyContent: "space-between",
-            color: "var(--color-pearl)",
+            fontFamily: "var(--font-sans)",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "var(--color-gold-light)",
+            marginBottom: 14,
+            paddingBottom: 12,
+            borderBottom: "1px solid var(--color-line-gold)",
           }}
         >
-          <span>Refine</span>
-          <button
-            type="button"
-            onClick={resetAll}
-            className="focus-ring"
-            style={{
-              color: "var(--color-brass-light)",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              fontSize: "inherit",
-              letterSpacing: "inherit",
-              textTransform: "inherit",
-              padding: 0,
-            }}
-          >
-            Reset
-          </button>
-        </div>
+          Refine
+        </h3>
 
         {/* Search */}
-        <FilterGroup label="Search">
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setPage(1);
-            }}
-            placeholder={`Search ${products.length} pieces…`}
-            className="focus-ring"
+        <div style={{ padding: "18px 0", borderBottom: "1px solid var(--color-line)" }}>
+          <div
             style={{
-              width: "100%",
-              padding: "10px 0",
-              fontSize: 13,
-              background: "transparent",
-              border: "none",
-              borderBottom: "1px solid var(--color-hairline)",
-              color: "var(--color-pearl)",
-              outline: "none",
-              fontFamily: "var(--font-sans)",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "9px 14px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--color-line)",
             }}
-          />
-        </FilterGroup>
+          >
+            <svg
+              className="pp-icon"
+              aria-hidden
+              style={{ flexShrink: 0, color: "var(--color-dim)" }}
+            >
+              <use href="#i-search" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+              placeholder={`Search ${products.length} pieces…`}
+              style={{
+                flex: 1,
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontFamily: "var(--font-sans)",
+                fontSize: 13,
+                color: "var(--color-fg)",
+                minWidth: 0,
+              }}
+            />
+          </div>
+        </div>
 
-        {/* Category */}
-        <FilterGroup label="Instrument">
+        {/* Type / Category */}
+        <FilterGroup label="Type">
           {CATEGORY_OPTIONS.map((o) => (
             <CheckRow
               key={String(o.value)}
               label={o.label}
               active={category === o.value}
-              onClick={() => {
-                setCategory(o.value);
-                setPage(1);
-              }}
+              onClick={() => { setCategory(o.value); setPage(1); }}
             />
           ))}
         </FilterGroup>
 
-        {/* Tier */}
-        <FilterGroup label="Tier">
-          {TIER_OPTIONS.map((o) => (
-            <CheckRow
-              key={String(o.value)}
-              label={o.label}
-              active={tier === o.value}
-              onClick={() => {
-                setTier(o.value);
-                setPage(1);
-              }}
-            />
-          ))}
-        </FilterGroup>
-
-        {/* Maker */}
-        <FilterGroup label="Maker">
+        {/* Brand / Maker */}
+        <FilterGroup label="Brand">
           <CheckRow
-            label="Any maker"
+            label="Any Brand"
             active={makerFilter === "all"}
-            onClick={() => {
-              setMakerFilter("all");
-              setPage(1);
-            }}
+            onClick={() => { setMakerFilter("all"); setPage(1); }}
           />
           {visibleMakers.map((m) => (
             <CheckRow
               key={m.slug}
               label={m.name}
               active={makerFilter === m.slug}
-              onClick={() => {
-                setMakerFilter(m.slug);
-                setPage(1);
-              }}
+              onClick={() => { setMakerFilter(m.slug); setPage(1); }}
             />
           ))}
           {allMakers.length > 5 && (
-            <button
-              type="button"
-              onClick={() => setShowAllMakers((v) => !v)}
-              className="focus-ring"
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--color-bone)",
-                fontFamily: "var(--font-sans)",
-                fontSize: 13,
-                cursor: "pointer",
-                textAlign: "left",
-                padding: 0,
-                marginTop: 4,
-              }}
-            >
-              {showAllMakers
-                ? "− show fewer"
-                : `+ ${allMakers.length - 5} more`}
-            </button>
+            <li>
+              <button
+                type="button"
+                onClick={() => setShowAllMakers((v) => !v)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--color-dim)",
+                  fontFamily: "var(--font-sans)",
+                  fontSize: 12,
+                  cursor: "pointer",
+                  padding: 0,
+                  marginTop: 2,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {showAllMakers ? "− Show fewer" : `+ ${allMakers.length - 5} more`}
+              </button>
+            </li>
           )}
+        </FilterGroup>
+
+        {/* Origin / Tier */}
+        <FilterGroup label="Origin">
+          {TIER_OPTIONS.map((o) => (
+            <CheckRow
+              key={String(o.value)}
+              label={o.label}
+              active={tier === o.value}
+              onClick={() => { setTier(o.value); setPage(1); }}
+            />
+          ))}
         </FilterGroup>
 
         {/* Availability */}
@@ -392,62 +368,74 @@ export default function Filters({ products, initialCategory }: Props) {
           <CheckRow
             label="In stock only"
             active={inStock}
-            onClick={() => {
-              setInStock(!inStock);
-              setPage(1);
-            }}
+            onClick={() => { setInStock(!inStock); setPage(1); }}
           />
         </FilterGroup>
+
+        {/* Reset */}
+        {chips.length > 0 && (
+          <div style={{ paddingTop: 18 }}>
+            <button
+              type="button"
+              onClick={resetAll}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--color-muted)",
+                fontFamily: "var(--font-sans)",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                cursor: "pointer",
+                padding: 0,
+                transition: "color .2s",
+              }}
+            >
+              Reset all filters
+            </button>
+          </div>
+        )}
       </aside>
 
-      {/* ── Right region ── */}
-      <main style={{ padding: "28px clamp(20px, 4vw, 40px)" }}>
+      {/* ── Main content ── */}
+      <div style={{ minWidth: 0 }}>
+        {/* Toolbar */}
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
+            justifyContent: "space-between",
             gap: 16,
-            marginBottom: 24,
-            paddingBottom: 24,
-            borderBottom: "1px solid var(--color-hairline)",
             flexWrap: "wrap",
+            paddingBottom: 22,
+            fontFamily: "var(--font-sans)",
           }}
         >
+          {/* Applied chips */}
           <div
             style={{
               display: "flex",
               gap: 8,
               flexWrap: "wrap",
+              alignItems: "center",
               flex: 1,
               minWidth: 0,
             }}
           >
-            {chips.length === 0 ? (
-              <span
-                className="font-mono ink-faint"
-                style={{
-                  fontSize: 11,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                }}
-              >
-                No filters · showing all
-              </span>
-            ) : null}
             {chips.map((c) => (
               <span
                 key={c.id}
-                className="glass-card"
                 style={{
-                  borderRadius: 999,
-                  fontFamily: "var(--font-sans)",
-                  fontSize: 12,
-                  color: "var(--color-pearl-2)",
-                  padding: "8px 14px",
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
+                  padding: "6px 10px 6px 12px",
+                  borderRadius: 999,
+                  background: "rgba(232,184,90,0.12)",
+                  border: "1px solid var(--color-line-gold-2)",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  color: "var(--color-gold-light)",
                 }}
               >
                 {c.label}
@@ -455,14 +443,18 @@ export default function Filters({ products, initialCategory }: Props) {
                   type="button"
                   onClick={c.clear}
                   aria-label={`Clear ${c.label}`}
-                  className="focus-ring"
                   style={{
-                    color: "var(--color-smoke)",
-                    background: "transparent",
-                    border: "none",
+                    background: "rgba(0,0,0,0.4)",
+                    color: "var(--color-gold-light)",
+                    width: 16,
+                    height: 16,
+                    borderRadius: 999,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 10,
                     cursor: "pointer",
+                    border: "none",
                     padding: 0,
-                    fontSize: 14,
                     lineHeight: 1,
                   }}
                 >
@@ -470,55 +462,94 @@ export default function Filters({ products, initialCategory }: Props) {
                 </button>
               </span>
             ))}
+            {chips.length > 0 && (
+              <button
+                type="button"
+                onClick={resetAll}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--color-muted)",
+                  fontSize: 11,
+                  letterSpacing: "0.06em",
+                  padding: "4px 10px",
+                  cursor: "pointer",
+                  transition: "color .2s",
+                  fontFamily: "var(--font-sans)",
+                }}
+              >
+                Clear all
+              </button>
+            )}
           </div>
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+
+          {/* Right: count + sort */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
             <span
-              className="heavy-glass"
               style={{
-                borderRadius: 999,
-                padding: "12px 18px",
-                fontFamily: "var(--font-mono)",
-                fontSize: 11,
-                color: "var(--color-pearl-2)",
-              }}
-            >
-              {visible.length} results
-            </span>
-            <select
-              value={sort}
-              onChange={(e) => {
-                setSort(
-                  e.target.value as NonNullable<ProductFilters["sort"]>,
-                );
-                setPage(1);
-              }}
-              aria-label="Sort"
-              className="focus-ring heavy-glass"
-              style={{
-                borderRadius: 999,
-                padding: "12px 36px 12px 18px",
                 fontFamily: "var(--font-sans)",
                 fontSize: 12,
-                color: "var(--color-pearl)",
-                fontWeight: 500,
-                appearance: "none",
-                background: "transparent",
-                border: "1px solid var(--color-glass-border-strong)",
+                color: "var(--color-muted)",
+                letterSpacing: "0.04em",
+                whiteSpace: "nowrap",
               }}
             >
-              {SORT_OPTIONS.map((o) => (
-                <option
-                  key={o.value}
-                  value={o.value}
-                  style={{ background: "var(--color-ink-2)" }}
-                >
-                  Sort: {o.label}
-                </option>
-              ))}
-            </select>
+              Showing <strong style={{ color: "var(--color-fg)", fontWeight: 600 }}>{visible.length}</strong> pieces
+            </span>
+            <div style={{ position: "relative" }}>
+              <select
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value as NonNullable<ProductFilters["sort"]>);
+                  setPage(1);
+                }}
+                aria-label="Sort order"
+                style={{
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  padding: "8px 32px 8px 14px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid var(--color-line)",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "var(--color-muted)",
+                  fontFamily: "var(--font-sans)",
+                  cursor: "pointer",
+                  outline: "none",
+                }}
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option
+                    key={o.value}
+                    value={o.value}
+                    style={{ background: "#111", textTransform: "none", letterSpacing: "normal" }}
+                  >
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "var(--color-gold-light)",
+                  fontSize: 9,
+                  pointerEvents: "none",
+                }}
+              >
+                ▾
+              </span>
+            </div>
           </div>
         </div>
 
+        {/* Grid or empty state */}
         {visible.length === 0 ? (
           <EmptyState
             title="Nothing matches that combo"
@@ -526,10 +557,12 @@ export default function Filters({ products, initialCategory }: Props) {
           />
         ) : (
           <div
-            className="grid gap-3"
             style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "36px 16px",
             }}
+            className="max-[1180px]:[grid-template-columns:repeat(3,1fr)] max-[880px]:[grid-template-columns:repeat(2,1fr)]"
           >
             {paged.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -537,28 +570,48 @@ export default function Filters({ products, initialCategory }: Props) {
           </div>
         )}
 
-        {visible.length > 0 ? (
-          <div
+        {/* Pagination */}
+        {visible.length > 0 && (
+          <nav
+            aria-label="Pagination"
             style={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
+              justifyContent: "space-between",
               gap: 16,
-              marginTop: 40,
-              paddingTop: 24,
-              borderTop: "1px solid var(--color-hairline)",
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              color: "var(--color-smoke)",
-              letterSpacing: "0.18em",
               flexWrap: "wrap",
+              marginTop: 56,
+              paddingTop: 32,
+              borderTop: "1px solid var(--color-line)",
+              fontFamily: "var(--font-sans)",
             }}
           >
-            <span style={{ textTransform: "uppercase" }}>
-              Showing {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, visible.length)}{" "}
-              of {visible.length}
-            </span>
-            <div style={{ display: "flex", gap: 6 }}>
+            {/* Previous */}
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "9px 16px",
+                borderRadius: 999,
+                border: "1px solid var(--color-line)",
+                background: "rgba(255,255,255,0.04)",
+                fontSize: 12,
+                fontWeight: 500,
+                color: currentPage === 1 ? "var(--color-dim)" : "var(--color-muted)",
+                cursor: currentPage === 1 ? "default" : "pointer",
+                transition: "all .2s",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
+              ← Previous
+            </button>
+
+            {/* Page numbers */}
+            <div style={{ display: "inline-flex", gap: 4 }}>
               {pageNumbers(currentPage, totalPages).map((n, i) =>
                 typeof n === "number" ? (
                   <button
@@ -567,77 +620,76 @@ export default function Filters({ products, initialCategory }: Props) {
                     onClick={() => setPage(n)}
                     aria-current={n === currentPage ? "page" : undefined}
                     aria-label={`Page ${n}`}
-                    className="focus-ring"
                     style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: "50%",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      border: `1px solid ${n === currentPage ? "var(--color-brass-light)" : "var(--color-hairline-strong)"}`,
-                      color:
-                        n === currentPage
-                          ? "var(--color-pearl)"
-                          : "var(--color-pearl-2)",
-                      background:
-                        n === currentPage
-                          ? "linear-gradient(135deg, rgba(212,174,110,0.25), transparent)"
-                          : "transparent",
-                      boxShadow:
-                        n === currentPage
-                          ? "0 0 12px rgba(212,174,110,0.25)"
-                          : "none",
+                      width: 36,
+                      height: 36,
+                      borderRadius: 999,
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      fontVariantNumeric: "tabular-nums",
+                      border: n === currentPage
+                        ? "1px solid rgba(255,255,255,0.4)"
+                        : "1px solid var(--color-line)",
+                      background: n === currentPage
+                        ? "linear-gradient(180deg, var(--color-gold-light), var(--color-gold))"
+                        : "rgba(255,255,255,0.04)",
+                      color: n === currentPage ? "#000" : "var(--color-muted)",
+                      boxShadow: n === currentPage
+                        ? "inset 0 1px 0 rgba(255,255,255,0.55)"
+                        : "none",
                       cursor: "pointer",
-                      fontFamily: "inherit",
-                      fontSize: "inherit",
+                      transition: "all .25s",
+                      fontFamily: "var(--font-sans)",
                     }}
                   >
-                    {n.toString().padStart(2, "0")}
+                    {n}
                   </button>
                 ) : (
                   <span
                     key={`gap-${i}`}
                     aria-hidden
+                    className="gap"
                     style={{
-                      width: 38,
-                      height: 38,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "var(--color-smoke)",
+                      color: "var(--color-dim)",
+                      alignSelf: "center",
+                      padding: "0 6px",
+                      fontSize: 14,
                     }}
                   >
-                    ··
+                    …
                   </span>
                 ),
               )}
             </div>
+
+            {/* Next */}
             <button
               type="button"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="focus-ring"
               style={{
-                background: "transparent",
-                border: "none",
-                color:
-                  currentPage === totalPages
-                    ? "var(--color-smoke)"
-                    : "var(--color-pearl)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "9px 16px",
+                borderRadius: 999,
+                border: "1px solid var(--color-line)",
+                background: "rgba(255,255,255,0.04)",
+                fontSize: 12,
+                fontWeight: 500,
+                color: currentPage === totalPages ? "var(--color-dim)" : "var(--color-muted)",
                 cursor: currentPage === totalPages ? "default" : "pointer",
-                fontFamily: "inherit",
-                fontSize: "inherit",
-                letterSpacing: "inherit",
-                textTransform: "uppercase",
-                padding: 0,
+                transition: "all .2s",
+                fontFamily: "var(--font-sans)",
               }}
             >
-              Load next →
+              Next →
             </button>
-          </div>
-        ) : null}
-      </main>
+          </nav>
+        )}
+      </div>
     </div>
   );
 }

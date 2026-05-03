@@ -1,54 +1,55 @@
-import { PPMark } from "./editorial";
+import Link from "next/link";
 
 interface Props {
-  className?: string;
+  href?: string;
   size?: "sm" | "md" | "lg";
-  showSubtitle?: boolean;
+  className?: string;
 }
 
-export default function Logo({
-  className = "",
-  size = "sm",
-  showSubtitle = false,
-}: Props) {
-  const dim = size === "lg" ? 32 : size === "md" ? 28 : 24;
-  const titleSize = size === "lg" ? 26 : size === "md" ? 22 : 18;
+export default function Logo({ href = "/", size = "md", className = "" }: Props) {
+  const markClass = size === "lg" ? "pp-mark pp-mark-lg" : size === "sm" ? "pp-mark pp-mark-sm" : "pp-mark pp-mark-md";
+  const wordSize = size === "lg" ? 26 : size === "sm" ? 16 : 20;
+  const ampSize = size === "lg" ? 28 : size === "sm" ? 18 : 22;
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <PPMark size={dim} />
-      <div className="flex flex-col items-start leading-none">
+    <Link
+      href={href}
+      aria-label="Pillar and Pearl, home"
+      className={`focus-ring ${className}`}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+        textDecoration: "none",
+      }}
+    >
+      <svg className={markClass} aria-hidden="true">
+        <use href="#pp" />
+      </svg>
+      <span
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: wordSize,
+          fontWeight: 500,
+          letterSpacing: "-0.02em",
+          color: "var(--color-fg)",
+          lineHeight: 1,
+        }}
+      >
+        Pillar
         <span
-          className="font-display ink"
           style={{
-            fontSize: titleSize,
+            fontStyle: "italic",
             fontWeight: 400,
-            letterSpacing: "-0.01em",
+            color: "var(--color-gold-light)",
+            fontSize: ampSize,
+            margin: "0 0.08em",
           }}
         >
-          Pillar{" "}
-          <em
-            className="ink-brass-l"
-            style={{ fontStyle: "italic", fontWeight: 400 }}
-          >
-            &amp;
-          </em>{" "}
-          Pearl
+          &amp;
         </span>
-        {showSubtitle ? (
-          <span
-            className="font-mono ink-faint"
-            style={{
-              fontSize: 8,
-              letterSpacing: "0.42em",
-              textTransform: "uppercase",
-              marginTop: 4,
-            }}
-          >
-            The Quartz Index
-          </span>
-        ) : null}
-      </div>
-    </div>
+        Pearl
+      </span>
+    </Link>
   );
 }

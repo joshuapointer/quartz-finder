@@ -1,43 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Newsreader, Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AgeGate from "@/components/AgeGate";
-
-const display = Newsreader({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-display-loaded",
-});
-
-const sans = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-sans-loaded",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-  variable: "--font-mono-loaded",
-});
+import IconSprite from "@/components/IconSprite";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
   title: {
-    default: "Pillar & Pearl — The Quartz Index",
+    default: "Pillar & Pearl — Quartz, banger sets, and dab tools.",
     template: "%s · Pillar & Pearl",
   },
   description:
-    "An editorial atlas of cannabis-concentrate hardware — quartz bangers, terp slurpers, dunking stations and rigs from independent makers, compared across vendors and updated nightly.",
+    "Quartz, banger sets, and dab tools for people who care about how their oil tastes. An editorial atlas of independent makers, compared across vendors and updated nightly.",
   keywords: [
     "quartz banger",
     "terp slurper",
@@ -50,16 +28,16 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    title: "Pillar & Pearl — The Quartz Index",
+    title: "Pillar & Pearl — Quartz, banger sets, and dab tools.",
     description:
-      "Aggregate marketplace for high-end quartz — bangers, slurpers, pearls, rigs.",
+      "Quartz, banger sets, and dab tools for people who care about how their oil tastes.",
     siteName: "Pillar & Pearl",
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06070A",
+  themeColor: "#000000",
   width: "device-width",
   initialScale: 1,
 };
@@ -70,16 +48,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
-    >
-      <body className="min-h-screen flex flex-col">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f%5B%5D=boska@400,500,600,700,900,400i,500i,700i&f%5B%5D=switzer@400,500,600,700&display=swap"
+        />
+      </head>
+      <body>
         <AgeGate />
-        <Header />
-        <main id="main" className="flex-1">{children}</main>
-        <Footer />
+        <div className="pp-bg" aria-hidden="true" />
+        <IconSprite />
+        <div className="pp-shell flex min-h-screen flex-col">
+          <Header />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
         <Script
           id="reveal-observer"
           strategy="afterInteractive"

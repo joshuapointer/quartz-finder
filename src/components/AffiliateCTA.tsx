@@ -8,15 +8,47 @@ interface Props {
   soldOut?: boolean;
 }
 
+function dispatchAffiliateEvent(href: string, brand: string) {
+  if (typeof window !== "undefined" && "dispatchEvent" in window) {
+    window.dispatchEvent(
+      new CustomEvent("pp:affiliate-out", {
+        detail: { href, brand },
+      }),
+    );
+  }
+}
+
 export default function AffiliateCTA({ href, brandName, soldOut }: Props) {
   const safeHref = safeExternalUrl(href);
+
   if (!safeHref) {
     return (
-      <div className="surface-flat p-6 rounded-[var(--radius-md)]">
-        <p className="text-sm text-[var(--color-ink-soft)]">
+      <div
+        style={{
+          padding: "20px 24px",
+          borderRadius: 12,
+          border: "1px solid var(--color-line)",
+          background: "rgba(255,255,255,0.02)",
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 13,
+            color: "var(--color-muted)",
+            margin: 0,
+          }}
+        >
           No direct retail link on file.
         </p>
-        <p className="mt-1 text-xs text-[var(--color-ink-mute)]">
+        <p
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 11,
+            color: "var(--color-dim)",
+            margin: "6px 0 0",
+          }}
+        >
           Contact {brandName} or check trusted dab forums for current stock.
         </p>
       </div>
@@ -29,24 +61,47 @@ export default function AffiliateCTA({ href, brandName, soldOut }: Props) {
         href={safeHref}
         target="_blank"
         rel="noopener noreferrer nofollow"
-        onClick={() => {
-          if (typeof window !== "undefined" && "dispatchEvent" in window) {
-            window.dispatchEvent(
-              new CustomEvent("pp:affiliate-out", {
-                detail: { href: safeHref, brand: brandName },
-              }),
-            );
-          }
+        onClick={() => dispatchAffiliateEvent(safeHref, brandName)}
+        className="btn btn-ghost"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: 56,
+          gap: 2,
         }}
-        className="btn btn-ghost focus-ring group flex w-full h-14 flex-col items-center justify-center text-sm tracking-[0.04em] uppercase"
       >
-        <span>
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 13,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+          }}
+        >
           Restock at{" "}
-          <span className="font-display italic normal-case tracking-normal">
+          <span
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontStyle: "italic",
+              textTransform: "none",
+              letterSpacing: "normal",
+            }}
+          >
             {brandName}
           </span>
         </span>
-        <span className="font-mono text-2xs ink-faint normal-case tracking-normal mt-1">
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 10,
+            color: "var(--color-dim)",
+            textTransform: "none",
+            letterSpacing: "0.02em",
+          }}
+        >
           (verify on site)
         </span>
       </a>
@@ -58,33 +113,40 @@ export default function AffiliateCTA({ href, brandName, soldOut }: Props) {
       href={safeHref}
       target="_blank"
       rel="noopener noreferrer nofollow"
-      onClick={() => {
-        if (typeof window !== "undefined" && "dispatchEvent" in window) {
-          window.dispatchEvent(
-            new CustomEvent("pp:affiliate-out", {
-              detail: { href: safeHref, brand: brandName },
-            }),
-          );
-        }
+      onClick={() => dispatchAffiliateEvent(safeHref, brandName)}
+      className="btn btn-primary"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: 56,
+        gap: 8,
+        fontFamily: "var(--font-sans)",
+        fontSize: 13,
+        fontWeight: 500,
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
       }}
-      className="btn btn-primary focus-ring group w-full h-14 text-sm tracking-[0.04em] uppercase font-medium"
     >
       Buy direct from{" "}
-      <span className="font-display italic normal-case tracking-normal">
+      <span
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontStyle: "italic",
+          textTransform: "none",
+          letterSpacing: "normal",
+          fontWeight: 400,
+        }}
+      >
         {brandName}
       </span>
-      {/* 14×14 SVG external arrow — replaces ↗ glyph */}
       <svg
-        viewBox="0 0 14 14"
-        width="14"
-        height="14"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        fill="none"
+        className="pp-icon"
         aria-hidden="true"
-        className="transition-transform group-hover:translate-x-0.5"
+        style={{ width: 16, height: 16 }}
       >
-        <path d="M3 11L11 3M5 3h6v6" />
+        <use href="#i-arrow" />
       </svg>
     </a>
   );

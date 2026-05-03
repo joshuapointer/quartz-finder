@@ -1,177 +1,182 @@
 import Link from "next/link";
 import type { BrandSummary } from "@/types";
 
-const TIER_LABEL: Record<BrandSummary["tier"], string> = {
-  import: "Import",
-  usmade: "US-Made",
-};
-
-interface DotProps {
-  on: boolean;
-  "aria-label": string;
+function makeInitials(name: string): string {
+  const SKIP = new Set(["quartz", "glass", "tubes"]);
+  const words = name.split(/\s+/).filter((w) => !SKIP.has(w.toLowerCase()));
+  if (words.length === 1) return words[0].slice(0, 3).toUpperCase();
+  return words
+    .slice(0, 3)
+    .map((w) => w[0].toUpperCase())
+    .join("");
 }
 
-function Dot({ on, "aria-label": ariaLabel }: DotProps) {
-  return (
-    <span
-      role="img"
-      aria-label={ariaLabel}
-      className="inline-block"
-      style={{
-        width: 6,
-        height: 6,
-        borderRadius: "50%",
-        background: on
-          ? "radial-gradient(circle at 30% 30%, var(--color-pearl), var(--color-brass) 70%)"
-          : "var(--color-hairline-strong)",
-        boxShadow: on ? "0 0 6px rgba(212, 174, 110, 0.5)" : undefined,
-      }}
-    />
-  );
+function splitName(name: string): { first: string; rest: string } {
+  const idx = name.indexOf(" ");
+  if (idx === -1) return { first: name, rest: "" };
+  return { first: name.slice(0, idx), rest: name.slice(idx + 1) };
 }
 
 export default function BrandCard({ brand }: { brand: BrandSummary }) {
-  const dead = brand.status === "dead";
+  const initials = makeInitials(brand.name);
+  const { first, rest } = splitName(brand.name);
+  const plural = brand.productCount === 1 ? "" : "s";
+  const isUs = brand.tier === "usmade";
+
   return (
     <Link
       href={`/brands/${brand.slug}`}
-      className="heavy-glass lift focus-ring group relative flex h-full flex-col overflow-hidden"
-      style={{
-        borderRadius: 8,
-        padding: 28,
-      }}
+      className="pp-brand-card"
+      style={
+        {
+          "--c-glow": "var(--color-c-cyan)",
+          position: "relative",
+          padding: 24,
+          borderRadius: 22,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid var(--color-line)",
+          display: "flex",
+          gap: 18,
+          overflow: "hidden",
+          transition: "border-color .3s, transform .35s",
+          textDecoration: "none",
+          color: "inherit",
+        } as React.CSSProperties
+      }
     >
+      {/* glow orb */}
       <span
         aria-hidden
-        className="pointer-events-none absolute"
         style={{
-          top: -60,
-          right: -60,
-          width: 220,
-          height: 220,
+          position: "absolute",
+          top: "-30%",
+          right: "-20%",
+          width: "60%",
+          aspectRatio: "1",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, var(--color-quartz) 0%, transparent 70%)",
-          opacity: 0.14,
-          filter: "blur(24px)",
+            "radial-gradient(circle, var(--color-c-cyan), transparent 65%)",
+          filter: "blur(50px)",
+          opacity: 0.35,
+          pointerEvents: "none",
         }}
       />
 
-      <div className="relative flex items-baseline justify-between gap-3">
-        <div
-          className="kicker kicker-light"
-          style={{ marginBottom: 0 }}
+      {/* circle mark */}
+      <div
+        className="mark"
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3))",
+          border: "1px solid var(--color-line-gold-2)",
+          display: "grid",
+          placeItems: "center",
+          flexShrink: 0,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontStyle: "italic",
+            fontSize: 18,
+            fontWeight: 500,
+            background:
+              "linear-gradient(180deg, var(--color-gold-light), var(--color-gold))",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
         >
-          {TIER_LABEL[brand.tier]}
-        </div>
-        {dead ? (
-          <span
-            className="font-mono"
-            style={{
-              fontSize: 9,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "var(--color-ember)",
-            }}
-          >
-            Dormant
-          </span>
-        ) : null}
+          {initials}
+        </span>
       </div>
 
-      <h3
-        className="font-display ink relative mt-3"
-        style={{
-          fontSize: 32,
-          fontStyle: "italic",
-          fontWeight: 400,
-          letterSpacing: "-0.01em",
-          lineHeight: 1.05,
-        }}
-      >
-        {brand.name}
-      </h3>
-
-      <p
-        className="font-mono ink-faint relative mt-2 break-all"
-        style={{ fontSize: 10, letterSpacing: "0.04em" }}
-      >
-        {brand.url}
-      </p>
-
-      <dl
-        className="relative mt-6 grid"
-        style={{ gridTemplateColumns: "1fr auto", fontSize: 13 }}
-      >
-        <dt
-          className="ink-soft py-2"
-          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
-        >
-          Control Tower
-        </dt>
-        <dd
-          className="ml-4 self-center py-2"
-          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
-        >
-          <Dot
-            on={brand.hasControlTower}
-            aria-label={brand.hasControlTower ? "In stock" : "Out of stock"}
-          />
-        </dd>
-
-        <dt
-          className="ink-soft py-2"
-          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
-        >
-          Terp Slurper
-        </dt>
-        <dd
-          className="ml-4 self-center py-2"
-          style={{ borderBottom: "1px solid var(--color-hairline-soft)" }}
-        >
-          <Dot
-            on={brand.hasTerpSlurper}
-            aria-label={brand.hasTerpSlurper ? "In stock" : "Out of stock"}
-          />
-        </dd>
-
-        <dt className="ink-soft py-2">Dunking Station</dt>
-        <dd className="ml-4 self-center py-2">
-          <Dot
-            on={brand.hasDunkingStation}
-            aria-label={brand.hasDunkingStation ? "In stock" : "Out of stock"}
-          />
-        </dd>
-      </dl>
-
+      {/* body */}
       <div
-        className="relative mt-auto flex items-end justify-between"
         style={{
-          paddingTop: 18,
-          borderTop: "1px solid var(--color-hairline)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+          flex: 1,
+          minWidth: 0,
+          position: "relative",
+          zIndex: 1,
         }}
       >
-        <span
-          className="font-mono ink-mute"
+        {/* top row: name + country */}
+        <div
           style={{
-            fontSize: 10,
-            letterSpacing: "0.18em",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "baseline",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 20,
+              fontWeight: 500,
+              letterSpacing: "-0.018em",
+              lineHeight: 1.1,
+            }}
+          >
+            {first}{" "}
+            {rest && (
+              <em style={{ fontStyle: "italic", color: "var(--color-gold-light)" }}>
+                {rest}
+              </em>
+            )}
+          </div>
+          <span
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: isUs ? "var(--color-gold-light)" : "var(--color-muted)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {isUs ? "US" : "Import"}
+          </span>
+        </div>
+
+        {/* blurb */}
+        <p
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 12,
+            color: "var(--color-muted)",
+            lineHeight: 1.55,
+            marginTop: 4,
+            margin: 0,
+          }}
+        >
+          {brand.productCount} piece{plural} on file
+        </p>
+
+        {/* arrow */}
+        <span
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.1em",
             textTransform: "uppercase",
+            color: "var(--color-gold-light)",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 6,
           }}
         >
-          {brand.productCount} piece{brand.productCount === 1 ? "" : "s"}
-        </span>
-        <span
-          className="font-display ink-brass-l"
-          style={{
-            fontSize: 22,
-            fontStyle: "italic",
-            fontWeight: 400,
-            lineHeight: 1,
-            transition: "transform var(--duration-base) var(--ease-expressive)",
-          }}
-        >
-          ↗
+          View pieces →
         </span>
       </div>
     </Link>
